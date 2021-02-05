@@ -1,0 +1,32 @@
+pullInterval: 5
+
+clusters:
+
+  myproject1:
+    groups:
+      web:
+        agent: "pull"
+        path: "/"
+        secure: false
+        port: 9999
+        hosts: 
+          - "127.0.0.1"
+      cron:
+        agent: "push"
+        hosts: 
+          - "127.0.0.1"
+
+  myproject2:
+    groups:
+      web:
+        agent: "pull"
+        path: "/"
+        secure: false
+        port: 9999
+        hosts: 
+          - "127.0.0.1"
+      cron:
+        agent: "push"
+        hosts: 
+          - "127.0.0.1"
+    

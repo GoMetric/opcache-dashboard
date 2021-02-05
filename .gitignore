@@ -1,0 +1,5 @@
+bin
+ui/assets.go
+ui/assets/node_modules
+ui/assets/dist
+__debug_bin

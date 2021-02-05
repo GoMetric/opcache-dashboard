@@ -1,0 +1,33 @@
+FROM alpine:3.13.2
+
+ARG VERSION
+
+RUN apk update && \
+    # install requirements
+    apk add --no-cache --virtual .build-deps \
+        ca-certificates \
+        make \
+        wget \
+        git \
+        curl \
+        go \
+        musl-dev && \
+    # update certs
+    update-ca-certificates && \
+    # get latest stable version
+    LATEST_VERSION=$(curl https://api.github.com/repos/sokil/OpcacheDashboard/releases/latest 2>/dev/null | grep tag_name | awk -F'"' '{print $4}') && \
+    VERSION=${VERSION:-$LATEST_VERSION} && \
+    # download source
+    wget https://github.com/sokil/OpcacheDashboard/archive/$VERSION.tar.gz && \
+    tar -zxvf ${VERSION}.tar.gz && \
+    cd OpcacheDashboard-${VERSION} && \
+    # make and install source
+    make build && \
+    make install && \
+    # clear
+    make clean && \
+    cd .. && rm -rf OpcacheDashboard-${VERSION} && \
+    apk del .build-deps
+
+# start service
+ENTRYPOINT ["/usr/local/bin/opcache-dashboard"]
