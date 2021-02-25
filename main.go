@@ -110,7 +110,14 @@ func main() {
 		gziphandler.GzipHandler(
 			http.HandlerFunc(
 				func(w http.ResponseWriter, r *http.Request) {
-					var jsonBody, _ = json.MarshalIndent(o.GetStatuses(), "", "    ")
+					var jsonBody []byte
+
+					if r.URL.Query().Get("pretty") == "1" {
+						jsonBody, _ = json.MarshalIndent(o.GetStatuses(), "", "    ")
+					} else {
+						jsonBody, _ = json.Marshal(o.GetStatuses())
+					}
+
 					w.Write(jsonBody)
 				},
 			),

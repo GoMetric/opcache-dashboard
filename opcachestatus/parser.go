@@ -34,7 +34,7 @@ type agentMessage struct {
 			Used                    int     `json:"used_memory"`
 			Free                    int     `json:"free_memory"`
 			Wasted                  int     `json:"wasted_memory"`
-			CurrentWasterPercentage float32 `json:"current_wasted_percentage"`
+			CurrentWasterPercentage float64 `json:"current_wasted_percentage"`
 		} `json:"memory_usage"`
 		InternedStringsUsage struct {
 			BufferSize   int `json:"buffer_size"`
@@ -63,10 +63,31 @@ func (parser AgentMessageParser) Parse(body []byte) (*NodeOpcacheStatus, error) 
 		return nil, errors.New("No scripts found in agent response")
 	}
 
+	// optimisations bitmap to int array
+	var optimisationsIntSlice = []int{}
+	var optimisationsBitmap = int(agentMessage.Configuration.Directives["opcache.optimization_level"].(float64))
+	for optimisationID := 0; optimisationID <= 16; optimisationID++ {
+		if ((1 << optimisationID) & optimisationsBitmap) != 0 {
+			optimisationsIntSlice = append(optimisationsIntSlice, optimisationID)
+		}
+	}
+
+	// build struct
 	opcacheStatus := NodeOpcacheStatus{
 		Configuration: agentMessage.Configuration.Directives,
 		PHPVersion:    agentMessage.Configuration.Version.Version,
+		Optimizations: optimisationsIntSlice,
 		Scripts:       map[string]Script{},
+		StartTime:     agentMessage.Status.OpcacheStatistics.StartTime,
+		CacheFull:     agentMessage.Status.CacheFull,
+		Memory: Memory{
+			Total:                   int(agentMessage.Configuration.Directives["opcache.memory_consumption"].(float64)),
+			Used:                    agentMessage.Status.MemoryUsage.Used,
+			Free:                    agentMessage.Status.MemoryUsage.Free,
+			Wasted:                  agentMessage.Status.MemoryUsage.Wasted,
+			MaxWastedPercentage:     agentMessage.Configuration.Directives["opcache.max_wasted_percentage"].(float64),
+			CurrentWasterPercentage: agentMessage.Status.MemoryUsage.CurrentWasterPercentage,
+		},
 	}
 
 	for phpFilePath, script := range agentMessage.Status.Scripts {

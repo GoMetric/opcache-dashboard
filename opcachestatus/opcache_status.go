@@ -33,50 +33,56 @@ type NodeOpcacheStatus struct {
 	PHPVersion    string // configuration.version.version
 	Scripts       map[string]Script
 	Optimizations []int //configuration.directives.opcache.optimization_level
-	Statistics    struct {
-		StartTime int64 // status.opcache_statistics.start_time
-		// If cache_full is true and num_cached_keys equals max_cached_keys then there are too many files.
-		// No restart will be triggered. As a result there are scripts that don't get cached,
-		// even though there might be memory available.
-		CacheFull bool // status.cache_full
-		Memory    struct {
-			Total                   int     // configuration.directives.opcache.memory_consumption
-			Used                    int     // status.memory_usage.used_memory
-			Free                    int     // status.memory_usage.free_memory
-			Wasted                  int     // status.memory_usage.wasted_memory
-			MaxWastedPercentage     float32 // configuration.directives.opcache.max_wasted_percentage
-			CurrentWasterPercentage float32 // status.memory_usage.current_wasted_percentage
-			InternedStings          struct {
-				Total        int // configuration.directives.opcache.interned_strings_buffer
-				BufferSize   int // status.interned_strings_usage.buffer_size
-				UsedMemory   int // status.interned_strings_usage.used_memory
-				FreeMemory   int // status.interned_strings_usage.free_memory
-				NumOfStrings int // status.interned_strings_usage.number_of_strings
-			}
-		}
-		Keys struct {
-			Total       int // configuration.directives.opcache.max_accelerated_files, The maximum number of keys (and therefore scripts) in the OPcache hash table
-			TotalPrime  int // status.opcache_statistics.max_cached_keys
-			UsedKeys    int // status.opcache_statistics.num_cached_keys
-			UsedScripts int // status.opcache_statistics.num_cached_scripts
-			// Free - may be defined as TotalPrime-UsedKeys
-			Hit struct {
-				Hits   int // status.opcache_statistics.hits
-				Misses int // status.opcache_statistics.misses
-			}
-		}
-		Restarts struct {
-			// Restarts occured when:
-			//  - wasted scripts > "opcache.max_wasted_percentage"
-			//  - "status.opcache_statistics.num_cached_scripts" > "opcache.max_accelerated_files"
-			Count struct {
-				OutOfMemory int // status.opcache_statistics.oom_restarts
-				Hash        int // status.opcache_statistics.hash_restarts
-				Manual      int // status.opcache_statistics.manual_restarts
-			}
-			LastRestartTime int64 // status.opcache_statistics.last_restart_time
-		}
-	}
+	StartTime     int64 // status.opcache_statistics.start_time
+	// If cache_full is true and num_cached_keys equals max_cached_keys then there are too many files.
+	// No restart will be triggered. As a result there are scripts that don't get cached,
+	// even though there might be memory available.
+	CacheFull            bool // status.cache_full
+	Memory               Memory
+	InternedStingsMemory InternedStingsMemory
+	Keys                 Keys
+	KeyHits              KeyHits
+	Restarts             Restarts
+}
+
+type Memory struct {
+	Total                   int     // configuration.directives.opcache.memory_consumption
+	Used                    int     // status.memory_usage.used_memory
+	Free                    int     // status.memory_usage.free_memory
+	Wasted                  int     // status.memory_usage.wasted_memory
+	MaxWastedPercentage     float64 // configuration.directives.opcache.max_wasted_percentage
+	CurrentWasterPercentage float64 // status.memory_usage.current_wasted_percentage
+}
+
+type InternedStingsMemory struct {
+	Total        int // configuration.directives.opcache.interned_strings_buffer
+	BufferSize   int // status.interned_strings_usage.buffer_size
+	UsedMemory   int // status.interned_strings_usage.used_memory
+	FreeMemory   int // status.interned_strings_usage.free_memory
+	NumOfStrings int // status.interned_strings_usage.number_of_strings
+}
+
+type Keys struct {
+	Total       int // configuration.directives.opcache.max_accelerated_files, The maximum number of keys (and therefore scripts) in the OPcache hash table
+	TotalPrime  int // status.opcache_statistics.max_cached_keys
+	UsedKeys    int // status.opcache_statistics.num_cached_keys
+	UsedScripts int // status.opcache_statistics.num_cached_scripts
+	// Free - may be defined as TotalPrime-UsedKeys
+}
+
+type KeyHits struct {
+	Hits   int // status.opcache_statistics.hits
+	Misses int // status.opcache_statistics.misses
+}
+
+type Restarts struct {
+	// Restarts occured when:
+	//  - wasted scripts > "opcache.max_wasted_percentage"
+	//  - "status.opcache_statistics.num_cached_scripts" > "opcache.max_accelerated_files"
+	OutOfMemoryCount int   // status.opcache_statistics.oom_restarts
+	HashCount        int   // status.opcache_statistics.hash_restarts
+	ManualCount      int   // status.opcache_statistics.manual_restarts
+	LastRestartTime  int64 // status.opcache_statistics.last_restart_time
 }
 
 // Script represents info abount signle script on one node
