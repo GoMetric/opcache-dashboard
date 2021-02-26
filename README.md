@@ -1,6 +1,6 @@
-# OpcacheDashboard
+# Opcache Dashboard
 
-Gathers opcache stat from different servers into one dashboard
+Gathers opcache stat from different PHP servers into one dashboard and tracks opcache status metrics to statsD
 
 # Installation
 
