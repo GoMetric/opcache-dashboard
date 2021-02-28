@@ -28,7 +28,7 @@ assets-build-debug:
 	cd ui/assets &&	yarn install && yarn run build-dev
 
 # Watch frontend file changes for development
-assets-watch:
+assets-watch: assets-build-debug
 	cd ui/assets &&	yarn run watch
 
 # Embed the assets to binary
