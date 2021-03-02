@@ -13,6 +13,17 @@
 declare(strict_types=1);
 
 /**
+ * Chech opcache extension configured
+ */
+if (!function_exists('opcache_get_status')) {
+    sendResponse(
+        500, 
+        ['error' => 'Opcache entension not loaded']
+    );
+    return;
+}
+
+/**
  * Router
  */
 $command = (string) filter_input(INPUT_GET, 'command');
@@ -20,11 +31,12 @@ switch ($command) {
     case '':
     case 'status':
         $pretty = (bool) filter_input(INPUT_GET, 'pretty');
-        statusCommand($pretty);
+        $scripts = (bool) filter_input(INPUT_GET, 'scripts');
+        statusCommand($pretty, $scripts);
         break;
 
     case 'reset':
-        opcache_reset();
+        resetCommand();
         break;
 
     case 'invalidate':
@@ -33,8 +45,18 @@ switch ($command) {
         break;
     
     default:
-        http_response_code(404);
+        sendResponse(400, ['error' => 'Invalid command specified']);
         break;
+}
+
+/**
+ * Complete reset of opcache
+ */
+function resetCommand(): void
+{
+    opcache_reset();
+
+    sendResponse(200, ['error' => null]);
 }
 
 /**
@@ -43,36 +65,48 @@ switch ($command) {
 function invalidateCommand(string $scriptPath): void
 {
     if (empty($scriptPath)) {
-        http_response_code(400);
+        sendResponse(400, ['error' => 'Script not defined']);
         return;
     }
 
     if (!file_exists($scriptPath)) {
-        http_response_code(404);
+        sendResponse(404, ['error' => 'Script not found']);
         return;
     }
 
     opcache_invalidate($scriptPath, true);
+
+    sendResponse(200, ['error' => null]);
 }
 
 /**
  * Status command return status of OPcache
  */
-function statusCommand(bool $pretty): void
+function statusCommand(bool $pretty, bool $scripts): void
+{   
+    sendResponse(
+        200,
+        [
+            'configuration' => opcache_get_configuration(),
+            'status' => opcache_get_status($scripts),
+        ],
+        $pretty
+    );
+}
+
+function sendResponse(int $code, array $body, bool $pretty = false): void
 {
+    http_response_code($code);
+    header('Content-type: application/json');
+    
     $jsonEncodeFlags = 0;
 
     if ($pretty) {
         $jsonEncodeFlags |= JSON_PRETTY_PRINT;
     }
-    
-    header('Content-type: application/json');
-    
+
     echo json_encode(
-        [
-            'configuration' => opcache_get_configuration(),
-            'status' => opcache_get_status(),
-        ],
+        $body,
         $jsonEncodeFlags
     );
 }

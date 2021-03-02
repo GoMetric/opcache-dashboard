@@ -17,7 +17,17 @@ type Observer struct {
 	metricTracker   *statsd.Client
 	agentPullTicker *time.Ticker
 	statuses        ClustersOpcacheStatuses
+	parser          AgentMessageParser
 	Clusters        map[string]configuration.ClusterConfig
+}
+
+func NewObserver(clusters map[string]configuration.ClusterConfig) *Observer {
+	var observer = Observer{
+		Clusters: clusters,
+		parser:   AgentMessageParser{},
+	}
+
+	return &observer
 }
 
 func (o *Observer) SetMetricTracker(metricTracker *statsd.Client) {
@@ -66,6 +76,7 @@ func (o *Observer) pullAgentsOnTick() {
 	}
 }
 
+// PullAgents fetches data from all agents and store it to internal struct
 func (o *Observer) PullAgents() {
 	for clusterName, clusterConfig := range o.Clusters {
 		for groupName, groupConfig := range clusterConfig.Groups {
@@ -129,7 +140,7 @@ func (o *Observer) fetchNodeOpcacheStatus(
 		schema += "http"
 	}
 
-	pullAgentURL = fmt.Sprintf("%s://%s:%d%s", schema, host, port, path)
+	pullAgentURL = fmt.Sprintf("%s://%s:%d%s?scripts=1", schema, host, port, path)
 
 	log.Printf(fmt.Sprintf("Observing %s", pullAgentURL))
 
@@ -149,9 +160,7 @@ func (o *Observer) fetchNodeOpcacheStatus(
 		return nil, error
 	}
 
-	var parser = AgentMessageParser{}
-
-	var observableNodeOpcacheStatus, err = parser.Parse(body)
+	var observableNodeOpcacheStatus, err = o.parser.Parse(body)
 
 	if err != nil {
 		return nil, fmt.Errorf("Can not parse response: %v", err)

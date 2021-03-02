@@ -71,8 +71,8 @@ type Keys struct {
 }
 
 type KeyHits struct {
-	Hits   int // status.opcache_statistics.hits
-	Misses int // status.opcache_statistics.misses
+	Hits   int64 // status.opcache_statistics.hits
+	Misses int64 // status.opcache_statistics.misses
 }
 
 type Restarts struct {

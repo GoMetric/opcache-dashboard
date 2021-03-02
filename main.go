@@ -106,7 +106,7 @@ func main() {
 
 	// api
 	mux.Handle(
-		"/api/nodes",
+		"/api/nodes/statistics",
 		gziphandler.GzipHandler(
 			http.HandlerFunc(
 				func(w http.ResponseWriter, r *http.Request) {
@@ -125,7 +125,7 @@ func main() {
 	)
 
 	mux.HandleFunc(
-		"/api/nodes/refresh",
+		"/api/nodes/statistics/refresh",
 		func(w http.ResponseWriter, r *http.Request) {
 			go o.PullAgents()
 			w.Write([]byte("OK"))

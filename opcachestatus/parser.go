@@ -19,16 +19,16 @@ type agentMessage struct {
 	Status struct {
 		CacheFull         bool `son:"cache_full"`
 		OpcacheStatistics struct {
-			StartTime           int64 `json:"start_time"`
-			TotalPrime          int64 `json:"max_cached_keys"`
-			UsedKeys            int64 `json:"num_cached_keys"`
-			UsedScripts         int64 `json:"num_cached_scripts"`
-			Hits                int64 `json:"hits"`
-			Misses              int64 `json:"misses"`
-			OutOfMemoryRestarts int   `json:"oom_restarts"`
-			HashRestarts        int   `json:"hash_restarts"`
-			ManualRestarts      int   `json:"manual_restarts"`
-			LastRestartTime     int64 `json:"last_restart_time"`
+			StartTime                int64 `json:"start_time"`
+			TotalPrime               int   `json:"max_cached_keys"`
+			UsedKeys                 int   `json:"num_cached_keys"`
+			UsedScripts              int   `json:"num_cached_scripts"`
+			Hits                     int64 `json:"hits"`
+			Misses                   int64 `json:"misses"`
+			OutOfMemoryRestartsCount int   `json:"oom_restarts"`
+			HashRestartsCount        int   `json:"hash_restarts"`
+			ManualRestartsCount      int   `json:"manual_restarts"`
+			LastRestartTime          int64 `json:"last_restart_time"`
 		} `json:"opcache_statistics"`
 		MemoryUsage struct {
 			Used                    int     `json:"used_memory"`
@@ -87,6 +87,29 @@ func (parser AgentMessageParser) Parse(body []byte) (*NodeOpcacheStatus, error) 
 			Wasted:                  agentMessage.Status.MemoryUsage.Wasted,
 			MaxWastedPercentage:     agentMessage.Configuration.Directives["opcache.max_wasted_percentage"].(float64),
 			CurrentWasterPercentage: agentMessage.Status.MemoryUsage.CurrentWasterPercentage,
+		},
+		InternedStingsMemory: InternedStingsMemory{
+			Total:        int(agentMessage.Configuration.Directives["opcache.interned_strings_buffer"].(float64)),
+			BufferSize:   agentMessage.Status.InternedStringsUsage.BufferSize,
+			UsedMemory:   agentMessage.Status.InternedStringsUsage.UsedMemory,
+			FreeMemory:   agentMessage.Status.InternedStringsUsage.FreeMemory,
+			NumOfStrings: agentMessage.Status.InternedStringsUsage.NumOfStrings,
+		},
+		Keys: Keys{
+			Total:       int(agentMessage.Configuration.Directives["opcache.max_accelerated_files"].(float64)),
+			TotalPrime:  agentMessage.Status.OpcacheStatistics.TotalPrime,
+			UsedKeys:    agentMessage.Status.OpcacheStatistics.UsedKeys,
+			UsedScripts: agentMessage.Status.OpcacheStatistics.UsedScripts,
+		},
+		KeyHits: KeyHits{
+			Hits:   agentMessage.Status.OpcacheStatistics.Hits,
+			Misses: agentMessage.Status.OpcacheStatistics.Misses,
+		},
+		Restarts: Restarts{
+			OutOfMemoryCount: agentMessage.Status.OpcacheStatistics.OutOfMemoryRestartsCount,
+			HashCount:        agentMessage.Status.OpcacheStatistics.HashRestartsCount,
+			ManualCount:      agentMessage.Status.OpcacheStatistics.ManualRestartsCount,
+			LastRestartTime:  agentMessage.Status.OpcacheStatistics.LastRestartTime,
 		},
 	}
 
