@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import { FormControl, InputLabel } from '@material-ui/core';

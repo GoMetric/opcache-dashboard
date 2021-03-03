@@ -23,6 +23,7 @@ import ScriptsPage from '/components/pages/ScriptsPage'
 import StatusPage from '/components/pages/StatusPage'
 import NotFoundPage from '/components/pages/NotFoundPage'
 import ClusterSelect from '/components/ClusterSelect';
+import RefreshButton from '/components/RefreshButton';
 import ConfigurationPage from './pages/Configuration';
 import {
     BrowserRouter as Router,
@@ -145,6 +146,7 @@ export default function Layout() {
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                             Dashboard
                         </Typography>
+                        <RefreshButton />
                         <ClusterSelect />
                     </Toolbar>
                 </AppBar>
