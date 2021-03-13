@@ -23,6 +23,7 @@
     "@material-ui/data-grid": "^4.0.0-alpha.20",
     "@material-ui/icons": "^4.11.2",
     "babel-loader": "^8.2.2",
+    "chart.js": "^2.9.4",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.2",
     "file-loader": "^6.2.0",
