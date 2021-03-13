@@ -1,9 +1,10 @@
 import { createStyles, makeStyles, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 import React from 'react';
 import { connect } from 'react-redux';
-import HostGroupSelect from '/components/HostGroupSelect';
+import { Doughnut } from 'react-chartjs-2';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import prettyBytes from 'pretty-bytes';
 
 const mapStateToProps = (state: Object) => {
     return {
@@ -22,7 +23,43 @@ const buildChartData = function(clusterOpcacheStatuses) {
 
         for (let hostName in clusterOpcacheStatuses[groupName]) {
             chartData[groupName][hostName] = {
-
+                memory: {
+                    chartData: {
+                        labels: [
+                            'Free',
+                            'Used',
+                            'Wasted'
+                        ],
+                        datasets: [
+                            {
+                                data: [
+                                    clusterOpcacheStatuses[groupName][hostName].Memory.Free,
+                                    clusterOpcacheStatuses[groupName][hostName].Memory.Used,
+                                    clusterOpcacheStatuses[groupName][hostName].Memory.Wasted,
+                                ],
+                                backgroundColor: [
+                                    '#FF6384',
+                                    '#36A2EB',
+                                    '#FFCE56'
+                                ],
+                                hoverBackgroundColor: [
+                                    '#FF6384',
+                                    '#36A2EB',
+                                    '#FFCE56'
+                                ]
+                            }
+                        ]
+                    },
+                    chartOptions: {
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    return prettyBytes(data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]);
+                                }
+                            }
+                        }
+                    }
+                }
             };
         }
     }
@@ -56,14 +93,17 @@ function StatusPageComponent(props: Object) {
             hostGridCollection.push(
                 <div>
                     <h2>{hostName}</h2>
-                    <Grid container spacing="1">
+                    <Grid container spacing={1}>
                         <Grid item xs={4} key={hostName + "memory"}>
                             <Paper className={classes.paper}>
                                 <h2>Memory</h2>
-                                Chart
+                                <Doughnut 
+                                    data={props.chartData[groupName][hostName].memory.chartData} 
+                                    options={props.chartData[groupName][hostName].memory.chartOptions} 
+                                />
                             </Paper>
                         </Grid>
-                        <Grid item xs={4} key={hostName + "restarts"}>
+                        <Grid item xs={4} key={hostName + "internedStrings"}>
                             <Paper className={classes.paper}>
                                 <h2>Interned strings</h2>
                                 Chart
