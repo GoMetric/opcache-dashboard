@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { DataGrid, ValueGetterParams } from '@material-ui/data-grid';
 import {DateTime} from 'luxon';
 import prettyBytes from 'pretty-bytes';
+import { Paper } from '@material-ui/core';
 
 const mapStateToProps = (state: Object) => {
     return {
@@ -113,7 +114,9 @@ function ScriptsPageComponent(props: Object) {
     let rows = props.scriptAggregatedStatus;
 
     return <div style={{ minHeight: '400px', width: '100%' }}>
-        <DataGrid rows={rows} columns={columns} autoHeight="true" autoPageSize="true" density="compact"></DataGrid>
+        <Paper>
+            <DataGrid rows={rows} columns={columns} autoHeight="true" autoPageSize="true" density="compact"></DataGrid>
+        </Paper>
     </div>
 }
 
