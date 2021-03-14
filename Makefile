@@ -84,11 +84,11 @@ docker-login:
 
 # build docker images
 docker-build:
-	docker build --tag sokil/opcache-dashboard:latest -f ./Dockerfile.alpine .
-	docker build --tag sokil/opcache-dashboard:$(VERSION) -f ./Dockerfile.alpine .
+	docker build --tag gometric/opcache-dashboard:latest -f ./Dockerfile.alpine .
+	docker build --tag gometric/opcache-dashboard:$(VERSION) -f ./Dockerfile.alpine .
 
 # publish docker images to hub
 docker-publish: docker-build
 	docker login
-	docker push sokil/opcache-dashboard:latest
-	docker push sokil/opcache-dashboard:$(VERSION)
+	docker push gometric/opcache-dashboard:latest
+	docker push gometric/opcache-dashboard:$(VERSION)

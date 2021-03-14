@@ -6,7 +6,7 @@
  * Works in pull mode when data pulls by server from observable nodes, so this this 
  * script must be placed somewhere on observable node for accessing through web.
  * 
- * @see https://github.com/sokil/OpcacheDashboard
+ * @see https://github.com/GoMetric/opcache-dashboard
  * 
  * MIT License
  */

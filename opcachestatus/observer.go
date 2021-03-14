@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/GoMetric/go-statsd-client"
-	"github.com/sokil/OpcacheDashboard/configuration"
+	"github.com/GoMetric/opcache-dashboard/configuration"
 )
 
 // Observer periodically reads status of observable nodes and aggregates received data
