@@ -12,10 +12,10 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/GoMetric/opcache-dashboard/configuration"
+	"github.com/GoMetric/opcache-dashboard/opcachestatus"
+	"github.com/GoMetric/opcache-dashboard/ui"
 	"github.com/NYTimes/gziphandler"
-	"github.com/sokil/OpcacheDashboard/configuration"
-	"github.com/sokil/OpcacheDashboard/opcachestatus"
-	"github.com/sokil/OpcacheDashboard/ui"
 
 	GoMetricStatsdClient "github.com/GoMetric/go-statsd-client"
 )

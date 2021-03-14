@@ -1,4 +1,4 @@
-FROM alpine:3.13.4
+FROM alpine:3.12.4
 
 ARG VERSION
 
@@ -15,18 +15,18 @@ RUN apk update && \
     # update certs
     update-ca-certificates && \
     # get latest stable version
-    LATEST_VERSION=$(curl https://api.github.com/repos/GoMetric/OpcacheDashboard/releases/latest 2>/dev/null | grep tag_name | awk -F'"' '{print $4}') && \
+    LATEST_VERSION=$(curl https://api.github.com/repos/GoMetric/opcache-dashboard/releases/latest 2>/dev/null | grep tag_name | awk -F'"' '{print $4}') && \
     VERSION=${VERSION:-$LATEST_VERSION} && \
     # download source
-    wget https://github.com/GoMetric/OpcacheDashboard/archive/$VERSION.tar.gz && \
+    wget https://github.com/GoMetric/opcache-dashboard/archive/$VERSION.tar.gz && \
     tar -zxvf ${VERSION}.tar.gz && \
-    cd OpcacheDashboard-${VERSION} && \
+    cd opcache-dashboard-${VERSION} && \
     # make and install source
     make build && \
     make install && \
     # clear
     make clean && \
-    cd .. && rm -rf OpcacheDashboard-${VERSION} && \
+    cd .. && rm -rf opcache-dashboard-${VERSION} && \
     apk del .build-deps
 
 # start service

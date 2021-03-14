@@ -1,4 +1,4 @@
-module github.com/sokil/OpcacheDashboard
+module github.com/GoMetric/opcache-dashboard
 
 go 1.14
 
