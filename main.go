@@ -15,6 +15,7 @@ import (
 	"github.com/GoMetric/opcache-dashboard/configuration"
 	"github.com/GoMetric/opcache-dashboard/opcachestatus"
 	"github.com/GoMetric/opcache-dashboard/ui"
+
 	"github.com/NYTimes/gziphandler"
 
 	GoMetricStatsdClient "github.com/GoMetric/go-statsd-client"
