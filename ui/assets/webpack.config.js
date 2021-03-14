@@ -55,7 +55,7 @@ module.exports = {
     externals: {},
     devtool: mode === "development"
         ? 'cheap-module-source-map'
-        : 'source-map',
+        : false, // 'source-map' for map on production build
     module: {
         rules: [
             {

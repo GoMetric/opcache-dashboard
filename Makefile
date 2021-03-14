@@ -21,7 +21,7 @@ deps:
 
 # Build frontend for production
 assets-build-prod:
-	cd ui/assets &&	yarn install && yarn run build-prod
+	cd ui/assets &&	yarn install --production && yarn run build-prod
 
 # Build frontend for development
 assets-build-debug:

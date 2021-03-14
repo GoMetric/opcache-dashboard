@@ -6,7 +6,7 @@
   "author": "Dmytro Sokil <dmytro.sokil@gmail.com>",
   "license": "MIT",
   "private": false,
-  "devDependencies": {
+  "dependencies": {
     "@babel/core": "^7.12.16",
     "@babel/plugin-proposal-class-properties": "^7.12.13",
     "@babel/plugin-proposal-function-bind": "^7.12.13",
