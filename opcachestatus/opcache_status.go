@@ -67,7 +67,7 @@ type Keys struct {
 	TotalPrime  int // status.opcache_statistics.max_cached_keys
 	UsedKeys    int // status.opcache_statistics.num_cached_keys
 	UsedScripts int // status.opcache_statistics.num_cached_scripts
-	// Free - may be defined as TotalPrime-UsedKeys
+	Free        int // may be defined as TotalPrime-UsedKeys
 }
 
 type KeyHits struct {

@@ -89,7 +89,7 @@ func (parser AgentMessageParser) Parse(body []byte) (*NodeOpcacheStatus, error) 
 			CurrentWasterPercentage: agentMessage.Status.MemoryUsage.CurrentWasterPercentage,
 		},
 		InternedStingsMemory: InternedStingsMemory{
-			Total:        int(agentMessage.Configuration.Directives["opcache.interned_strings_buffer"].(float64)),
+			Total:        int(agentMessage.Configuration.Directives["opcache.interned_strings_buffer"].(float64)) * 1024 * 1024,
 			BufferSize:   agentMessage.Status.InternedStringsUsage.BufferSize,
 			UsedMemory:   agentMessage.Status.InternedStringsUsage.UsedMemory,
 			FreeMemory:   agentMessage.Status.InternedStringsUsage.FreeMemory,
@@ -100,6 +100,7 @@ func (parser AgentMessageParser) Parse(body []byte) (*NodeOpcacheStatus, error) 
 			TotalPrime:  agentMessage.Status.OpcacheStatistics.TotalPrime,
 			UsedKeys:    agentMessage.Status.OpcacheStatistics.UsedKeys,
 			UsedScripts: agentMessage.Status.OpcacheStatistics.UsedScripts,
+			Free:        agentMessage.Status.OpcacheStatistics.TotalPrime - agentMessage.Status.OpcacheStatistics.UsedKeys,
 		},
 		KeyHits: KeyHits{
 			Hits:   agentMessage.Status.OpcacheStatistics.Hits,

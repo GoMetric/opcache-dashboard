@@ -9,20 +9,20 @@ import prettyBytes from 'pretty-bytes';
 const mapStateToProps = (state: Object) => {
     return {
         selectedClusterName: state.selectedClusterName,
-        chartData: state.selectedClusterName
+        charts: state.selectedClusterName
             ? buildChartData(state.opcacheStatuses[state.selectedClusterName])
             : []
     };
 };
 
 const buildChartData = function(clusterOpcacheStatuses) {
-    const chartData = {};
+    const charts = {};
 
     for (let groupName in clusterOpcacheStatuses) {
-        chartData[groupName] = {};
+        charts[groupName] = {};
 
         for (let hostName in clusterOpcacheStatuses[groupName]) {
-            chartData[groupName][hostName] = {
+            charts[groupName][hostName] = {
                 memory: {
                     chartData: {
                         labels: [
@@ -43,9 +43,9 @@ const buildChartData = function(clusterOpcacheStatuses) {
                                     '#FFCE56'
                                 ],
                                 hoverBackgroundColor: [
-                                    '#FF6384',
-                                    '#36A2EB',
-                                    '#FFCE56'
+                                    '#FF7394',
+                                    '#36B2FB',
+                                    '#FFDE66'
                                 ]
                             }
                         ]
@@ -59,12 +59,121 @@ const buildChartData = function(clusterOpcacheStatuses) {
                             }
                         }
                     }
-                }
+                },
+                internedStrings: {
+                    chartData: {
+                        labels: [
+                            'Used',
+                            'Free',
+                        ],
+                        datasets: [
+                            {
+                                data: [
+                                    clusterOpcacheStatuses[groupName][hostName].InternedStingsMemory.UsedMemory,
+                                    clusterOpcacheStatuses[groupName][hostName].InternedStingsMemory.FreeMemory,
+                                ],
+                                backgroundColor: [
+                                    '#FF6384',
+                                    '#36A2EB',
+                                ],
+                                hoverBackgroundColor: [
+                                    '#FF7394',
+                                    '#36B2FB',
+                                ]
+                            }
+                        ]
+                    },
+                    chartOptions: {
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    return prettyBytes(data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]);
+                                }
+                            }
+                        }
+                    }
+                },
+                keys: {
+                    chartData: {
+                        labels: [
+                            'Used',
+                            'Free',
+                        ],
+                        datasets: [
+                            {
+                                data: [
+                                    clusterOpcacheStatuses[groupName][hostName].Keys.UsedKeys,
+                                    clusterOpcacheStatuses[groupName][hostName].Keys.Free,
+                                ],
+                                backgroundColor: [
+                                    '#FF6384',
+                                    '#36A2EB',
+                                ],
+                                hoverBackgroundColor: [
+                                    '#FF7394',
+                                    '#36B2FB',
+                                ]
+                            }
+                        ]
+                    }
+                },
+                keyHits: {
+                    chartData: {
+                        labels: [
+                            'Hits',
+                            'Misses',
+                        ],
+                        datasets: [
+                            {
+                                data: [
+                                    clusterOpcacheStatuses[groupName][hostName].KeyHits.Hits,
+                                    clusterOpcacheStatuses[groupName][hostName].KeyHits.Misses,
+                                ],
+                                backgroundColor: [
+                                    '#FF6384',
+                                    '#36A2EB',
+                                ],
+                                hoverBackgroundColor: [
+                                    '#FF7394',
+                                    '#36B2FB',
+                                ]
+                            }
+                        ]
+                    }
+                },
+                restarts: {
+                    chartData: {
+                        labels: [
+                            'Hash',
+                            'Manual',
+                            'OutOfMemory'
+                        ],
+                        datasets: [
+                            {
+                                data: [
+                                    clusterOpcacheStatuses[groupName][hostName].Restarts.HashCount,
+                                    clusterOpcacheStatuses[groupName][hostName].Restarts.ManualCount,
+                                    clusterOpcacheStatuses[groupName][hostName].Restarts.OutOfMemoryCount,
+                                ],
+                                backgroundColor: [
+                                    '#FF6384',
+                                    '#36A2EB',
+                                    '#FFCE56'
+                                ],
+                                hoverBackgroundColor: [
+                                    '#FF7394',
+                                    '#36B2FB',
+                                    '#FFDE66'
+                                ]
+                            }
+                        ]
+                    }
+                },
             };
         }
     }
 
-    return chartData;
+    return charts;
 };
 
 
@@ -86,10 +195,10 @@ function StatusPageComponent(props: Object) {
 
     let groupGridCollection = [];
 
-    for (let groupName in props.chartData) {
+    for (let groupName in props.charts) {
         const hostGridCollection = [];
 
-        for (let hostName in props.chartData[groupName]) {
+        for (let hostName in props.charts[groupName]) {
             hostGridCollection.push(
                 <div>
                     <h2>{hostName}</h2>
@@ -98,33 +207,42 @@ function StatusPageComponent(props: Object) {
                             <Paper className={classes.paper}>
                                 <h2>Memory</h2>
                                 <Doughnut 
-                                    data={props.chartData[groupName][hostName].memory.chartData} 
-                                    options={props.chartData[groupName][hostName].memory.chartOptions} 
+                                    data={props.charts[groupName][hostName].memory.chartData} 
+                                    options={props.charts[groupName][hostName].memory.chartOptions} 
                                 />
                             </Paper>
                         </Grid>
                         <Grid item xs={4} key={hostName + "internedStrings"}>
                             <Paper className={classes.paper}>
                                 <h2>Interned strings</h2>
-                                Chart
+                                <Doughnut 
+                                    data={props.charts[groupName][hostName].internedStrings.chartData}
+                                    options={props.charts[groupName][hostName].memory.chartOptions} 
+                                />
                             </Paper>
                         </Grid>
                         <Grid item xs={4} key={hostName + "keys"}>
                             <Paper className={classes.paper}>
                                 <h2>Keys</h2>
-                                Chart
+                                <Doughnut 
+                                    data={props.charts[groupName][hostName].keys.chartData}
+                                />
                             </Paper>
                         </Grid>
                         <Grid item xs={4} key={hostName + "hits"}>
                             <Paper className={classes.paper}>
-                                <h2>Hits</h2>
-                                Chart
+                                <h2>Key Hits</h2>
+                                <Doughnut 
+                                    data={props.charts[groupName][hostName].keyHits.chartData} 
+                                />
                             </Paper>
                         </Grid>
                         <Grid item xs={4} key={hostName + "restarts"}>
                             <Paper className={classes.paper}>
                                 <h2>Restarts</h2>
-                                Chart
+                                <Doughnut 
+                                    data={props.charts[groupName][hostName].restarts.chartData} 
+                                />
                             </Paper>
                         </Grid>
                     </Grid>
