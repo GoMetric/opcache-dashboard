@@ -14,6 +14,8 @@ RUN apk update && \
         musl-dev && \
     # update certs
     update-ca-certificates && \
+    # install yarn
+    npm install --global yarn \
     # get latest stable version
     LATEST_VERSION=$(curl https://api.github.com/repos/GoMetric/opcache-dashboard/releases/latest 2>/dev/null | grep tag_name | awk -F'"' '{print $4}') && \
     VERSION=${VERSION:-$LATEST_VERSION} && \
@@ -27,6 +29,7 @@ RUN apk update && \
     # clear
     make clean && \
     cd .. && rm -rf opcache-dashboard-${VERSION} && \
+    npm uninstall --global yarn \
     apk del .build-deps
 
 # start service
