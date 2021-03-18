@@ -200,7 +200,7 @@ function StatusPageComponent(props: Object) {
 
         for (let hostName in props.charts[groupName]) {
             hostGridCollection.push(
-                <div>
+                <div key={hostName + "hostGrid"}>
                     <h2>{hostName}</h2>
                     <Grid container spacing={1}>
                         <Grid item xs={12} sm={6} md={4} key={hostName + "memory"}>
@@ -251,7 +251,7 @@ function StatusPageComponent(props: Object) {
         }
 
         groupGridCollection.push(
-            <div>
+            <div key={groupName + "groupGrid"}>
                 <h1>{groupName}</h1>
                 {hostGridCollection}
             </div>
