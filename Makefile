@@ -1,3 +1,8 @@
+SHELL=bash
+
+# Go env
+GOPATH=$(shell go env GOPATH)
+
 # build version
 VERSION=`git describe --tags | awk -F'-' '{print $$1}'`
 BUILD_NUMBER=`git rev-parse HEAD`
@@ -12,12 +17,9 @@ LDFLAGS=-ldflags "-X main.Version=$(VERSION) -X main.BuildNumber=$(BUILD_NUMBER)
 # Default task
 default: build
 
-# Install deprendencies
+# Install dependencies
 deps:
-    ifneq ($(GO111MODULE),on)
-		export GOPATH=$(CURDIR)
-		go get -v -t -d ./...
-    endif
+	go get -v -t -d ./...
 	go get -u github.com/go-bindata/go-bindata/...
 
 # Build frontend for production
@@ -34,11 +36,11 @@ assets-watch: assets-build-debug
 
 # Embed the assets to binary
 assets-embed-prod: assets-build-prod
-	go-bindata -fs -o ui/assets.go -pkg ui -prefix "ui/assets/dist" ui/assets/dist/...
+	$(GOPATH)/bin/go-bindata -fs -o ui/assets.go -pkg ui -prefix "ui/assets/dist" ui/assets/dist/...
 
 # Do not embed the assets, but provide the embedding API. Contents will still be loaded from disk
 assets-embed-debug: assets-build-debug 
-	go-bindata -fs -o ui/assets.go -pkg ui -prefix "ui/assets/dist" -debug ui/assets/dist/...
+	$(GOPATH)/bin/go-bindata -fs -o ui/assets.go -pkg ui -prefix "ui/assets/dist" -debug ui/assets/dist/...
 
 # Run debug server with current Go code and rebuilded ui assets loaded from disc instead of embedding
 # May be used for frash build of server and assets, or for just frontend development when
@@ -62,6 +64,7 @@ run-profiler-web:
 build: deps assets-embed-prod
 	CGO_ENABLED=0 go build -v -x -a $(LDFLAGS) -o $(CURDIR)/bin/$(BINARY_NAME)
 	chmod +x $(CURDIR)/bin/$(BINARY_NAME)
+	$(CURDIR)/bin/$(BINARY_NAME) -version
 
 # Clean all generated files
 clean:
