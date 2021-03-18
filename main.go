@@ -29,6 +29,18 @@ const defaultStatsDPort = 8125
 
 const defaultRefreshIntervalSeconds = 3600
 
+// Version is a current git commit hash and tag
+// Injected by compilation flag
+var Version = "Unknown"
+
+// BuildNumber is a current commit hash
+// Injected by compilation flag
+var BuildNumber = "Unknown"
+
+// BuildDate is a date of build
+// Injected by compilation flag
+var BuildDate = "Unknown"
+
 func main() {
 	// command line options
 	var httpHost = flag.String("http-host", defaultHTTPHost, "HTTP Host")
@@ -39,8 +51,20 @@ func main() {
 	var statsdPort = flag.Int("statsd-port", defaultStatsDPort, "StatsD Port")
 	var statsdMetricPrefix = flag.String("statsd-metric-prefix", "", "Prefix of metric name")
 	var verbose = flag.Bool("verbose", false, "Verbose")
+	var version = flag.Bool("version", false, "Show version")
 
 	flag.Parse()
+
+	// show version and exit
+	if *version == true {
+		fmt.Printf(
+			"Opcache Dashboard v.%s, build %s from %s\n",
+			Version,
+			BuildNumber,
+			BuildDate,
+		)
+		os.Exit(0)
+	}
 
 	// configure logging
 	var logOutput io.Writer
