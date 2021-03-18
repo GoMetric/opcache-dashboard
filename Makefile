@@ -18,6 +18,7 @@ deps:
 		export GOPATH=$(CURDIR)
 		go get -v -t -d ./...
     endif
+	go get -u github.com/go-bindata/go-bindata/...
 
 # Build frontend for production
 assets-build-prod:
@@ -73,25 +74,3 @@ clean:
 # Install binary locally
 install:
 	cp $(CURDIR)/bin/$(BINARY_NAME) /usr/local/bin
-
-# to publish to docker registry we need to be logged in
-docker-login:
-    ifdef DOCKER_REGISTRY_USERNAME
-		@echo "h" $(DOCKER_REGISTRY_USERNAME) "h"
-    else
-		docker login
-    endif
-
-# build docker image from latest github tag
-docker-build:
-	@echo "Building docker image version" $(VERSION)
-	docker build \
-		--tag gometric/opcache-dashboard:$(VERSION) \
-		--tag gometric/opcache-dashboard:latest \
-		-f ./Dockerfile.alpine .
-
-# publish docker images to hub
-docker-publish: docker-build
-	docker login
-	docker push gometric/opcache-dashboard:latest
-	docker push gometric/opcache-dashboard:$(VERSION)
