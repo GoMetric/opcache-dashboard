@@ -114,17 +114,22 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
+
 export default function Layout() {
     const classes = useStyles();
 
-    const [open, setOpen] = React.useState(true);
+    const layoutDrawerOpenStateLocalstorageKey = 'layoutDrawerOpen';
+
+    const [openDraver, setOpenDrawer] = React.useState(localStorage.getItem(layoutDrawerOpenStateLocalstorageKey) === "true");
 
     const handleDrawerOpen = () => {
-        setOpen(true);
+        localStorage.setItem(layoutDrawerOpenStateLocalstorageKey, "true");
+        setOpenDrawer(true);
     };
 
     const handleDrawerClose = () => {
-        setOpen(false);
+        localStorage.setItem(layoutDrawerOpenStateLocalstorageKey, "false");
+        setOpenDrawer(false);
     };
 
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
@@ -133,14 +138,14 @@ export default function Layout() {
         <Router>
             <div className={classes.root}>
                 <CssBaseline />
-                <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+                <AppBar position="absolute" className={clsx(classes.appBar, openDraver && classes.appBarShift)}>
                     <Toolbar className={classes.toolbar}>
                         <IconButton
                             edge="start"
                             color="inherit"
                             aria-label="open drawer"
                             onClick={handleDrawerOpen}
-                            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}>
+                            className={clsx(classes.menuButton, openDraver && classes.menuButtonHidden)}>
                             <MenuIcon />
                         </IconButton>
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
@@ -153,9 +158,10 @@ export default function Layout() {
                 <Drawer
                     variant="permanent"
                     classes={{
-                        paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+                        paper: clsx(classes.drawerPaper, !openDraver && classes.drawerPaperClose),
                     }}
-                    open={open}>
+                    open={openDraver}
+                >
                     <div className={classes.toolbarIcon}>
                         <IconButton onClick={handleDrawerClose}>
                             <ChevronLeftIcon />

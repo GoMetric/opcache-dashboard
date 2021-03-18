@@ -203,7 +203,7 @@ function StatusPageComponent(props: Object) {
                 <div>
                     <h2>{hostName}</h2>
                     <Grid container spacing={1}>
-                        <Grid item xs={4} key={hostName + "memory"}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "memory"}>
                             <Paper className={classes.paper}>
                                 <h2>Memory</h2>
                                 <Doughnut 
@@ -212,7 +212,7 @@ function StatusPageComponent(props: Object) {
                                 />
                             </Paper>
                         </Grid>
-                        <Grid item xs={4} key={hostName + "internedStrings"}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "internedStrings"}>
                             <Paper className={classes.paper}>
                                 <h2>Interned strings</h2>
                                 <Doughnut 
@@ -221,7 +221,7 @@ function StatusPageComponent(props: Object) {
                                 />
                             </Paper>
                         </Grid>
-                        <Grid item xs={4} key={hostName + "keys"}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "keys"}>
                             <Paper className={classes.paper}>
                                 <h2>Keys</h2>
                                 <Doughnut 
@@ -229,7 +229,7 @@ function StatusPageComponent(props: Object) {
                                 />
                             </Paper>
                         </Grid>
-                        <Grid item xs={4} key={hostName + "hits"}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "hits"}>
                             <Paper className={classes.paper}>
                                 <h2>Key Hits</h2>
                                 <Doughnut 
@@ -237,7 +237,7 @@ function StatusPageComponent(props: Object) {
                                 />
                             </Paper>
                         </Grid>
-                        <Grid item xs={4} key={hostName + "restarts"}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "restarts"}>
                             <Paper className={classes.paper}>
                                 <h2>Restarts</h2>
                                 <Doughnut 
