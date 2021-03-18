@@ -4,6 +4,15 @@ import { DataGrid, ValueGetterParams } from '@material-ui/data-grid';
 import {DateTime} from 'luxon';
 import prettyBytes from 'pretty-bytes';
 import { Paper } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+    dataGridRoot: {
+        '& .MuiDataGrid-cell': {
+            fontSize: '0.9em',
+        },
+    },
+}));
 
 const mapStateToProps = (state: Object) => {
     return {
@@ -80,16 +89,18 @@ function ScriptsPageComponent(props: Object) {
             field: 'hits',
             headerName: 'Hits',
             sortable: true,
-            width: 100,
+            width: 90,
+            hide: false,
         },
         {
             field: 'memoryHumanReadable',
-            headerName: 'Memory',
+            headerName: 'Size',
             sortable: true,
-            width: 105,
+            width: 85,
             valueGetter: (params: ValueGetterParams) => {
                 return prettyBytes(params.getValue('memory'));
             },
+            hide: false,
         },
         {
             field: 'lastUsedDate',
@@ -99,6 +110,7 @@ function ScriptsPageComponent(props: Object) {
             valueGetter: (params: ValueGetterParams) => {
                 return formatTime(params.getValue('lastUsedTimestamp'));
             },
+            hide: false,
         },
         {
             field: 'createDate',
@@ -108,14 +120,24 @@ function ScriptsPageComponent(props: Object) {
             valueGetter: (params: ValueGetterParams) => {
                 return formatTime(params.getValue('createTimestamp'));
             },
+            hide: true,
         },
     ];
     
     let rows = props.scriptAggregatedStatus;
 
+    const classes = useStyles();
+
     return <div style={{ minHeight: '400px', width: '100%' }}>
         <Paper>
-            <DataGrid rows={rows} columns={columns} autoHeight="true" autoPageSize="true" density="compact"></DataGrid>
+            <DataGrid
+                rows={rows}
+                columns={columns}
+                autoHeight="true"
+                autoPageSize="true"
+                density="compact"
+                className={classes.dataGridRoot}
+            ></DataGrid>
         </Paper>
     </div>
 }
