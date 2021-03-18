@@ -1,7 +1,5 @@
 FROM alpine:3.12.4
 
-ARG VERSION
-
 RUN apk update && \
     # install requirements
     apk add --no-cache --virtual .build-deps \
@@ -11,25 +9,23 @@ RUN apk update && \
         git \
         curl \
         go \
-        musl-dev && \
+        musl-dev \
+        nodejs \
+        yarn && \
     # update certs
     update-ca-certificates && \
-    # install yarn
-    npm install --global yarn \
     # get latest stable version
     LATEST_VERSION=$(curl https://api.github.com/repos/GoMetric/opcache-dashboard/releases/latest 2>/dev/null | grep tag_name | awk -F'"' '{print $4}') && \
-    VERSION=${VERSION:-$LATEST_VERSION} && \
     # download source
-    wget https://github.com/GoMetric/opcache-dashboard/archive/$VERSION.tar.gz && \
-    tar -zxvf ${VERSION}.tar.gz && \
-    cd opcache-dashboard-${VERSION} && \
+    wget https://github.com/GoMetric/opcache-dashboard/archive/$LATEST_VERSION.tar.gz && \
+    tar -zxvf ${LATEST_VERSION}.tar.gz && \
+    cd opcache-dashboard-${LATEST_VERSION} && \
     # make and install source
     make build && \
     make install && \
     # clear
     make clean && \
-    cd .. && rm -rf opcache-dashboard-${VERSION} && \
-    npm uninstall --global yarn \
+    cd .. && rm -rf opcache-dashboard-${LATEST_VERSION} && \
     apk del .build-deps
 
 # start service

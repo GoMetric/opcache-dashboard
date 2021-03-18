@@ -82,10 +82,13 @@ docker-login:
 		docker login
     endif
 
-# build docker images
+# build docker image from latest github tag
 docker-build:
-	docker build --tag gometric/opcache-dashboard:latest -f ./Dockerfile.alpine .
-	docker build --tag gometric/opcache-dashboard:$(VERSION) -f ./Dockerfile.alpine .
+	@echo "Building docker image version" $(VERSION)
+	docker build \
+		--tag gometric/opcache-dashboard:$(VERSION) \
+		--tag gometric/opcache-dashboard:latest \
+		-f ./Dockerfile.alpine .
 
 # publish docker images to hub
 docker-publish: docker-build
