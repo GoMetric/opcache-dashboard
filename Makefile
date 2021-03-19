@@ -72,7 +72,7 @@ clean:
 	rm -rf $(CURDIR)/ui/assets.go
 	rm -rf $(CURDIR)/ui/assets/node_modules/*
 	rm -rf $(CURDIR)/ui/assets/dist/*
-	go clean -i -r -cache -modcache
+	go clean -i -cache
 
 # Install binary locally
 install:
