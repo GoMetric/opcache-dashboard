@@ -51,7 +51,7 @@ type Memory struct {
 	Free                    int     // status.memory_usage.free_memory
 	Wasted                  int     // status.memory_usage.wasted_memory
 	MaxWastedPercentage     float64 // configuration.directives.opcache.max_wasted_percentage
-	CurrentWasterPercentage float64 // status.memory_usage.current_wasted_percentage
+	CurrentWastedPercentage float64 // status.memory_usage.current_wasted_percentage
 }
 
 type InternedStingsMemory struct {

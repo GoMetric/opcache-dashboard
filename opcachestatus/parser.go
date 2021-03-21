@@ -34,7 +34,7 @@ type agentMessage struct {
 			Used                    int     `json:"used_memory"`
 			Free                    int     `json:"free_memory"`
 			Wasted                  int     `json:"wasted_memory"`
-			CurrentWasterPercentage float64 `json:"current_wasted_percentage"`
+			CurrentWastedPercentage float64 `json:"current_wasted_percentage"`
 		} `json:"memory_usage"`
 		InternedStringsUsage struct {
 			BufferSize   int `json:"buffer_size"`
@@ -86,7 +86,7 @@ func (parser AgentMessageParser) Parse(body []byte) (*NodeOpcacheStatus, error) 
 			Free:                    agentMessage.Status.MemoryUsage.Free,
 			Wasted:                  agentMessage.Status.MemoryUsage.Wasted,
 			MaxWastedPercentage:     agentMessage.Configuration.Directives["opcache.max_wasted_percentage"].(float64),
-			CurrentWasterPercentage: agentMessage.Status.MemoryUsage.CurrentWasterPercentage,
+			CurrentWastedPercentage: agentMessage.Status.MemoryUsage.CurrentWastedPercentage,
 		},
 		InternedStingsMemory: InternedStingsMemory{
 			Total:        int(agentMessage.Configuration.Directives["opcache.interned_strings_buffer"].(float64)) * 1024 * 1024,
