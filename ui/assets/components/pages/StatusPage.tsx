@@ -36,7 +36,7 @@ const buildAlertsData = function(clusterOpcacheStatuses) {
         for (let hostName in clusterOpcacheStatuses[groupName]) {
             alerts[groupName][hostName] = [];
 
-            if (!clusterOpcacheStatuses[groupName][hostName].CacheFull) {
+            if (clusterOpcacheStatuses[groupName][hostName].CacheFull) {
                 alerts[groupName][hostName].push({
                     'severity': 'error',
                     'message': 'Cache is full, increase "opcache.memory_consumption" or decrease "opcache.max_wasted_percentage".',
