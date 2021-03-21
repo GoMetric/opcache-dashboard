@@ -103,6 +103,34 @@ const buildTableData = function(clusterOpcacheStatuses) {
                         'value': clusterOpcacheStatuses[groupName][hostName].Keys.Free,
                     },
                 ],
+                keyHits: [
+                    {
+                        'label': 'Hits',
+                        'value': clusterOpcacheStatuses[groupName][hostName].KeyHits.Hits,
+                    },
+                    {
+                        'label': 'Misses',
+                        'value': clusterOpcacheStatuses[groupName][hostName].KeyHits.Misses,
+                    },
+                ],
+                restarts: [
+                    {
+                        'label': 'Out of memory count',
+                        'value': clusterOpcacheStatuses[groupName][hostName].Restarts.OutOfMemoryCount,
+                    },
+                    {
+                        'label': 'Hash count',
+                        'value': clusterOpcacheStatuses[groupName][hostName].Restarts.HashCount,
+                    },
+                    {
+                        'label': 'Manual count',
+                        'value': clusterOpcacheStatuses[groupName][hostName].Restarts.ManualCount,
+                    },
+                    {
+                        'label': 'Last restart time',
+                        'value': clusterOpcacheStatuses[groupName][hostName].Restarts.LastRestartTime,
+                    },
+                ],
             };
         }
     }
@@ -323,7 +351,7 @@ function StatusPageComponent(props: Object) {
                 <div key={hostName + "hostGrid"}>
                     <h2>{hostName}</h2>
                     <Grid container spacing={1}>
-                        <Grid item xs={12} sm={6} md={4} lg={3} key={hostName + "memory"}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "memory"}>
                             <Paper className={classes.paper}>
                                 <h2>Memory</h2>
                                 <Doughnut 
@@ -333,7 +361,7 @@ function StatusPageComponent(props: Object) {
                                 <StatusTable rows={props.tables[groupName][hostName].memory}></StatusTable>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={3} key={hostName + "internedStrings"}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "internedStrings"}>
                             <Paper className={classes.paper}>
                                 <h2>Interned strings</h2>
                                 <Doughnut 
@@ -343,7 +371,7 @@ function StatusPageComponent(props: Object) {
                                 <StatusTable rows={props.tables[groupName][hostName].internedStrings}></StatusTable>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={3} key={hostName + "keys"}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "keys"}>
                             <Paper className={classes.paper}>
                                 <h2>Keys</h2>
                                 <Doughnut 
@@ -352,20 +380,22 @@ function StatusPageComponent(props: Object) {
                                 <StatusTable rows={props.tables[groupName][hostName].keys}></StatusTable>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={3} key={hostName + "hits"}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "hits"}>
                             <Paper className={classes.paper}>
                                 <h2>Key Hits</h2>
                                 <Doughnut 
                                     data={props.charts[groupName][hostName].keyHits.chartData} 
                                 />
+                                <StatusTable rows={props.tables[groupName][hostName].keyHits}></StatusTable>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={4} lg={3} key={hostName + "restarts"}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "restarts"}>
                             <Paper className={classes.paper}>
                                 <h2>Restarts</h2>
                                 <Doughnut 
                                     data={props.charts[groupName][hostName].restarts.chartData} 
                                 />
+                                <StatusTable rows={props.tables[groupName][hostName].restarts}></StatusTable>
                             </Paper>
                         </Grid>
                     </Grid>
