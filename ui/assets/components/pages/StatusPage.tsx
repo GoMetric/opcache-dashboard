@@ -10,6 +10,7 @@ import prettyBytes from 'pretty-bytes';
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { connect } from 'react-redux';
+import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
 
 const mapStateToProps = (state: Object) => {
     return {
@@ -19,9 +20,33 @@ const mapStateToProps = (state: Object) => {
             : [],
         tables: state.selectedClusterName
             ? buildTableData(state.opcacheStatuses[state.selectedClusterName])
-            : []
+            : [],
+        alerts: state.selectedClusterName
+            ? buildAlertsData(state.opcacheStatuses[state.selectedClusterName])
+            : [],
     };
 };
+
+const buildAlertsData = function(clusterOpcacheStatuses) {
+    const alerts = {};
+
+    for (let groupName in clusterOpcacheStatuses) {
+        alerts[groupName] = {};
+
+        for (let hostName in clusterOpcacheStatuses[groupName]) {
+            alerts[groupName][hostName] = [];
+
+            if (!clusterOpcacheStatuses[groupName][hostName].CacheFull) {
+                alerts[groupName][hostName].push({
+                    'severity': 'error',
+                    'message': 'Cache is full, increase "opcache.memory_consumption" or decrease "opcache.max_wasted_percentage".',
+                })
+            }
+        }
+    }
+
+    return alerts;
+}
 
 const buildTableData = function(clusterOpcacheStatuses) {
     const tables = {};
@@ -61,13 +86,9 @@ const buildTableData = function(clusterOpcacheStatuses) {
                         ].join(' '),
                     },
                     {
-                        'label': 'Max Wasted Percentage',
-                        'value': clusterOpcacheStatuses[groupName][hostName].Memory.MaxWastedPercentage,
+                        'label': 'Wasted Percent',
+                        'value': clusterOpcacheStatuses[groupName][hostName].Memory.CurrentWastedPercentage + ' of ' + clusterOpcacheStatuses[groupName][hostName].Memory.MaxWastedPercentage,
                     },
-                    {
-                        'label': 'Current Waster Percentage',
-                        'value': clusterOpcacheStatuses[groupName][hostName].Memory.CurrentWasterPercentage,
-                    }
                 ],
                 internedStrings: [
                     {
@@ -315,6 +336,10 @@ const useStyles = makeStyles((theme: Theme) =>
                 fontSize: '0.9em',
             },
         },
+        alert: {
+            width: '100%',
+            marginBottom: theme.spacing(2),
+        }
     }),
 );
 
@@ -350,6 +375,13 @@ function StatusPageComponent(props: Object) {
             hostGridCollection.push(
                 <div key={hostName + "hostGrid"}>
                     <h2>{hostName}</h2>
+
+                    {
+                        props.alerts[groupName][hostName].map((alert) => (
+                            <MuiAlert className={classes.alert} elevation={6} variant="filled" severity={alert.severity}>{alert.message}</MuiAlert>
+                        ))
+                    }
+
                     <Grid container spacing={1}>
                         <Grid item xs={12} sm={6} md={4} key={hostName + "memory"}>
                             <Paper className={classes.paper}>
