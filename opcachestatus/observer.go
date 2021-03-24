@@ -110,17 +110,32 @@ func (o *Observer) PullAgents() {
 func (o *Observer) trackNodeMetrics(
 	clusterName string,
 	groupName string,
-	host string,
+	hostName string,
 	observableNodeOpcacheStatus NodeOpcacheStatus,
 ) {
 	if o.metricTracker != nil {
-		var hostName = strings.ReplaceAll(host, ".", "-")
+		var clusterName = strings.ReplaceAll(clusterName, ".", "-")
+		var groupName = strings.ReplaceAll(groupName, ".", "-")
+		var hostName = strings.ReplaceAll(hostName, ".", "-")
 		var metricPrefix = clusterName + "." + groupName + "." + hostName + "."
 
-		o.metricTracker.Gauge(
-			metricPrefix+"scripts.count",
-			len(observableNodeOpcacheStatus.Scripts),
-		)
+		metricKeyValueMap := map[string]int{
+			"scripts.count":    len(observableNodeOpcacheStatus.Scripts),
+			"memory.free":      observableNodeOpcacheStatus.Memory.Free,
+			"memory.used":      observableNodeOpcacheStatus.Memory.Used,
+			"memory.wasted":    observableNodeOpcacheStatus.Memory.Wasted,
+			"keys.free":        observableNodeOpcacheStatus.Keys.Free,
+			"keys.usedKeys":    observableNodeOpcacheStatus.Keys.UsedKeys,
+			"keys.usedScripts": observableNodeOpcacheStatus.Keys.UsedScripts,
+			"keyHits.misses":   observableNodeOpcacheStatus.KeyHits.Misses,
+		}
+
+		for metricKey, metricValue := range metricKeyValueMap {
+			o.metricTracker.Gauge(
+				metricPrefix+metricKey,
+				metricValue,
+			)
+		}
 	}
 }
 

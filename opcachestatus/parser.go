@@ -23,8 +23,8 @@ type agentMessage struct {
 			TotalPrime               int   `json:"max_cached_keys"`
 			UsedKeys                 int   `json:"num_cached_keys"`
 			UsedScripts              int   `json:"num_cached_scripts"`
-			Hits                     int64 `json:"hits"`
-			Misses                   int64 `json:"misses"`
+			Hits                     int   `json:"hits"`
+			Misses                   int   `json:"misses"`
 			OutOfMemoryRestartsCount int   `json:"oom_restarts"`
 			HashRestartsCount        int   `json:"hash_restarts"`
 			ManualRestartsCount      int   `json:"manual_restarts"`
