@@ -1,5 +1,5 @@
 import { Box, createStyles, makeStyles, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import HostGroupSelect from '/components/HostGroupSelect';
 import Grid from '@material-ui/core/Grid';
@@ -38,6 +38,11 @@ const useStyles = makeStyles((theme: Theme) =>
             textAlign: 'center',
             color: theme.palette.text.secondary,
         },
+        tableRoot: {
+            '& .MuiTableCell-body': {
+                fontSize: '0.8em',
+            },
+        },
     }),
 );
 
@@ -53,9 +58,9 @@ function HostConfigurationTableComponent(props: Object) {
         let tableRows = [];
         for (let configParam in groupHostsConfigurations[host]) {
             tableRows.push(
-                <TableRow key={configParam}>
+                <TableRow key={host+configParam}>
                     <TableCell>{configParam}</TableCell>
-                    <TableCell>{groupHostsConfigurations[host][configParam]}</TableCell>
+                    <TableCell>{"" + groupHostsConfigurations[host][configParam]}</TableCell>
                 </TableRow>
             )
         }
@@ -72,10 +77,10 @@ function HostConfigurationTableComponent(props: Object) {
         } else {
             //@todo Add parameter description from https://www.php.net/manual/en/opcache.configuration.php
             hostConfigurationTable.push(
-                <Grid item xs={6} key={host}>
+                <Grid item xs={12} sm={6} md={6} key={host}>
                     <Paper className={classes.paper}>
                         <h2>{host}</h2>
-                        <Table size="small">
+                        <Table size="small" className={classes.tableRoot}>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Parameter</TableCell>
@@ -91,7 +96,7 @@ function HostConfigurationTableComponent(props: Object) {
 
         return (
             <div className={classes.root}>
-                <Grid container spacing={6}>{hostConfigurationTable}</Grid>
+                <Grid container spacing={1}>{hostConfigurationTable}</Grid>
             </div>
         );
     }
@@ -99,21 +104,19 @@ function HostConfigurationTableComponent(props: Object) {
 
 function ConfigurationPageComponent(props: Object) {
     let groupNames = Object.keys(props.clusterGroupsHostsConfigurations);
-
     if (groupNames.length === 0) {
         return (<div>Loading</div>);
     }
 
-    let [selectedGroupName, setSelectedGroupName] = React.useState(
-        groupNames[0]
-    )
+    let [selectedGroupName, setSelectedGroupName] = React.useState(groupNames[0])
 
     const onGroupChangedShowConfiguration = (groupName: string) => {
         setSelectedGroupName(groupName)
     };
 
-    return (
-        <div>
+    const hostGroupSelect = (groupNames.length === 0)
+        ? null
+        : (
             <Box margin={2}>
                 <HostGroupSelect
                     onChange={onGroupChangedShowConfiguration}
@@ -121,6 +124,11 @@ function ConfigurationPageComponent(props: Object) {
                     selectedGroupName={selectedGroupName}
                 />
             </Box>
+        );
+
+    return (
+        <div>
+            {hostGroupSelect}
 
             <HostConfigurationTableComponent
                 selectedGroupName={selectedGroupName}

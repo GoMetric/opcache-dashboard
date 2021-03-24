@@ -18,7 +18,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ListIcon from '@material-ui/icons/List';
-import MaintenancePage from '/components/pages/MaintenancePage'
 import ScriptsPage from '/components/pages/ScriptsPage'
 import StatusPage from '/components/pages/StatusPage'
 import NotFoundPage from '/components/pages/NotFoundPage'
@@ -109,9 +108,6 @@ const useStyles = makeStyles((theme) => ({
         overflow: 'auto',
         flexDirection: 'column',
     },
-    fixedHeight: {
-        height: 240,
-    },
 }));
 
 
@@ -131,8 +127,6 @@ export default function Layout() {
         localStorage.setItem(layoutDrawerOpenStateLocalstorageKey, "false");
         setOpenDrawer(false);
     };
-
-    const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
     return (
         <Router>
@@ -182,14 +176,6 @@ export default function Layout() {
                                 </ListItemIcon>
                                 <ListItemText primary="Configuration" />
                             </ListItem>
-                            {/*
-                            <ListItem button component={Link} to="/maintenance">
-                                <ListItemIcon>
-                                    <BuildIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Maintenance" />
-                            </ListItem>
-                            */}
                             <ListItem button component={Link} to="/scripts">
                                 <ListItemIcon>
                                     <ListIcon />
@@ -211,9 +197,6 @@ export default function Layout() {
                             </Route>
                             <Route exact path="/configuration">
                                 <ConfigurationPage />
-                            </Route>
-                            <Route exact path="/maintenance">
-                                <MaintenancePage />
                             </Route>
                             <Route exact path="/scripts">
                                 <ScriptsPage />
