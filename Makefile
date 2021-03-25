@@ -15,7 +15,7 @@ BINARY_NAME=opcache-dashboard
 LDFLAGS=-ldflags "-X main.Version=$(VERSION) -X main.BuildNumber=$(BUILD_NUMBER) -X main.BuildDate=$(BUILD_DATE)"
 
 # Default task
-default: build
+default: build-prod
 
 # Install dependencies
 deps:
@@ -39,13 +39,17 @@ assets-embed-prod: assets-build-prod
 	$(GOPATH)/bin/go-bindata -fs -o ui/assets.go -pkg ui -prefix "ui/assets/dist" ui/assets/dist/...
 
 # Do not embed the assets, but provide the embedding API. Contents will still be loaded from disk
-assets-embed-debug: assets-build-debug 
+assets-embed-debug-proxy: assets-build-debug 
 	$(GOPATH)/bin/go-bindata -fs -o ui/assets.go -pkg ui -prefix "ui/assets/dist" -debug ui/assets/dist/...
+
+# Embed development assets to binary
+assets-embed-debug-link: assets-build-debug 
+	$(GOPATH)/bin/go-bindata -fs -o ui/assets.go -pkg ui -prefix "ui/assets/dist" ui/assets/dist/...
 
 # Run debug server with current Go code and rebuilded ui assets loaded from disc instead of embedding
 # May be used for frash build of server and assets, or for just frontend development when
 # restarting go server not required (in this case user "assets-watch")
-start-fresh-debug-server: deps assets-embed-debug start-debug-server
+start-fresh-debug-server: deps assets-embed-debug-proxy start-debug-server
 
 # Run debug server with current Go code and current ui assets loaded from disc instead of embedding
 # May be used together with "assets-watch" when restartiong of go server required
@@ -61,7 +65,13 @@ run-profiler-web:
 	go tool pprof -http=localhost:6061 http://localhost:6060/debug/pprof/profile
 
 # Build server for production
-build: deps assets-embed-prod
+build-prod: deps assets-embed-prod
+	CGO_ENABLED=0 go build -v -x -a $(LDFLAGS) -o $(CURDIR)/bin/$(BINARY_NAME)
+	chmod +x $(CURDIR)/bin/$(BINARY_NAME)
+	$(CURDIR)/bin/$(BINARY_NAME) -version
+
+# Build server for development
+build-dev: deps assets-embed-debug-link
 	CGO_ENABLED=0 go build -v -x -a $(LDFLAGS) -o $(CURDIR)/bin/$(BINARY_NAME)
 	chmod +x $(CURDIR)/bin/$(BINARY_NAME)
 	$(CURDIR)/bin/$(BINARY_NAME) -version

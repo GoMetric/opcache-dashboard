@@ -108,7 +108,11 @@ function ConfigurationPageComponent(props: Object) {
         return (<div>Loading</div>);
     }
 
-    let [selectedGroupName, setSelectedGroupName] = React.useState(groupNames[0])
+    let [selectedGroupName, setSelectedGroupName] = React.useState(groupNames[0]);
+
+    useEffect(() => {
+        setSelectedGroupName(groupNames[0]);
+      }, [groupNames]);
 
     const onGroupChangedShowConfiguration = (groupName: string) => {
         setSelectedGroupName(groupName)
