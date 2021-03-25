@@ -4,7 +4,7 @@ clusters:
 
   myproject1:
     groups:
-      web:
+      common:
         agent: "pull"
         path: "/"
         secure: false
