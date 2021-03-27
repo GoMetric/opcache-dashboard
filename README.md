@@ -25,19 +25,60 @@ Also available [Docker image](https://hub.docker.com/r/gometric/opcache-dashboar
 [![docker](https://img.shields.io/docker/pulls/gometric/opcache-dashboard.svg?style=flat)](https://hub.docker.com/r/gometric/opcache-dashboard/)
 
 ```
-docker run -p 42042:42042 -v "$(pwd)"/config.yaml:/config.yaml:ro gometric/opcache-dashboard:latest --config="/config.yaml"
+docker run \
+  -p 42042:42042 \
+  -v "$(pwd)/"/config.yaml:/config.yaml:ro \
+  gometric/opcache-dashboard:latest \
+  --config="/config.yaml"
 ```
 
 # Configuration
 
 ## YAML
 
+Example of configuration:
+
+```yaml
+pullInterval: 5
+
+clusters:
+
+  myproject1:
+    groups:
+      web:
+        agent: "pull"
+        path: "/"
+        secure: false
+        port: 9999
+        hosts: 
+          - "127.0.0.1"
+
+  myproject2:
+    groups:
+      web:
+        agent: "pull"
+        path: "/"
+        secure: false
+        port: 9999
+        hosts: 
+          - "127.0.0.1"
+      cron:
+        agent: "push"
+        hosts: 
+          - "127.0.0.1"
+```
+
 # Usage
 
-Starging server:
+Starting server:
 
 ```
-opcache-dashboard --verbose --http-host="127.0.0.1" --http-port="42042" --pull-interval=5 --config="config.yaml"
+opcache-dashboard \
+  --verbose \
+  --http-host="127.0.0.1" \
+  --http-port="42042" \
+  --pull-interval=5 \
+  --config="config.yaml"
 ```
 
 Server periodically observes all of configured hosts. 
