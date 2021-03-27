@@ -1,17 +1,23 @@
 import { Box, createStyles, makeStyles, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import HostGroupSelect from '/components/HostGroupSelect';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
 const mapStateToProps = (state: Object) => {
-    return {
-        selectedClusterName: state.selectedClusterName,
-        clusterGroupsHostsConfigurations: state.selectedClusterName
-            ? buildHostConfigurations(state.opcacheStatuses[state.selectedClusterName])
-            : {}
+    const hostConfigurations = state.selectedClusterName
+        ? buildHostConfigurations(state.opcacheStatuses[state.selectedClusterName])
+        : {};
+
+    const groupNames = Object.keys(hostConfigurations);
+
+    const props = {
+        clusterGroupsHostsConfigurations: hostConfigurations,
+        groupNames: groupNames,
+        selectedClusterName: state.selectedClusterName,    
     };
+
+    return props;
 };
 
 const buildHostConfigurations = (groupsStatuses: Object) => {
@@ -49,18 +55,16 @@ const useStyles = makeStyles((theme: Theme) =>
 function HostConfigurationTableComponent(props: Object) {
     let hostConfigurationTable = [];
 
-    let groupHostsConfigurations = props.clusterGroupsHostsConfigurations[props.selectedGroupName];
-
     const classes = useStyles();
 
-    for (let host in groupHostsConfigurations) {
+    for (let host in props.groupHostsConfigurations) {
         // build table rows
         let tableRows = [];
-        for (let configParam in groupHostsConfigurations[host]) {
+        for (let configParam in props.groupHostsConfigurations[host]) {
             tableRows.push(
                 <TableRow key={host+configParam}>
                     <TableCell>{configParam}</TableCell>
-                    <TableCell>{"" + groupHostsConfigurations[host][configParam]}</TableCell>
+                    <TableCell>{"" + props.groupHostsConfigurations[host][configParam]}</TableCell>
                 </TableRow>
             )
         }
@@ -102,44 +106,32 @@ function HostConfigurationTableComponent(props: Object) {
     }
 }
 
-function ConfigurationPageComponent(props: Object) {
-    let groupNames = Object.keys(props.clusterGroupsHostsConfigurations);
-    if (groupNames.length === 0) {
-        return (<div>Loading</div>);
-    }
+class ConfigurationPageComponent extends React.Component 
+{
+    render() {
+        if (this.props.groupNames.length === 0) {
+            return (<div>Loading</div>);
+        }
 
-    let [selectedGroupName, setSelectedGroupName] = React.useState(groupNames[0]);
 
-    useEffect(() => {
-        setSelectedGroupName(groupNames[0]);
-      }, [groupNames]);
+        let groups = [];
 
-    const onGroupChangedShowConfiguration = (groupName: string) => {
-        setSelectedGroupName(groupName)
-    };
+        for (let groupName in this.props.clusterGroupsHostsConfigurations) {
+            groups.push(
+                <div>
+                    <h1>{groupName}</h1>
 
-    const hostGroupSelect = (groupNames.length === 0)
-        ? null
-        : (
-            <Box margin={2}>
-                <HostGroupSelect
-                    onChange={onGroupChangedShowConfiguration}
-                    groupNames={groupNames}
-                    selectedGroupName={selectedGroupName}
-                />
-            </Box>
+                    <HostConfigurationTableComponent
+                        groupHostsConfigurations={this.props.clusterGroupsHostsConfigurations[groupName]}
+                    />
+                </div>
+            );
+        }
+    
+        return (
+            <div>{groups}</div>
         );
-
-    return (
-        <div>
-            {hostGroupSelect}
-
-            <HostConfigurationTableComponent
-                selectedGroupName={selectedGroupName}
-                clusterGroupsHostsConfigurations={props.clusterGroupsHostsConfigurations}
-            />
-        </div>
-    );
+    }
 }
 
 const ConfigurationPage = connect(mapStateToProps)(ConfigurationPageComponent);

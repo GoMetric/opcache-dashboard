@@ -353,7 +353,7 @@ function StatusTable(props: Object)
             <Table size="small" className={classes.statusTableRoot}>
                 <TableBody>
                     {props.rows.map((row) => (
-                        <TableRow>
+                        <TableRow key={row.label}>
                             <TableCell>{row.label}</TableCell>
                             <TableCell>{row.value}</TableCell>
                         </TableRow>
