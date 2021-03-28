@@ -198,8 +198,7 @@ func main() {
 	)
 
 	// frontend routes handler
-	router.HandleFunc(
-		"/",
+	router.PathPrefix("/").HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			var indexBody, _ = ui.Asset("index.html")
 			w.Write(indexBody)
