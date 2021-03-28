@@ -1,4 +1,4 @@
-import { createStyles, makeStyles } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -10,7 +10,7 @@ import prettyBytes from 'pretty-bytes';
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { connect } from 'react-redux';
-import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import {OpcacheStatusAlerts, buildAlertsDataFromOpcacheStatus} from '/components/OpcacheStatusAlerts';
 
 const mapStateToProps = (state: Object) => {
     return {
@@ -34,14 +34,7 @@ const buildAlertsData = function(clusterOpcacheStatuses) {
         alerts[groupName] = {};
 
         for (let hostName in clusterOpcacheStatuses[groupName]) {
-            alerts[groupName][hostName] = [];
-
-            if (clusterOpcacheStatuses[groupName][hostName].CacheFull) {
-                alerts[groupName][hostName].push({
-                    'severity': 'error',
-                    'message': 'Cache is full, increase "opcache.memory_consumption" or decrease "opcache.max_wasted_percentage".',
-                })
-            }
+            alerts[groupName][hostName] = buildAlertsDataFromOpcacheStatus(clusterOpcacheStatuses[groupName][hostName]);
         }
     }
 
@@ -337,10 +330,6 @@ const useStyles = makeStyles((theme: Theme) =>
                 fontSize: '0.9em',
             },
         },
-        alert: {
-            width: '100%',
-            marginBottom: theme.spacing(2),
-        }
     }),
 );
 
@@ -377,7 +366,7 @@ function StatusPageComponent(props: Object) {
                 <div key={hostName + "hostGrid"}>
                     <h2>{hostName}</h2>
 
-                    <AlertsPanel alerts={props.alerts}></AlertsPanel>
+                    <OpcacheStatusAlerts alerts={props.alerts[groupName][hostName]}></OpcacheStatusAlerts>
 
                     <Grid container spacing={1}>
                         <Grid item xs={12} sm={6} md={4} key={hostName + "memory"}>
