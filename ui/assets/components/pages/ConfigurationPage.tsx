@@ -1,8 +1,15 @@
-import { Box, createStyles, makeStyles, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import { Button, createStyles, makeStyles, Zoom } from '@material-ui/core';
+import React from 'react';
 import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import Tooltip from '@material-ui/core/Tooltip';
+import TableRow from '@material-ui/core/TableRow';
+import TableHead from '@material-ui/core/TableHead';
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
+import Table from '@material-ui/core/Table';
+import { opcacheConfigDescriptionMap } from '/dataProviders/OpcacheConfigDescription';
 
 const mapStateToProps = (state: Object) => {
     const hostConfigurations = state.selectedClusterName
@@ -62,8 +69,18 @@ function HostConfigurationTableComponent(props: Object) {
         let tableRows = [];
         for (let configParam in props.groupHostsConfigurations[host]) {
             tableRows.push(
-                <TableRow key={host+configParam}>
-                    <TableCell>{configParam}</TableCell>
+                <TableRow key={host+configParam} hover={true}>
+                    <TableCell>
+                        <Tooltip 
+                            title={opcacheConfigDescriptionMap[configParam] || ''} 
+                            interactive 
+                            arrow
+                            TransitionComponent={Zoom}
+                            placement="right-end"
+                        >
+                            <span>{configParam}</span>
+                        </Tooltip>
+                    </TableCell>
                     <TableCell>{"" + props.groupHostsConfigurations[host][configParam]}</TableCell>
                 </TableRow>
             )
@@ -118,7 +135,7 @@ class ConfigurationPageComponent extends React.Component
 
         for (let groupName in this.props.clusterGroupsHostsConfigurations) {
             groups.push(
-                <div>
+                <div key={groupName}>
                     <h1>{groupName}</h1>
 
                     <HostConfigurationTableComponent

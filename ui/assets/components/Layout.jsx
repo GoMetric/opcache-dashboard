@@ -23,7 +23,7 @@ import StatusPage from '/components/pages/StatusPage'
 import NotFoundPage from '/components/pages/NotFoundPage'
 import ClusterSelect from '/components/ClusterSelect';
 import RefreshButton from '/components/RefreshButton';
-import ConfigurationPage from './pages/Configuration';
+import ConfigurationPage from './pages/ConfigurationPage';
 import {
     BrowserRouter as Router,
     Switch,
