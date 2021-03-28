@@ -157,6 +157,13 @@ func main() {
 		},
 	)
 
+	mux.HandleFunc(
+		"/api/nodes/{clusterName}/{groupName}/{hostName}/resetOpcache",
+		func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("OK"))
+		},
+	)
+
 	// heartbeat
 	mux.HandleFunc(
 		"/api/heartbeat",

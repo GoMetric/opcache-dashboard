@@ -1,4 +1,4 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { Button, createStyles, makeStyles, Theme } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -12,6 +12,8 @@ import { Doughnut } from 'react-chartjs-2';
 import { connect } from 'react-redux';
 import {DateTime} from 'luxon';
 import {OpcacheStatusAlerts, buildAlertsDataFromOpcacheStatus} from '/components/OpcacheStatusAlerts';
+import DeleteIcon from '@material-ui/icons/Delete';
+import resetNodeOpcache from '/actionCreators/resetNodeOpcache';
 
 const mapStateToProps = (state: Object) => {
     return {
@@ -26,6 +28,14 @@ const mapStateToProps = (state: Object) => {
             ? buildAlertsData(state.opcacheStatuses[state.selectedClusterName])
             : [],
     };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        resetNodeOpcache: (clusterName: string, groupName: string, host: string) => {
+            dispatch(resetNodeOpcache(clusterName, groupName, host));
+        }
+    }
 };
 
 const buildAlertsData = function(clusterOpcacheStatuses) {
@@ -340,6 +350,9 @@ const useStyles = makeStyles((theme: Theme) =>
                 fontSize: '0.9em',
             },
         },
+        nodeButton: {
+            marginBottom: theme.spacing(1)
+        },
     }),
 );
 
@@ -368,6 +381,14 @@ function StatusPageComponent(props: Object) {
 
     let groupGridCollection = [];
 
+    const onResetNodeOpcacheClick = function(e) {
+        props.resetNodeOpcache(
+            props.selectedClusterName,
+            e.currentTarget.getAttribute('data-groupname'),
+            e.currentTarget.getAttribute('data-host')
+        );
+    };
+
     for (let groupName in props.charts) {
         const hostGridCollection = [];
 
@@ -375,6 +396,18 @@ function StatusPageComponent(props: Object) {
             hostGridCollection.push(
                 <div key={hostName + "hostGrid"}>
                     <h2>{hostName}</h2>
+
+                    <Button 
+                        className={classes.nodeButton} 
+                        variant="contained" 
+                        color="secondary"
+                        startIcon={<DeleteIcon />}
+                        onClick={onResetNodeOpcacheClick}
+                        data-groupname={groupName}
+                        data-host={hostName}
+                    >
+                        Reset
+                    </Button>
 
                     <OpcacheStatusAlerts alerts={props.alerts[groupName][hostName]}></OpcacheStatusAlerts>
 
@@ -442,6 +475,6 @@ function StatusPageComponent(props: Object) {
     return <div>{groupGridCollection}</div>;
 }
 
-const StatusPage = connect(mapStateToProps)(StatusPageComponent);
+const StatusPage = connect(mapStateToProps, mapDispatchToProps)(StatusPageComponent);
 
 export default StatusPage;
