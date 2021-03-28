@@ -377,11 +377,7 @@ function StatusPageComponent(props: Object) {
                 <div key={hostName + "hostGrid"}>
                     <h2>{hostName}</h2>
 
-                    {
-                        props.alerts[groupName][hostName].map((alert) => (
-                            <MuiAlert className={classes.alert} elevation={6} variant="filled" severity={alert.severity}>{alert.message}</MuiAlert>
-                        ))
-                    }
+                    <AlertsPanel alerts={props.alerts}></AlertsPanel>
 
                     <Grid container spacing={1}>
                         <Grid item xs={12} sm={6} md={4} key={hostName + "memory"}>
