@@ -22,7 +22,7 @@ import ScriptsPage from '/components/pages/ScriptsPage'
 import StatusPage from '/components/pages/StatusPage'
 import NotFoundPage from '/components/pages/NotFoundPage'
 import ClusterSelect from '/components/ClusterSelect';
-import RefreshButton from '/components/RefreshButton';
+import OpcacheStatusRefreshButton from '/components/OpcacheStatusRefreshButton';
 import ConfigurationPage from './pages/ConfigurationPage';
 import {
     BrowserRouter as Router,
@@ -145,7 +145,7 @@ export default function Layout() {
                         <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                             Dashboard
                         </Typography>
-                        <RefreshButton />
+                        <OpcacheStatusRefreshButton />
                         <ClusterSelect />
                     </Toolbar>
                 </AppBar>
