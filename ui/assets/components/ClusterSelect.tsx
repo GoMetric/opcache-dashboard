@@ -23,7 +23,7 @@ const mapDispatchToProps = dispatch => {
 };
 
 function ClusterSelectComponent(props) {
-    if (props.clusterNames.length === 0) {
+    if (props.clusterNames.length < 2) {
         return <div></div>
     }
 
