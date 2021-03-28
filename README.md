@@ -27,7 +27,7 @@ Also available [Docker image](https://hub.docker.com/r/gometric/opcache-dashboar
 ```
 docker run \
   -p 42042:42042 \
-  -v "$(pwd)/"/config.yaml:/config.yaml:ro \
+  -v "$(pwd)"/config.yaml:/config.yaml:ro \
   gometric/opcache-dashboard:latest \
   --config="/config.yaml"
 ```
