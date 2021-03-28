@@ -1,4 +1,4 @@
-import { Button, createStyles, makeStyles, Zoom } from '@material-ui/core';
+import { createStyles, makeStyles, Zoom } from '@material-ui/core';
 import React from 'react';
 import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
@@ -10,6 +10,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import Table from '@material-ui/core/Table';
 import { opcacheConfigDescriptionMap } from '/dataProviders/OpcacheConfigDescription';
+import OptimizationPopover from '/components/OptimizationPopover';
 
 const mapStateToProps = (state: Object) => {
     const hostConfigurations = state.selectedClusterName
@@ -68,6 +69,14 @@ function HostConfigurationTableComponent(props: Object) {
         // build table rows
         let tableRows = [];
         for (let configParam in props.groupHostsConfigurations[host]) {
+            let configValueCell;
+
+            if (configParam === "opcache.optimization_level") {
+                configValueCell = <OptimizationPopover level={props.groupHostsConfigurations[host][configParam]}></OptimizationPopover>
+            } else {
+                configValueCell = '' + props.groupHostsConfigurations[host][configParam];
+            }
+
             tableRows.push(
                 <TableRow key={host+configParam} hover={true}>
                     <TableCell>
@@ -81,7 +90,7 @@ function HostConfigurationTableComponent(props: Object) {
                             <span>{configParam}</span>
                         </Tooltip>
                     </TableCell>
-                    <TableCell>{"" + props.groupHostsConfigurations[host][configParam]}</TableCell>
+                    <TableCell>{configValueCell}</TableCell>
                 </TableRow>
             )
         }
