@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -9,7 +10,9 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"path/filepath"
+	"syscall"
 	"time"
 
 	"github.com/GoMetric/opcache-dashboard/configuration"
@@ -181,8 +184,7 @@ func main() {
 	)
 
 	// user interface assets
-	router.Handle(
-		"/assets/",
+	router.PathPrefix("/assets/").Handler(
 		http.StripPrefix("/assets/", http.FileServer(ui.AssetFile())),
 	)
 
@@ -197,6 +199,7 @@ func main() {
 
 	// HTTP server
 	var httpAddress = fmt.Sprintf("%s:%d", *httpHost, *httpPort)
+
 	httpServer := &http.Server{
 		Addr:           httpAddress,
 		Handler:        router,
@@ -206,5 +209,28 @@ func main() {
 	}
 
 	log.Printf("Starting HTTP server at %s", httpAddress)
-	log.Fatal(httpServer.ListenAndServe())
+
+	// start listening server
+	go func() {
+		log.Fatal(httpServer.ListenAndServe())
+	}()
+
+	// gracefull shutdown
+	gracefullStopSignalHandler := make(chan os.Signal, 1)
+	signal.Notify(gracefullStopSignalHandler, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	// Block until we receive our signal.
+	<-gracefullStopSignalHandler
+	log.Printf("Stopping server")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer func() {
+		cancel()
+	}()
+
+	httpServer.Shutdown(ctx)
+
+	log.Printf("Server stopped successfully")
+
+	os.Exit(0)
 }
