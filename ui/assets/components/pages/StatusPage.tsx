@@ -10,6 +10,7 @@ import prettyBytes from 'pretty-bytes';
 import React from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { connect } from 'react-redux';
+import {DateTime} from 'luxon';
 import {OpcacheStatusAlerts, buildAlertsDataFromOpcacheStatus} from '/components/OpcacheStatusAlerts';
 
 const mapStateToProps = (state: Object) => {
@@ -43,6 +44,15 @@ const buildAlertsData = function(clusterOpcacheStatuses) {
 
 const buildTableData = function(clusterOpcacheStatuses) {
     const tables = {};
+
+    const formatTime = function(timestamp: bigint): string {
+        if (timestamp === 0) {
+            return '';
+        }
+
+        let datetime = DateTime.fromSeconds(timestamp);
+        return datetime.toFormat('yyyy-LL-dd hh:mm:ss');
+    };
 
     for (let groupName in clusterOpcacheStatuses) {
         tables[groupName] = {};
@@ -142,7 +152,7 @@ const buildTableData = function(clusterOpcacheStatuses) {
                     },
                     {
                         'label': 'Last restart time',
-                        'value': clusterOpcacheStatuses[groupName][hostName].Restarts.LastRestartTime,
+                        'value': formatTime(clusterOpcacheStatuses[groupName][hostName].Restarts.LastRestartTime),
                     },
                 ],
             };
