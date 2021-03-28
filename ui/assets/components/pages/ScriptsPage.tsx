@@ -73,12 +73,12 @@ function ScriptsPageComponent(props: Object) {
         return <div>No scripts found</div>
     }
 
-    let formatTime = function(timestamp: bigint): string {
+    const formatTime = function(timestamp: bigint): string {
         let datetime = DateTime.fromSeconds(timestamp);
         return datetime.toFormat('yyyy-LL-dd hh:mm:ss');
     };
 
-    let columns = [
+    const columns = [
         {
             field: 'script',
             headerName: 'Script',

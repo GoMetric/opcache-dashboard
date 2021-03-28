@@ -1,25 +1,19 @@
 import React from 'react';
 import { Button } from '@material-ui/core';
 import { connect } from 'react-redux';
-import fetchOpcacheStatuses from '/actionCreators/fetchOpcacheStatuses';
+import refreshOpcacheStatuses from '/actionCreators/refreshOpcacheStatuses';
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetchOpcacheStatuses: () => {
-            dispatch(fetchOpcacheStatuses());
+        refreshOpcacheStatuses: () => {
+            dispatch(refreshOpcacheStatuses());
         }
     }
 };
 
 function OpcacheStatusRefreshButtonComponent(props) {
     const handleButtonClick = function(e) {
-        // request for fetch new opcache status from nodes
-        fetch('/api/nodes/statistics/refresh');
-
-        // wait before status updated and refresh state
-        setTimeout(() => {
-            props.fetchOpcacheStatuses();
-        }, 5000);
+        props.refreshOpcacheStatuses();
     };
 
     return (
