@@ -179,7 +179,15 @@ func main() {
 	router.HandleFunc(
 		"/api/heartbeat",
 		func(w http.ResponseWriter, r *http.Request) {
-			w.Write([]byte("OK"))
+			heartbeat := map[string]interface{}{
+				"version":     Version,
+				"buildDate":   BuildDate,
+				"buildNumber": BuildNumber,
+			}
+
+			heartbeatJson, _ := json.Marshal(heartbeat)
+
+			w.Write(heartbeatJson)
 		},
 	)
 
