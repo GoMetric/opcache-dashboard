@@ -15,8 +15,8 @@ import (
 	"github.com/GoMetric/opcache-dashboard/configuration"
 	"github.com/GoMetric/opcache-dashboard/opcachestatus"
 	"github.com/GoMetric/opcache-dashboard/ui"
-
 	"github.com/NYTimes/gziphandler"
+	"github.com/gorilla/mux"
 
 	GoMetricStatsdClient "github.com/GoMetric/go-statsd-client"
 )
@@ -127,10 +127,10 @@ func main() {
 	o.StartPulling(pullIntervalNanoSeconds)
 
 	// Request handler
-	mux := http.NewServeMux()
+	router := mux.NewRouter()
 
 	// api
-	mux.Handle(
+	router.Handle(
 		"/api/nodes/statistics",
 		gziphandler.GzipHandler(
 			http.HandlerFunc(
@@ -149,7 +149,7 @@ func main() {
 		),
 	)
 
-	mux.HandleFunc(
+	router.HandleFunc(
 		"/api/nodes/statistics/refresh",
 		func(w http.ResponseWriter, r *http.Request) {
 			go o.PullAgents()
@@ -157,15 +157,23 @@ func main() {
 		},
 	)
 
-	mux.HandleFunc(
+	router.HandleFunc(
 		"/api/nodes/{clusterName}/{groupName}/{hostName}/resetOpcache",
 		func(w http.ResponseWriter, r *http.Request) {
+			vars := mux.Vars(r)
+
+			go o.ResetOpcache(
+				vars["clusterName"],
+				vars["groupName"],
+				vars["hostName"],
+			)
+
 			w.Write([]byte("OK"))
 		},
 	)
 
 	// heartbeat
-	mux.HandleFunc(
+	router.HandleFunc(
 		"/api/heartbeat",
 		func(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("OK"))
@@ -173,13 +181,13 @@ func main() {
 	)
 
 	// user interface assets
-	mux.Handle(
+	router.Handle(
 		"/assets/",
 		http.StripPrefix("/assets/", http.FileServer(ui.AssetFile())),
 	)
 
 	// frontend routes handler
-	mux.HandleFunc(
+	router.HandleFunc(
 		"/",
 		func(w http.ResponseWriter, r *http.Request) {
 			var indexBody, _ = ui.Asset("index.html")
@@ -191,7 +199,7 @@ func main() {
 	var httpAddress = fmt.Sprintf("%s:%d", *httpHost, *httpPort)
 	httpServer := &http.Server{
 		Addr:           httpAddress,
-		Handler:        mux,
+		Handler:        router,
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,

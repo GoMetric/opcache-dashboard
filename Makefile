@@ -54,7 +54,7 @@ start-fresh-debug-server: deps assets-embed-debug-proxy start-debug-server
 # Run debug server with current Go code and current ui assets loaded from disc instead of embedding
 # May be used together with "assets-watch" when restartiong of go server required
 start-debug-server:
-	go run ${CURDIR}/main.go --verbose --pull-interval=5 --config="${CURDIR}/example/config.yaml"
+	go run ${CURDIR}/main.go --verbose --pull-interval=30 --config="${CURDIR}/example/config.yaml"
 
 # Run PHP server for demo mode
 start-stub-php-server:

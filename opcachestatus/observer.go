@@ -70,6 +70,40 @@ func (o *Observer) GetStatuses() ClustersOpcacheStatuses {
 	return o.statuses
 }
 
+func (o *Observer) ResetOpcache(clusterName string, groupName string, hostName string) error {
+	groupConfig := o.Clusters[clusterName].Groups[groupName]
+
+	var schema string
+	if groupConfig.Secure {
+		schema += "https"
+	} else {
+		schema += "http"
+	}
+
+	pullAgentURL := fmt.Sprintf("%s://%s:%d%s?command=reset", schema, hostName, groupConfig.Port, groupConfig.Path)
+
+	log.Printf(fmt.Sprintf("Reseting node opcache %s", pullAgentURL))
+
+	response, error := http.Get(pullAgentURL)
+
+	if error != nil {
+		return error
+	}
+
+	if response.StatusCode != http.StatusOK {
+		return fmt.Errorf("Observable node return error %s", response.Status)
+	}
+
+	o.pullAgent(
+		groupConfig,
+		clusterName,
+		groupName,
+		hostName,
+	)
+
+	return nil
+}
+
 func (o *Observer) pullAgentsOnTick() {
 	for ; true; <-o.agentPullTicker.C {
 		o.PullAgents()
@@ -85,26 +119,40 @@ func (o *Observer) PullAgents() {
 			}
 
 			for _, host := range groupConfig.Hosts {
-				var observableNodeOpcacheStatus, err = o.fetchNodeOpcacheStatus(
+				o.pullAgent(
+					groupConfig,
+					clusterName,
+					groupName,
 					host,
-					groupConfig.Port,
-					groupConfig.Path,
-					groupConfig.Secure,
 				)
-
-				if err != nil {
-					log.Println(fmt.Sprintf("%v", err))
-					continue
-				}
-
-				// track metrics
-				o.trackNodeMetrics(clusterName, groupName, host, *observableNodeOpcacheStatus)
-
-				// add fetched node status to collection
-				o.statuses[clusterName][groupName][host] = *observableNodeOpcacheStatus
 			}
 		}
 	}
+}
+
+func (o *Observer) pullAgent(
+	groupConfig configuration.GroupConfig,
+	clusterName string,
+	groupName string,
+	host string,
+) {
+	var observableNodeOpcacheStatus, err = o.fetchNodeOpcacheStatus(
+		host,
+		groupConfig.Port,
+		groupConfig.Path,
+		groupConfig.Secure,
+	)
+
+	if err != nil {
+		log.Println(fmt.Sprintf("%v", err))
+		return
+	}
+
+	// track metrics
+	o.trackNodeMetrics(clusterName, groupName, host, *observableNodeOpcacheStatus)
+
+	// add fetched node status to collection
+	o.statuses[clusterName][groupName][host] = *observableNodeOpcacheStatus
 }
 
 func (o *Observer) trackNodeMetrics(
