@@ -175,14 +175,15 @@ func main() {
 		},
 	)
 
-	// heartbeat
+	// app status
 	router.HandleFunc(
-		"/api/heartbeat",
+		"/api/status",
 		func(w http.ResponseWriter, r *http.Request) {
 			heartbeat := map[string]interface{}{
-				"version":     Version,
-				"buildDate":   BuildDate,
-				"buildNumber": BuildNumber,
+				"version":          Version,
+				"buildDate":        BuildDate,
+				"buildNumber":      BuildNumber,
+				"lastStatusUpdate": o.LastStatusUpate,
 			}
 
 			heartbeatJson, _ := json.Marshal(heartbeat)

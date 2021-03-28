@@ -19,6 +19,7 @@ type Observer struct {
 	statuses        ClustersOpcacheStatuses
 	parser          AgentMessageParser
 	Clusters        map[string]configuration.ClusterConfig
+	LastStatusUpate time.Time
 }
 
 func NewObserver(clusters map[string]configuration.ClusterConfig) *Observer {
@@ -153,6 +154,9 @@ func (o *Observer) pullAgent(
 
 	// add fetched node status to collection
 	o.statuses[clusterName][groupName][host] = *observableNodeOpcacheStatus
+
+	// set last update time
+	o.LastStatusUpate = time.Now()
 }
 
 func (o *Observer) trackNodeMetrics(
