@@ -128,11 +128,11 @@ func main() {
 		var statsdClient = GoMetricStatsdClient.NewClient(*statsdHost, *statsdPort)
 		statsdClient.SetPrefix(*statsdMetricPrefix)
 
-		o.AddMetricSender(
-			statsd.StatsdMetricSender{
-				statsdClient: statsdClient,
-			},
-		)
+		var statsdMetricSender = &statsd.StatsdMetricSender{
+			StatsdClient: statsdClient,
+		}
+
+		o.AddMetricSender(statsdMetricSender)
 	}
 
 	o.StartPulling(pullIntervalNanoSeconds)

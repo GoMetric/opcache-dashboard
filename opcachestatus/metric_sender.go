@@ -1,6 +1,6 @@
 package opcachestatus
 
-type MetricSender interface {
+type MetricSenderInterface interface {
 	Send(
 		clusterName string,
 		groupName string,

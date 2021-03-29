@@ -12,7 +12,7 @@ import (
 
 // Observer periodically reads status of observable nodes and aggregates received data
 type Observer struct {
-	metricSenders   []MetricSender
+	metricSenders   []MetricSenderInterface
 	agentPullTicker *time.Ticker
 	statuses        ClustersOpcacheStatuses
 	parser          AgentMessageParser
@@ -29,7 +29,7 @@ func NewObserver(clusters map[string]configuration.ClusterConfig) *Observer {
 	return &observer
 }
 
-func (o *Observer) AddMetricSender(metricSender MetricSender) {
+func (o *Observer) AddMetricSender(metricSender MetricSenderInterface) {
 	o.metricSenders = append(o.metricSenders, metricSender)
 }
 

@@ -8,7 +8,7 @@ import (
 )
 
 type StatsdMetricSender struct {
-	statsdClient *statsd.Client
+	StatsdClient *statsd.Client
 }
 
 func (s *StatsdMetricSender) Send(
@@ -34,7 +34,7 @@ func (s *StatsdMetricSender) Send(
 	}
 
 	for metricKey, metricValue := range metricKeyValueMap {
-		s.statsdClient.Gauge(
+		s.StatsdClient.Gauge(
 			metricPrefix+metricKey,
 			metricValue,
 		)
