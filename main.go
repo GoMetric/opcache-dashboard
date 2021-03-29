@@ -25,14 +25,6 @@ import (
 	GoMetricStatsdClient "github.com/GoMetric/go-statsd-client"
 )
 
-const defaultHTTPHost = "127.0.0.1"
-const defaultHTTPPort = 42042
-
-const defaultStatsDHost = ""
-const defaultStatsDPort = 8125
-
-const defaultRefreshIntervalSeconds = 3600
-
 // Version is a current git commit hash and tag
 // Injected by compilation flag
 var Version = "Unknown"
@@ -49,16 +41,17 @@ func main() {
 	// command line options
 	var configPath = flag.String("config", "", "Path to configuration")
 
-	var httpHost = flag.String("http-host", defaultHTTPHost, "HTTP Host for GUI and API")
-	var httpPort = flag.Int("http-port", defaultHTTPPort, "HTTP Port for GUI and API")
+	var httpHost = flag.String("http-host", configuration.DefaultHTTPHost, "HTTP Host for GUI and API")
+	var httpPort = flag.Int("http-port", configuration.DefaultHTTPPort, "HTTP Port for GUI and API")
 
-	var pullIntervalSeconds = flag.Int64("pull-interval", defaultRefreshIntervalSeconds, "Pull interval in seconds")
+	var pullIntervalSeconds = flag.Int64("pull-interval", configuration.DefaultRefreshIntervalSeconds, "Pull interval in seconds")
 
-	var statsdHost = flag.String("statsd-host", defaultStatsDHost, "StatsD Host. If empty, metric tracking will be disabled")
-	var statsdPort = flag.Int("statsd-port", defaultStatsDPort, "StatsD Port")
+	var statsdHost = flag.String("statsd-host", "", "StatsD Host. If empty, metric tracking will be disabled")
+	var statsdPort = flag.Int("statsd-port", 0, "StatsD Port")
 	var statsdMetricPrefix = flag.String("statsd-metric-prefix", "", "Prefix of metric name")
 
 	var verbose = flag.Bool("verbose", false, "Verbose")
+
 	var version = flag.Bool("version", false, "Show version")
 
 	flag.Parse()
@@ -101,6 +94,18 @@ func main() {
 	} else {
 		log.Fatal("Config not defined")
 	}
+
+	// apply cli flags to app config
+	applicationConfig.ApplyCliFlags(
+		configuration.CliFlafs{
+			HttpHost:            httpHost,
+			HttpPort:            httpPort,
+			PullIntervalSeconds: pullIntervalSeconds,
+			StatsdHost:          statsdHost,
+			StatsdPort:          statsdPort,
+			StatsdMetricPrefix:  statsdMetricPrefix,
+		},
+	)
 
 	// Start PHP OPCache observing ticker
 	log.Println(

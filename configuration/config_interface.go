@@ -1,18 +1,41 @@
 package configuration
 
-import (
-	"errors"
-	"fmt"
-)
+const DefaultHTTPHost = "127.0.0.1"
+const DefaultHTTPPort = 42042
+
+const DefaultStatsdPort = 8125
+
+const DefaultRefreshIntervalSeconds = 3600
 
 // ApplicationConfig represents application configuration
 type ApplicationConfig struct {
 	PullInterval int64
 	Clusters     map[string]ClusterConfig
+	UI           UIConfig
+	Metrics      MetricsConfig
 }
 
 type ClusterConfig struct {
 	Groups map[string]GroupConfig
+}
+
+type UIConfig struct {
+	Host string
+	Port int
+}
+
+type MetricsConfig struct {
+	Statsd     *StatsdMetricsConfig
+	Prometheus *PrometheusMetricsConfig
+}
+
+type StatsdMetricsConfig struct {
+	Host   string
+	Port   int
+	Prefix string
+}
+
+type PrometheusMetricsConfig struct {
 }
 
 type AgentType string
@@ -30,17 +53,43 @@ type GroupConfig struct {
 	Hosts  []string
 }
 
-// ConfigReaderInterface defines interface for reading application configuration
-type ConfigReaderInterface interface {
-	ReadConfig(path string) ApplicationConfig
+type CliFlafs struct {
+	HttpHost            *string
+	HttpPort            *int
+	PullIntervalSeconds *int64
+	StatsdHost          *string
+	StatsdPort          *int
+	StatsdMetricPrefix  *string
 }
 
-// NewConfigReader created instance of configuration reader of defined format
-func NewConfigReader(format string) (ConfigReaderInterface, error) {
-	switch format {
-	case "yaml", "yml":
-		return &YAMLConfigReader{}, nil
-	default:
-		return nil, errors.New(fmt.Sprintf("Unknown format '%s' of configuration specified", format))
+func (c *ApplicationConfig) ApplyCliFlags(flags CliFlafs) {
+	if flags.HttpHost != nil {
+		c.UI.Host = *flags.HttpHost
+	}
+
+	if flags.HttpPort != nil {
+		c.UI.Port = *flags.HttpPort
+	}
+
+	if flags.PullIntervalSeconds != nil {
+		c.PullInterval = *flags.PullIntervalSeconds
+	}
+
+	if flags.StatsdHost != nil {
+		if c.Metrics.Statsd == nil {
+			c.Metrics.Statsd = &StatsdMetricsConfig{
+				Host:   *flags.StatsdHost,
+				Port:   DefaultStatsdPort,
+				Prefix: "",
+			}
+		}
+
+		if flags.StatsdPort != nil {
+			c.Metrics.Statsd.Port = *flags.StatsdPort
+		}
+
+		if flags.StatsdMetricPrefix != nil {
+			c.Metrics.Statsd.Prefix = *flags.StatsdMetricPrefix
+		}
 	}
 }
