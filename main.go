@@ -21,6 +21,7 @@ import (
 	"github.com/GoMetric/opcache-dashboard/ui"
 	"github.com/NYTimes/gziphandler"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	GoMetricStatsdClient "github.com/GoMetric/go-statsd-client"
 )
@@ -139,7 +140,12 @@ func main() {
 	// Request handler
 	router := mux.NewRouter()
 
-	// api
+	// opcache stat prometheus request handler
+	if applicationConfig.Metrics.Prometheus != nil {
+		router.Handle("/api/nodes/statistics/prometheus", promhttp.Handler())
+	}
+
+	// opcache stat common request handler
 	router.Handle(
 		"/api/nodes/statistics",
 		gziphandler.GzipHandler(
@@ -159,6 +165,7 @@ func main() {
 		),
 	)
 
+	// re-read opcache stat from agents
 	router.HandleFunc(
 		"/api/nodes/statistics/refresh",
 		func(w http.ResponseWriter, r *http.Request) {
@@ -167,6 +174,7 @@ func main() {
 		},
 	)
 
+	// reset opcache on php node
 	router.HandleFunc(
 		"/api/nodes/{clusterName}/{groupName}/{hostName}/resetOpcache",
 		func(w http.ResponseWriter, r *http.Request) {
