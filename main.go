@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/GoMetric/opcache-dashboard/configuration"
+	"github.com/GoMetric/opcache-dashboard/metrics/statsd"
 	"github.com/GoMetric/opcache-dashboard/opcachestatus"
 	"github.com/GoMetric/opcache-dashboard/ui"
 	"github.com/NYTimes/gziphandler"
@@ -46,13 +47,17 @@ var BuildDate = "Unknown"
 
 func main() {
 	// command line options
-	var httpHost = flag.String("http-host", defaultHTTPHost, "HTTP Host")
-	var httpPort = flag.Int("http-port", defaultHTTPPort, "HTTP Port")
-	var pullIntervalSeconds = flag.Int64("pull-interval", defaultRefreshIntervalSeconds, "Pull interval in seconds")
 	var configPath = flag.String("config", "", "Path to configuration")
+
+	var httpHost = flag.String("http-host", defaultHTTPHost, "HTTP Host for GUI and API")
+	var httpPort = flag.Int("http-port", defaultHTTPPort, "HTTP Port for GUI and API")
+
+	var pullIntervalSeconds = flag.Int64("pull-interval", defaultRefreshIntervalSeconds, "Pull interval in seconds")
+
 	var statsdHost = flag.String("statsd-host", defaultStatsDHost, "StatsD Host. If empty, metric tracking will be disabled")
 	var statsdPort = flag.Int("statsd-port", defaultStatsDPort, "StatsD Port")
 	var statsdMetricPrefix = flag.String("statsd-metric-prefix", "", "Prefix of metric name")
+
 	var verbose = flag.Bool("verbose", false, "Verbose")
 	var version = flag.Bool("version", false, "Show version")
 
@@ -120,11 +125,14 @@ func main() {
 	}
 
 	if *statsdHost != "" {
-		log.Println("Start metrick tracking")
-		var statsDClient = GoMetricStatsdClient.NewClient(*statsdHost, *statsdPort)
-		statsDClient.SetPrefix(*statsdMetricPrefix)
+		var statsdClient = GoMetricStatsdClient.NewClient(*statsdHost, *statsdPort)
+		statsdClient.SetPrefix(*statsdMetricPrefix)
 
-		o.SetMetricTracker(statsDClient)
+		o.AddMetricSender(
+			statsd.StatsdMetricSender{
+				statsdClient: statsdClient,
+			},
+		)
 	}
 
 	o.StartPulling(pullIntervalNanoSeconds)
@@ -175,7 +183,7 @@ func main() {
 		},
 	)
 
-	// app status
+	// api status
 	router.HandleFunc(
 		"/api/status",
 		func(w http.ResponseWriter, r *http.Request) {

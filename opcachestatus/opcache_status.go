@@ -6,27 +6,6 @@ type ClustersOpcacheStatuses map[string]map[string]map[string]NodeOpcacheStatus
 // https://github.com/php/php-src/blob/master/ext/opcache/zend_accelerator_hash.c
 var primeNumbers = []int{5, 11, 19, 53, 107, 223, 463, 983, 1979, 3907, 7963, 16229, 32531, 65407, 130987, 262237, 524521, 1048793}
 
-// https://github.com/php/php-src/blob/master/Zend/Optimizer/zend_optimizer.h
-var optimisationMap = map[int]string{
-	0:  "Simple local optimizations",
-	1:  "Constant conversion and jumps",
-	2:  "Jump optimization",
-	3:  "INIT_FCALL_BY_NAME -> DO_FCALL",
-	4:  "CFG based optimization",
-	5:  "DFA based optimization",
-	6:  "CALL GRAPH optimization",
-	7:  "SCCP (constant propagation)",
-	8:  "TMP VAR usage",
-	9:  "NOP removal",
-	10: "Merge equal constants",
-	11: "Adjust used stack",
-	12: "Remove unused variables",
-	13: "DCE (dead code elimination",
-	14: "(unsafe) Collect constants",
-	15: "Inline functions",
-	16: "(unsafe) Ignore possibility of operator overloading",
-}
-
 // NodeOpcacheStatus represents status of opcache on single node
 type NodeOpcacheStatus struct {
 	Configuration map[string]interface{}

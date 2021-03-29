@@ -7,6 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import Table from '@material-ui/core/Table';
 
+// https://github.com/php/php-src/blob/master/Zend/Optimizer/zend_optimizer.h
 const optimisationMap = {
 	0:  "Simple local optimizations",
 	1:  "Constant conversion and jumps",

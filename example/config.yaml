@@ -1,7 +1,6 @@
 pullInterval: 5
 
 clusters:
-
   myproject1:
     groups:
       common:
@@ -11,7 +10,6 @@ clusters:
         port: 9999
         hosts: 
           - "127.0.0.1"
-
   myproject2:
     groups:
       web:
@@ -25,4 +23,17 @@ clusters:
         agent: "push"
         hosts: 
           - "127.0.0.1"
+
+ui:
+  host: 127.0.0.1
+  port: 42042
+
+metrics:
+  statsd:
+    enabled: false
+    host: 127.0.0.1
+    port: 8125
+    prefix: some.metric.prefix
+  prometheus:
+    enabled: false
     

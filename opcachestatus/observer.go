@@ -5,16 +5,14 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 	"time"
 
-	"github.com/GoMetric/go-statsd-client"
 	"github.com/GoMetric/opcache-dashboard/configuration"
 )
 
 // Observer periodically reads status of observable nodes and aggregates received data
 type Observer struct {
-	metricTracker   *statsd.Client
+	metricSenders   []MetricSender
 	agentPullTicker *time.Ticker
 	statuses        ClustersOpcacheStatuses
 	parser          AgentMessageParser
@@ -31,8 +29,8 @@ func NewObserver(clusters map[string]configuration.ClusterConfig) *Observer {
 	return &observer
 }
 
-func (o *Observer) SetMetricTracker(metricTracker *statsd.Client) {
-	o.metricTracker = metricTracker
+func (o *Observer) AddMetricSender(metricSender MetricSender) {
+	o.metricSenders = append(o.metricSenders, metricSender)
 }
 
 // StartPulling observing of configured nodes
@@ -149,45 +147,15 @@ func (o *Observer) pullAgent(
 		return
 	}
 
-	// track metrics
-	o.trackNodeMetrics(clusterName, groupName, host, *observableNodeOpcacheStatus)
-
 	// add fetched node status to collection
 	o.statuses[clusterName][groupName][host] = *observableNodeOpcacheStatus
 
 	// set last update time
 	o.LastStatusUpate = time.Now()
-}
 
-func (o *Observer) trackNodeMetrics(
-	clusterName string,
-	groupName string,
-	hostName string,
-	observableNodeOpcacheStatus NodeOpcacheStatus,
-) {
-	if o.metricTracker != nil {
-		var clusterName = strings.ReplaceAll(clusterName, ".", "-")
-		var groupName = strings.ReplaceAll(groupName, ".", "-")
-		var hostName = strings.ReplaceAll(hostName, ".", "-")
-		var metricPrefix = clusterName + "." + groupName + "." + hostName + "."
-
-		metricKeyValueMap := map[string]int{
-			"scripts.count":    len(observableNodeOpcacheStatus.Scripts),
-			"memory.free":      observableNodeOpcacheStatus.Memory.Free,
-			"memory.used":      observableNodeOpcacheStatus.Memory.Used,
-			"memory.wasted":    observableNodeOpcacheStatus.Memory.Wasted,
-			"keys.free":        observableNodeOpcacheStatus.Keys.Free,
-			"keys.usedKeys":    observableNodeOpcacheStatus.Keys.UsedKeys,
-			"keys.usedScripts": observableNodeOpcacheStatus.Keys.UsedScripts,
-			"keyHits.misses":   observableNodeOpcacheStatus.KeyHits.Misses,
-		}
-
-		for metricKey, metricValue := range metricKeyValueMap {
-			o.metricTracker.Gauge(
-				metricPrefix+metricKey,
-				metricValue,
-			)
-		}
+	// track metrics
+	for _, metricSender := range o.metricSenders {
+		metricSender.Send(clusterName, groupName, host, *observableNodeOpcacheStatus)
 	}
 }
 
