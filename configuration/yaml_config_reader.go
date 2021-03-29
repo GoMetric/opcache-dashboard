@@ -10,10 +10,10 @@ import (
 )
 
 type yamlConfig struct {
-	PullInterval *int64                       `yaml:"pullInterval"`
-	Clusters     map[string]yamlClusterConfig `yaml:"clusters"`
-	UI           *yamlUIConfig                `yaml:"ui"`
-	Metrics      *yamlMetricsConfig           `yaml:"metrics"`
+	PullIntervalSeconds *int64                       `yaml:"pullInterval"`
+	Clusters            map[string]yamlClusterConfig `yaml:"clusters"`
+	UI                  *yamlUIConfig                `yaml:"ui"`
+	Metrics             *yamlMetricsConfig           `yaml:"metrics"`
 }
 
 type yamlClusterConfig struct {
@@ -39,10 +39,10 @@ type yamlMetricsConfig struct {
 }
 
 type yamlStatsdMetricsConfig struct {
-	Enabled bool   `yaml:"enabled"`
-	Host    string `yaml:"host"`
-	Port    *int   `yaml:"port"`
-	Prefix  string `yaml:"prefix"`
+	Enabled bool    `yaml:"enabled"`
+	Host    string  `yaml:"host"`
+	Port    *int    `yaml:"port"`
+	Prefix  *string `yaml:"prefix"`
 }
 
 type yamlPrometheusMetricsConfig struct {
@@ -83,9 +83,9 @@ func (reader *YAMLConfigReader) ReadConfig(path string) ApplicationConfig {
 
 	// build config of observable nodes
 	config := ApplicationConfig{
-		PullInterval: DefaultRefreshIntervalSeconds,
-		Clusters:     map[string]ClusterConfig{},
-		Metrics:      MetricsConfig{},
+		PullIntervalSeconds: DefaultRefreshIntervalSeconds,
+		Clusters:            map[string]ClusterConfig{},
+		Metrics:             MetricsConfig{},
 		UI: UIConfig{
 			Host: DefaultHTTPHost,
 			Port: DefaultHTTPPort,
@@ -93,8 +93,8 @@ func (reader *YAMLConfigReader) ReadConfig(path string) ApplicationConfig {
 	}
 
 	// Interval
-	if yamlConfig.PullInterval != nil {
-		config.PullInterval = *yamlConfig.PullInterval
+	if yamlConfig.PullIntervalSeconds != nil {
+		config.PullIntervalSeconds = *yamlConfig.PullIntervalSeconds
 	}
 
 	// PHP Node Cluster
@@ -128,9 +128,10 @@ func (reader *YAMLConfigReader) ReadConfig(path string) ApplicationConfig {
 	// Metrics
 	if yamlConfig.Metrics != nil {
 		if yamlConfig.Metrics.Statsd != nil && yamlConfig.Metrics.Statsd.Enabled {
-			config.Metrics.Statsd = &StatsdMetricsConfig{}
-
-			config.Metrics.Statsd.Host = yamlConfig.Metrics.Statsd.Host
+			config.Metrics.Statsd = &StatsdMetricsConfig{
+				Host:   yamlConfig.Metrics.Statsd.Host,
+				Prefix: "",
+			}
 
 			if yamlConfig.Metrics.Statsd.Port != nil {
 				config.Metrics.Statsd.Port = *yamlConfig.Metrics.Statsd.Port
@@ -138,7 +139,9 @@ func (reader *YAMLConfigReader) ReadConfig(path string) ApplicationConfig {
 				config.Metrics.Statsd.Port = DefaultStatsdPort
 			}
 
-			config.Metrics.Statsd.Prefix = yamlConfig.Metrics.Statsd.Prefix
+			if yamlConfig.Metrics.Statsd.Prefix != nil {
+				config.Metrics.Statsd.Prefix = *yamlConfig.Metrics.Statsd.Prefix
+			}
 		}
 
 		if yamlConfig.Metrics.Prometheus != nil {

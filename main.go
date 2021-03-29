@@ -111,27 +111,21 @@ func main() {
 	log.Println(
 		fmt.Sprintf(
 			"Starting observer with refresh interval %d seconds",
-			*pullIntervalSeconds,
+			applicationConfig.PullIntervalSeconds,
 		),
 	)
-
-	var pullIntervalNanoSeconds int64
-
-	if applicationConfig.PullInterval > 0 {
-		pullIntervalNanoSeconds = applicationConfig.PullInterval * int64(time.Second)
-	} else if *pullIntervalSeconds > 0 {
-		pullIntervalNanoSeconds = *pullIntervalSeconds * int64(time.Second)
-	} else {
-		pullIntervalNanoSeconds = 3600 * int64(time.Second)
-	}
 
 	var o = opcachestatus.Observer{
 		Clusters: applicationConfig.Clusters,
 	}
 
-	if *statsdHost != "" {
-		var statsdClient = GoMetricStatsdClient.NewClient(*statsdHost, *statsdPort)
-		statsdClient.SetPrefix(*statsdMetricPrefix)
+	if applicationConfig.Metrics.Statsd != nil {
+		var statsdClient = GoMetricStatsdClient.NewClient(
+			applicationConfig.Metrics.Statsd.Host,
+			applicationConfig.Metrics.Statsd.Port,
+		)
+
+		statsdClient.SetPrefix(applicationConfig.Metrics.Statsd.Prefix)
 
 		var statsdMetricSender = &statsd.StatsdMetricSender{
 			StatsdClient: statsdClient,
@@ -140,7 +134,7 @@ func main() {
 		o.AddMetricSender(statsdMetricSender)
 	}
 
-	o.StartPulling(pullIntervalNanoSeconds)
+	o.StartPulling(applicationConfig.PullIntervalSeconds * int64(time.Second))
 
 	// Request handler
 	router := mux.NewRouter()
@@ -219,7 +213,7 @@ func main() {
 	)
 
 	// HTTP server
-	var httpAddress = fmt.Sprintf("%s:%d", *httpHost, *httpPort)
+	var httpAddress = fmt.Sprintf("%s:%d", applicationConfig.UI.Host, applicationConfig.UI.Port)
 
 	httpServer := &http.Server{
 		Addr:           httpAddress,

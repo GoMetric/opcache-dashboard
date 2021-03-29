@@ -9,10 +9,10 @@ const DefaultRefreshIntervalSeconds = 3600
 
 // ApplicationConfig represents application configuration
 type ApplicationConfig struct {
-	PullInterval int64
-	Clusters     map[string]ClusterConfig
-	UI           UIConfig
-	Metrics      MetricsConfig
+	PullIntervalSeconds int64
+	Clusters            map[string]ClusterConfig
+	UI                  UIConfig
+	Metrics             MetricsConfig
 }
 
 type ClusterConfig struct {
@@ -63,19 +63,19 @@ type CliFlafs struct {
 }
 
 func (c *ApplicationConfig) ApplyCliFlags(flags CliFlafs) {
-	if flags.HttpHost != nil {
+	if *flags.HttpHost != DefaultHTTPHost {
 		c.UI.Host = *flags.HttpHost
 	}
 
-	if flags.HttpPort != nil {
+	if *flags.HttpPort != DefaultHTTPPort {
 		c.UI.Port = *flags.HttpPort
 	}
 
-	if flags.PullIntervalSeconds != nil {
-		c.PullInterval = *flags.PullIntervalSeconds
+	if *flags.PullIntervalSeconds != DefaultRefreshIntervalSeconds {
+		c.PullIntervalSeconds = *flags.PullIntervalSeconds
 	}
 
-	if flags.StatsdHost != nil {
+	if *flags.StatsdHost != "" {
 		if c.Metrics.Statsd == nil {
 			c.Metrics.Statsd = &StatsdMetricsConfig{
 				Host:   *flags.StatsdHost,
@@ -84,11 +84,11 @@ func (c *ApplicationConfig) ApplyCliFlags(flags CliFlafs) {
 			}
 		}
 
-		if flags.StatsdPort != nil {
+		if *flags.StatsdPort != DefaultStatsdPort {
 			c.Metrics.Statsd.Port = *flags.StatsdPort
 		}
 
-		if flags.StatsdMetricPrefix != nil {
+		if *flags.StatsdMetricPrefix != "" {
 			c.Metrics.Statsd.Prefix = *flags.StatsdMetricPrefix
 		}
 	}
