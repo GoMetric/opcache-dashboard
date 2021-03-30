@@ -13,12 +13,12 @@
 declare(strict_types=1);
 
 /**
- * Chech opcache extension configured
+ * Check opcache extension configured
  */
 if (!function_exists('opcache_get_status')) {
     sendResponse(
         500, 
-        ['error' => 'Opcache entension not loaded']
+        ['error' => 'Opcache extension not loaded']
     );
     return;
 }
