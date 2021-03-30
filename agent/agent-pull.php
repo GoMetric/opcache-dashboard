@@ -18,7 +18,7 @@ declare(strict_types=1);
 if (!function_exists('opcache_get_status')) {
     sendResponse(
         500, 
-        ['error' => 'Opcache entension not loaded']
+        ['error' => 'Opcache extension not loaded']
     );
     return;
 }
