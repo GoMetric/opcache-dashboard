@@ -18,14 +18,14 @@ func NewPrometheusMetricSender(registry *prometheus.Registry) *PrometheusMetricS
 	}
 
 	gaugeNames := []string{
-		"scripts_count",
-		"memory_free_bytes",
-		"memory_used_bytes",
-		"memory_wasted_bytes",
-		"keys_free",
-		"keys_usedKeys",
-		"keys_usedScripts",
-		"keyHits_misses",
+		"opcache_scripts_count",
+		"opcache_memory_free_bytes",
+		"opcache_memory_used_bytes",
+		"opcache_memory_wasted_bytes",
+		"opcache_keys_free",
+		"opcache_keys_usedKeys",
+		"opcache_keys_usedScripts",
+		"opcache_keyHits_misses",
 	}
 
 	for _, gaugeName := range gaugeNames {
@@ -54,14 +54,14 @@ func (s *PrometheusMetricSender) Send(
 	hostName = strings.ReplaceAll(hostName, ".", "-")
 
 	gaugeNameValueMap := map[string]int{
-		"scripts_count":       len(nodeOpcacheStatus.Scripts),
-		"memory_free_bytes":   nodeOpcacheStatus.Memory.Free,
-		"memory_used_bytes":   nodeOpcacheStatus.Memory.Used,
-		"memory_wasted_bytes": nodeOpcacheStatus.Memory.Wasted,
-		"keys_free":           nodeOpcacheStatus.Keys.Free,
-		"keys_usedKeys":       nodeOpcacheStatus.Keys.UsedKeys,
-		"keys_usedScripts":    nodeOpcacheStatus.Keys.UsedScripts,
-		"keyHits_misses":      nodeOpcacheStatus.KeyHits.Misses,
+		"opcache_scripts_count":       len(nodeOpcacheStatus.Scripts),
+		"opcache_memory_free_bytes":   nodeOpcacheStatus.Memory.Free,
+		"opcache_memory_used_bytes":   nodeOpcacheStatus.Memory.Used,
+		"opcache_memory_wasted_bytes": nodeOpcacheStatus.Memory.Wasted,
+		"opcache_keys_free":           nodeOpcacheStatus.Keys.Free,
+		"opcache_keys_usedKeys":       nodeOpcacheStatus.Keys.UsedKeys,
+		"opcache_keys_usedScripts":    nodeOpcacheStatus.Keys.UsedScripts,
+		"opcache_keyHits_misses":      nodeOpcacheStatus.KeyHits.Misses,
 	}
 
 	for gaugeName, gaugeValue := range gaugeNameValueMap {
