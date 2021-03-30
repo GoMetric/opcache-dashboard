@@ -39,20 +39,18 @@ docker run \
 Example of configuration:
 
 ```yaml
-pullInterval: 5
+pullInterval: 5 # pull data from agent every 5 seconds
 
-clusters:
-
-  myproject1:
-    groups:
-      web:
-        agent: "pull"
-        path: "/"
-        secure: false
-        port: 9999
-        hosts: 
+clusters: # cluster consists of node groups that share sabe codebase
+  myproject1: # name of cluster
+    groups: # group consists of nodes with same behavior
+      common: # name of group
+        agent: "pull" # mode of agent. in pull mode data fetched from agent, in push mode data pushed by agent
+        path: "/" # public path to agent script
+        secure: false # connection type
+        port: 9999 # port of php server
+        hosts: # comma separated list of php nodes
           - "127.0.0.1"
-
   myproject2:
     groups:
       web:
@@ -63,9 +61,22 @@ clusters:
         hosts: 
           - "127.0.0.1"
       cron:
-        agent: "push"
+        agent: "push" # push model currently not supported
         hosts: 
           - "127.0.0.1"
+
+ui: # http host and port to serve ui and api requests
+  host: 127.0.0.1
+  port: 42042
+
+metrics: # tool may send metrics to different backends
+  statsd: # tool sends metrics to statsd
+    enabled: false
+    host: 127.0.0.1 # statsd host
+    port: 8125 # statsd port
+    prefix: some.metric.prefix # prefix addet to all metrics
+  prometheus: # tool collects metrics, prometheus goest to metric url and scrapps data
+    enabled: true
 ```
 
 # Usage

@@ -21,11 +21,11 @@ type yamlClusterConfig struct {
 }
 
 type yamlGroupConfig struct {
-	Agent  AgentType `yaml:"agent"`
-	Path   string    `yaml:"path"`
-	Secure bool      `yaml:"secure"`
-	Port   int       `yaml:"port"`
-	Hosts  []string  `yaml:"hosts"`
+	Agent  *AgentType `yaml:"agent"`
+	Path   string     `yaml:"path"`
+	Secure bool       `yaml:"secure"`
+	Port   int        `yaml:"port"`
+	Hosts  []string   `yaml:"hosts"`
 }
 
 type yamlUIConfig struct {
@@ -104,8 +104,13 @@ func (reader *YAMLConfigReader) ReadConfig(path string) ApplicationConfig {
 		}
 
 		for groupName, yamlGroupConfig := range yamlClusterConfig.Groups {
+			var agentType = PullAgentType
+			if yamlGroupConfig.Agent != nil {
+				agentType = *yamlGroupConfig.Agent
+			}
+
 			config.Clusters[clusterName].Groups[groupName] = GroupConfig{
-				Agent:  yamlGroupConfig.Agent,
+				Agent:  agentType,
 				Path:   yamlGroupConfig.Path,
 				Secure: yamlGroupConfig.Secure,
 				Port:   yamlGroupConfig.Port,
