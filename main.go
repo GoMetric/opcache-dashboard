@@ -16,11 +16,12 @@ import (
 	"time"
 
 	"github.com/GoMetric/opcache-dashboard/configuration"
-	"github.com/GoMetric/opcache-dashboard/metrics/statsd"
+	"github.com/GoMetric/opcache-dashboard/metrics"
 	"github.com/GoMetric/opcache-dashboard/opcachestatus"
 	"github.com/GoMetric/opcache-dashboard/ui"
 	"github.com/NYTimes/gziphandler"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	GoMetricStatsdClient "github.com/GoMetric/go-statsd-client"
@@ -116,10 +117,15 @@ func main() {
 		),
 	)
 
+	// Web request handler
+	router := mux.NewRouter()
+
+	// Build observer
 	var o = opcachestatus.Observer{
 		Clusters: applicationConfig.Clusters,
 	}
 
+	// Add StatsD sender if configured
 	if applicationConfig.Metrics.Statsd != nil {
 		var statsdClient = GoMetricStatsdClient.NewClient(
 			applicationConfig.Metrics.Statsd.Host,
@@ -128,21 +134,22 @@ func main() {
 
 		statsdClient.SetPrefix(applicationConfig.Metrics.Statsd.Prefix)
 
-		var statsdMetricSender = &statsd.StatsdMetricSender{
+		var statsdMetricSender = &metrics.StatsdMetricSender{
 			StatsdClient: statsdClient,
 		}
 
 		o.AddMetricSender(statsdMetricSender)
 	}
 
-	o.StartPulling(applicationConfig.PullIntervalSeconds * int64(time.Second))
-
-	// Request handler
-	router := mux.NewRouter()
-
-	// opcache stat prometheus request handler
+	// // Add prometheus sender if configured
 	if applicationConfig.Metrics.Prometheus != nil {
-		router.Handle("/api/nodes/statistics/prometheus", promhttp.Handler())
+		prometheusRegistry := prometheus.NewRegistry()
+		o.AddMetricSender(metrics.NewPrometheusMetricSender(prometheusRegistry))
+
+		router.Handle(
+			"/api/nodes/statistics/prometheus",
+			promhttp.HandlerFor(prometheusRegistry, promhttp.HandlerOpts{}),
+		)
 	}
 
 	// opcache stat common request handler
@@ -219,6 +226,9 @@ func main() {
 			w.Write(indexBody)
 		},
 	)
+
+	// start pulling data from agents
+	o.StartPulling(applicationConfig.PullIntervalSeconds * int64(time.Second))
 
 	// HTTP server
 	var httpAddress = fmt.Sprintf("%s:%d", applicationConfig.UI.Host, applicationConfig.UI.Port)

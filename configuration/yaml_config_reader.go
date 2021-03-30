@@ -34,8 +34,8 @@ type yamlUIConfig struct {
 }
 
 type yamlMetricsConfig struct {
-	Statsd     *yamlStatsdMetricsConfig     `yaml:"host"`
-	Prometheus *yamlPrometheusMetricsConfig `yaml:"port"`
+	Statsd     *yamlStatsdMetricsConfig     `yaml:"statsd"`
+	Prometheus *yamlPrometheusMetricsConfig `yaml:"prometheus"`
 }
 
 type yamlStatsdMetricsConfig struct {
@@ -144,7 +144,7 @@ func (reader *YAMLConfigReader) ReadConfig(path string) ApplicationConfig {
 			}
 		}
 
-		if yamlConfig.Metrics.Prometheus != nil {
+		if yamlConfig.Metrics.Prometheus != nil && yamlConfig.Metrics.Prometheus.Enabled {
 			config.Metrics.Prometheus = &PrometheusMetricsConfig{}
 		}
 	}

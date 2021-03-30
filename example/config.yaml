@@ -35,5 +35,5 @@ metrics:
     port: 8125
     prefix: some.metric.prefix
   prometheus:
-    enabled: false
+    enabled: true
     

@@ -1,9 +1,9 @@
-package statsd
+package metrics
 
 import (
 	"strings"
 
-	"github.com/GoMetric/go-statsd-client"
+	statsd "github.com/GoMetric/go-statsd-client"
 	"github.com/GoMetric/opcache-dashboard/opcachestatus"
 )
 
