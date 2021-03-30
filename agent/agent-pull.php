@@ -13,7 +13,7 @@
 declare(strict_types=1);
 
 /**
- * Chech opcache extension configured
+ * Check opcache extension configured
  */
 if (!function_exists('opcache_get_status')) {
     sendResponse(
