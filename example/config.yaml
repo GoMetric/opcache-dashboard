@@ -8,8 +8,8 @@ clusters:
         path: "/"
         secure: false
         basicAuth:
-          user: lol
-          password: kek
+          user: someuser
+          password: somepassword
         port: 9999
         hosts: 
           - "127.0.0.1"
