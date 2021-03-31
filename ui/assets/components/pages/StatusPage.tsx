@@ -343,7 +343,7 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: theme.spacing(2),
             textAlign: 'center',
             color: theme.palette.text.secondary,
-            height: '490px'
+            height: '510px'
         },
         statusTableRoot: {
             '& .MuiTableCell-body': {

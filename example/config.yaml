@@ -4,7 +4,7 @@ clusters:
   myproject1:
     groups:
       common:
-        urlPattern: "http://127.0.0.1:9999/{host}/agent-pull.php"
+        urlPattern: "http://127.0.0.1:9999/{host}/agent-pull-stub.php"
         basicAuth:
           user: someuser
           password: somepassword
@@ -14,7 +14,7 @@ clusters:
   myproject2:
     groups:
       web:
-        urlPattern: "http://{host}:9999/agent-pull.php"
+        urlPattern: "http://{host}:9999/agent-pull-stub.php"
         hosts: 
           - "127.0.0.1"
 

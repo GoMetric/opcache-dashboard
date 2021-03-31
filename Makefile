@@ -58,7 +58,7 @@ start-debug-server:
 
 # Run PHP server for demo mode
 start-stub-php-server:
-	php -S 127.0.0.1:9999 ${CURDIR}/agent/agent-pull.php
+	php -S 127.0.0.1:9999 ${CURDIR}/agent/agent-pull-stub.php
 
 # Show profiler results in web
 run-profiler-web:
