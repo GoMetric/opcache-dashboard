@@ -91,6 +91,7 @@ function ScriptsPageComponent(props: Object) {
             sortable: true,
             width: 90,
             hide: false,
+            type: 'number',
         },
         {
             field: 'memoryHumanReadable',
@@ -101,6 +102,7 @@ function ScriptsPageComponent(props: Object) {
                 return prettyBytes(params.getValue('memory'));
             },
             hide: false,
+            type: 'number',
         },
         {
             field: 'lastUsedDate',
@@ -111,6 +113,7 @@ function ScriptsPageComponent(props: Object) {
                 return formatTime(params.getValue('lastUsedTimestamp'));
             },
             hide: false,
+            type: 'dateTime',
         },
         {
             field: 'createDate',
@@ -120,6 +123,7 @@ function ScriptsPageComponent(props: Object) {
             valueGetter: (params: ValueGetterParams) => {
                 return formatTime(params.getValue('createTimestamp'));
             },
+            type: 'dateTime',
             hide: true,
         },
     ];
