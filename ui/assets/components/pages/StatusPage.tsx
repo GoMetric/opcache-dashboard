@@ -100,7 +100,7 @@ const buildTableData = function(clusterOpcacheStatuses) {
                     },
                     {
                         'label': 'Wasted Percent',
-                        'value': clusterOpcacheStatuses[groupName][hostName].Memory.CurrentWastedPercentage + ' of ' + clusterOpcacheStatuses[groupName][hostName].Memory.MaxWastedPercentage,
+                        'value': clusterOpcacheStatuses[groupName][hostName].Memory.CurrentWastedPercentage + ' of ' + (clusterOpcacheStatuses[groupName][hostName].Memory.MaxWastedPercentage * 100),
                     },
                 ],
                 internedStrings: [
