@@ -7,8 +7,6 @@ const DefaultStatsdPort = 8125
 
 const DefaultRefreshIntervalSeconds = 3600
 
-const DefaultPullAgentUrlPattern = "{schema}://{host}:{port}{path}?scripts=1"
-
 // ApplicationConfig represents application configuration
 type ApplicationConfig struct {
 	PullIntervalSeconds int64
@@ -40,19 +38,8 @@ type StatsdMetricsConfig struct {
 type PrometheusMetricsConfig struct {
 }
 
-type AgentType string
-
-const (
-	PullAgentType AgentType = "pull"
-	PushAgentType           = "push"
-)
-
 type GroupConfig struct {
 	UrlPattern           string
-	Agent                AgentType
-	Path                 string
-	Secure               bool
-	Port                 int
 	Hosts                []string
 	BasicAuthCredentials *BasicAuthCredentials
 }
@@ -62,7 +49,7 @@ type BasicAuthCredentials struct {
 	Password string
 }
 
-type CliFlafs struct {
+type CliFlags struct {
 	HttpHost            *string
 	HttpPort            *int
 	PullIntervalSeconds *int64
@@ -71,7 +58,7 @@ type CliFlafs struct {
 	StatsdMetricPrefix  *string
 }
 
-func (c *ApplicationConfig) ApplyCliFlags(flags CliFlafs) {
+func (c *ApplicationConfig) ApplyCliFlags(flags CliFlags) {
 	if *flags.HttpHost != DefaultHTTPHost {
 		c.UI.Host = *flags.HttpHost
 	}

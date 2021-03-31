@@ -73,14 +73,7 @@ func (o *Observer) GetStatuses() ClustersOpcacheStatuses {
 func (o *Observer) ResetOpcache(clusterName string, groupName string, hostName string) error {
 	groupConfig := o.Clusters[clusterName].Groups[groupName]
 
-	var schema string
-	if groupConfig.Secure {
-		schema += "https"
-	} else {
-		schema += "http"
-	}
-
-	pullAgentURL := fmt.Sprintf("%s://%s:%d%s?command=reset", schema, hostName, groupConfig.Port, groupConfig.Path)
+	pullAgentURL := o.buildPullAgentUrl(groupConfig.UrlPattern, hostName) + "?command=reset"
 
 	log.Printf(fmt.Sprintf("Reseting node opcache %s", pullAgentURL))
 
@@ -114,10 +107,6 @@ func (o *Observer) pullAgentsOnTick() {
 func (o *Observer) PullAgents() {
 	for clusterName, clusterConfig := range o.Clusters {
 		for groupName, groupConfig := range clusterConfig.Groups {
-			if groupConfig.Agent != configuration.PullAgentType {
-				continue
-			}
-
 			for _, host := range groupConfig.Hosts {
 				o.pullAgent(
 					groupConfig,
@@ -139,9 +128,6 @@ func (o *Observer) pullAgent(
 	var observableNodeOpcacheStatus, err = o.fetchNodeOpcacheStatus(
 		groupConfig.UrlPattern,
 		host,
-		groupConfig.Port,
-		groupConfig.Path,
-		groupConfig.Secure,
 		groupConfig.BasicAuthCredentials,
 	)
 
@@ -165,24 +151,13 @@ func (o *Observer) pullAgent(
 func (o *Observer) fetchNodeOpcacheStatus(
 	urlPattern string,
 	host string,
-	port int,
-	path string,
-	secure bool,
 	basicAuthCredentials *configuration.BasicAuthCredentials,
 ) (*NodeOpcacheStatus, error) {
-	var schema string
-	if secure {
-		schema = "https"
-	} else {
-		schema = "http"
-	}
-
-	urlPatternReplacer := strings.NewReplacer("{schema}", schema, "{host}", host, "{port}", fmt.Sprint(port), "{path}", path)
-
-	pullAgentURL := urlPatternReplacer.Replace(urlPattern) + "?scripts=1"
-
+	// build agent url
+	pullAgentURL := o.buildPullAgentUrl(urlPattern, host) + "?scripts=1"
 	log.Printf(fmt.Sprintf("Observing %s", pullAgentURL))
 
+	// build request
 	httpClient := &http.Client{}
 	request, error := http.NewRequest("GET", pullAgentURL, nil)
 
@@ -190,6 +165,7 @@ func (o *Observer) fetchNodeOpcacheStatus(
 		request.SetBasicAuth(basicAuthCredentials.User, basicAuthCredentials.Password)
 	}
 
+	// send request
 	response, error := httpClient.Do(request)
 
 	if error != nil {
@@ -213,4 +189,11 @@ func (o *Observer) fetchNodeOpcacheStatus(
 	}
 
 	return observableNodeOpcacheStatus, nil
+}
+
+func (o *Observer) buildPullAgentUrl(urlPattern string, host string) string {
+	urlPatternReplacer := strings.NewReplacer("{host}", host)
+	agentURL := urlPatternReplacer.Replace(urlPattern)
+
+	return agentURL
 }

@@ -45,11 +45,7 @@ clusters: # cluster consists of node groups that share sabe codebase
   myproject1: # name of cluster
     groups: # group consists of nodes with same behavior
       common: # name of group
-        urlPattern: null # optional museful when custorm agent url used
-        agent: "pull" # mode of agent. in pull mode data fetched from agent, in push mode data pushed by agent
-        path: "/" # public path to agent script
-        secure: false # connection type
-        port: 9999 # port of php server
+        urlPattern: "http://{host}:9999/agent-pull.php"
         basicAuth: # optional, if Basic Auth required by endpoint
           user: someuser
           password: somepassword
@@ -58,14 +54,7 @@ clusters: # cluster consists of node groups that share sabe codebase
   myproject2:
     groups:
       web:
-        agent: "pull"
-        path: "/"
-        secure: false
-        port: 9999
-        hosts: 
-          - "127.0.0.1"
-      cron:
-        agent: "push" # push model currently not supported
+        urlPattern: "http://{host}:9999/agent-pull.php"
         hosts: 
           - "127.0.0.1"
 

@@ -21,11 +21,7 @@ type yamlClusterConfig struct {
 }
 
 type yamlGroupConfig struct {
-	UrlPattern           *string                   `yaml:"urlPattern"`
-	Agent                *AgentType                `yaml:"agent"`
-	Path                 string                    `yaml:"path"`
-	Secure               bool                      `yaml:"secure"`
-	Port                 int                       `yaml:"port"`
+	UrlPattern           string                    `yaml:"urlPattern"`
 	Hosts                []string                  `yaml:"hosts"`
 	BasicAuthCredentials *yamlBasicAuthCredentials `yaml:"basicAuth"`
 }
@@ -111,24 +107,8 @@ func (reader *YAMLConfigReader) ReadConfig(path string) ApplicationConfig {
 		}
 
 		for groupName, yamlGroupConfig := range yamlClusterConfig.Groups {
-			var agentType = PullAgentType
-			if yamlGroupConfig.Agent != nil {
-				agentType = *yamlGroupConfig.Agent
-			}
-
-			var urlPattern string
-			if yamlGroupConfig.UrlPattern != nil {
-				urlPattern = *yamlGroupConfig.UrlPattern
-			} else {
-				urlPattern = DefaultPullAgentUrlPattern
-			}
-
 			clusterGroupConfig := GroupConfig{
-				UrlPattern:           urlPattern,
-				Agent:                agentType,
-				Path:                 yamlGroupConfig.Path,
-				Secure:               yamlGroupConfig.Secure,
-				Port:                 yamlGroupConfig.Port,
+				UrlPattern:           yamlGroupConfig.UrlPattern,
 				Hosts:                yamlGroupConfig.Hosts,
 				BasicAuthCredentials: nil,
 			}

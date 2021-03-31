@@ -99,7 +99,7 @@ func main() {
 
 	// apply cli flags to app config
 	applicationConfig.ApplyCliFlags(
-		configuration.CliFlafs{
+		configuration.CliFlags{
 			HttpHost:            httpHost,
 			HttpPort:            httpPort,
 			PullIntervalSeconds: pullIntervalSeconds,

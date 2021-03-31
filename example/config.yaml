@@ -4,28 +4,17 @@ clusters:
   myproject1:
     groups:
       common:
-        urlPattern: "{schema}://127.0.0.1:{port}/{host}{path}"
-        agent: "pull"
-        path: "/agent-pull.php"
-        secure: false
+        urlPattern: "http://127.0.0.1:999/{host}/agent-pull.php"
         basicAuth:
           user: someuser
           password: somepassword
-        port: 9999
         hosts: 
           - "some-host-name"
           - "some-other-host-name"
   myproject2:
     groups:
       web:
-        agent: "pull"
-        path: "/"
-        secure: false
-        port: 9999
-        hosts: 
-          - "127.0.0.1"
-      cron:
-        agent: "push"
+        urlPattern: "http://{host}:9999/agent-pull.php"
         hosts: 
           - "127.0.0.1"
 
@@ -36,9 +25,9 @@ ui:
 metrics:
   statsd:
     enabled: false
-    host: 127.0.0.1
+    host: "127.0.0.1"
     port: 8125
-    prefix: some.metric.prefix
+    prefix: "some.metric.prefix"
   prometheus:
     enabled: true
     
