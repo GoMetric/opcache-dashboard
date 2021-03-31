@@ -46,11 +46,17 @@ const (
 )
 
 type GroupConfig struct {
-	Agent  AgentType
-	Path   string
-	Secure bool
-	Port   int
-	Hosts  []string
+	Agent                AgentType
+	Path                 string
+	Secure               bool
+	Port                 int
+	Hosts                []string
+	BasicAuthCredentials *BasicAuthCredentials
+}
+
+type BasicAuthCredentials struct {
+	User     string
+	Password string
 }
 
 type CliFlafs struct {

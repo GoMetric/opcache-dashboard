@@ -7,6 +7,9 @@ clusters:
         agent: "pull"
         path: "/"
         secure: false
+        basicAuth:
+          user: lol
+          password: kek
         port: 9999
         hosts: 
           - "127.0.0.1"

@@ -21,11 +21,17 @@ type yamlClusterConfig struct {
 }
 
 type yamlGroupConfig struct {
-	Agent  *AgentType `yaml:"agent"`
-	Path   string     `yaml:"path"`
-	Secure bool       `yaml:"secure"`
-	Port   int        `yaml:"port"`
-	Hosts  []string   `yaml:"hosts"`
+	Agent                *AgentType                `yaml:"agent"`
+	Path                 string                    `yaml:"path"`
+	Secure               bool                      `yaml:"secure"`
+	Port                 int                       `yaml:"port"`
+	Hosts                []string                  `yaml:"hosts"`
+	BasicAuthCredentials *yamlBasicAuthCredentials `yaml:"basicAuth"`
+}
+
+type yamlBasicAuthCredentials struct {
+	User     string `yaml:"user"`
+	Password string `yaml:"password"`
 }
 
 type yamlUIConfig struct {
@@ -109,13 +115,23 @@ func (reader *YAMLConfigReader) ReadConfig(path string) ApplicationConfig {
 				agentType = *yamlGroupConfig.Agent
 			}
 
-			config.Clusters[clusterName].Groups[groupName] = GroupConfig{
-				Agent:  agentType,
-				Path:   yamlGroupConfig.Path,
-				Secure: yamlGroupConfig.Secure,
-				Port:   yamlGroupConfig.Port,
-				Hosts:  yamlGroupConfig.Hosts,
+			clusterGroupConfig := GroupConfig{
+				Agent:                agentType,
+				Path:                 yamlGroupConfig.Path,
+				Secure:               yamlGroupConfig.Secure,
+				Port:                 yamlGroupConfig.Port,
+				Hosts:                yamlGroupConfig.Hosts,
+				BasicAuthCredentials: nil,
 			}
+
+			if yamlGroupConfig.BasicAuthCredentials != nil {
+				clusterGroupConfig.BasicAuthCredentials = &BasicAuthCredentials{
+					User:     yamlGroupConfig.BasicAuthCredentials.User,
+					Password: yamlGroupConfig.BasicAuthCredentials.Password,
+				}
+			}
+
+			config.Clusters[clusterName].Groups[groupName] = clusterGroupConfig
 		}
 	}
 

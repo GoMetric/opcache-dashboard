@@ -140,6 +140,7 @@ func (o *Observer) pullAgent(
 		groupConfig.Port,
 		groupConfig.Path,
 		groupConfig.Secure,
+		groupConfig.BasicAuthCredentials,
 	)
 
 	if err != nil {
@@ -164,6 +165,7 @@ func (o *Observer) fetchNodeOpcacheStatus(
 	port int,
 	path string,
 	secure bool,
+	basicAuthCredentials *configuration.BasicAuthCredentials,
 ) (*NodeOpcacheStatus, error) {
 	var pullAgentURL = ""
 
@@ -179,7 +181,14 @@ func (o *Observer) fetchNodeOpcacheStatus(
 
 	log.Printf(fmt.Sprintf("Observing %s", pullAgentURL))
 
-	response, error := http.Get(pullAgentURL)
+	httpClient := &http.Client{}
+	request, error := http.NewRequest("GET", pullAgentURL, nil)
+
+	if basicAuthCredentials != nil {
+		request.SetBasicAuth(basicAuthCredentials.User, basicAuthCredentials.Password)
+	}
+
+	response, error := httpClient.Do(request)
 
 	if error != nil {
 		return nil, error
