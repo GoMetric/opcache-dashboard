@@ -9,8 +9,8 @@ clusters:
         path: "/agent-pull.php"
         secure: false
         basicAuth:
-          user: lol
-          password: kek
+          user: someuser
+          password: somepassword
         port: 9999
         hosts: 
           - "some-host-name"
