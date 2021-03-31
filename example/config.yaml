@@ -9,11 +9,31 @@ clusters:
           user: someuser
           password: somepassword
         hosts: 
-          - "some-host-name"
-          - "some-other-host-name"
+          - "some-common-host-name"
+          - "some-common-other-host-name"
+      payment:
+        urlPattern: "http://127.0.0.1:9999/{host}/agent-pull-stub.php"
+        basicAuth:
+          user: someuser
+          password: somepassword
+        hosts: 
+          - "some-payment-host-name"
+          - "some-payment-other-host-name"
+      search:
+        urlPattern: "http://127.0.0.1:9999/{host}/agent-pull-stub.php"
+        basicAuth:
+          user: someuser
+          password: somepassword
+        hosts: 
+          - "some-search-host-name"
+          - "some-search-other-host-name"
   myproject2:
     groups:
       web:
+        urlPattern: "http://{host}:9999/agent-pull-stub.php"
+        hosts: 
+          - "127.0.0.1"
+      mob:
         urlPattern: "http://{host}:9999/agent-pull-stub.php"
         hosts: 
           - "127.0.0.1"

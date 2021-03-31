@@ -107,7 +107,7 @@ function HostConfigurationTableComponent(props: Object) {
         } else {
             //@todo Add parameter description from https://www.php.net/manual/en/opcache.configuration.php
             hostConfigurationTable.push(
-                <Grid item xs={12} sm={6} md={6} key={host}>
+                <Grid item xs={12} sm={12} md={6} key={host}>
                     <Paper className={classes.paper}>
                         <h2>{host}</h2>
                         <Table size="small" className={classes.tableRoot}>
@@ -123,13 +123,13 @@ function HostConfigurationTableComponent(props: Object) {
                 </Grid>
             );
         }
-
-        return (
-            <div className={classes.root}>
-                <Grid container spacing={1}>{hostConfigurationTable}</Grid>
-            </div>
-        );
     }
+
+    return (
+        <div className={classes.root}>
+            <Grid container spacing={1}>{hostConfigurationTable}</Grid>
+        </div>
+    );
 }
 
 class ConfigurationPageComponent extends React.Component 
