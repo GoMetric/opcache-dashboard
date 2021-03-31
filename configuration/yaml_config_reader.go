@@ -21,6 +21,7 @@ type yamlClusterConfig struct {
 }
 
 type yamlGroupConfig struct {
+	UrlPattern           *string                   `yaml:"urlPattern"`
 	Agent                *AgentType                `yaml:"agent"`
 	Path                 string                    `yaml:"path"`
 	Secure               bool                      `yaml:"secure"`
@@ -115,7 +116,15 @@ func (reader *YAMLConfigReader) ReadConfig(path string) ApplicationConfig {
 				agentType = *yamlGroupConfig.Agent
 			}
 
+			var urlPattern string
+			if yamlGroupConfig.UrlPattern != nil {
+				urlPattern = *yamlGroupConfig.UrlPattern
+			} else {
+				urlPattern = DefaultPullAgentUrlPattern
+			}
+
 			clusterGroupConfig := GroupConfig{
+				UrlPattern:           urlPattern,
 				Agent:                agentType,
 				Path:                 yamlGroupConfig.Path,
 				Secure:               yamlGroupConfig.Secure,

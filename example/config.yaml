@@ -4,15 +4,17 @@ clusters:
   myproject1:
     groups:
       common:
+        urlPattern: "{schema}://127.0.0.1:{port}/{host}{path}"
         agent: "pull"
-        path: "/"
+        path: "/agent-pull.php"
         secure: false
         basicAuth:
           user: lol
           password: kek
         port: 9999
         hosts: 
-          - "127.0.0.1"
+          - "some-host-name"
+          - "some-other-host-name"
   myproject2:
     groups:
       web:

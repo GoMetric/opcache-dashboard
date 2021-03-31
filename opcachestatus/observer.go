@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/GoMetric/opcache-dashboard/configuration"
@@ -136,6 +137,7 @@ func (o *Observer) pullAgent(
 	host string,
 ) {
 	var observableNodeOpcacheStatus, err = o.fetchNodeOpcacheStatus(
+		groupConfig.UrlPattern,
 		host,
 		groupConfig.Port,
 		groupConfig.Path,
@@ -161,23 +163,23 @@ func (o *Observer) pullAgent(
 }
 
 func (o *Observer) fetchNodeOpcacheStatus(
+	urlPattern string,
 	host string,
 	port int,
 	path string,
 	secure bool,
 	basicAuthCredentials *configuration.BasicAuthCredentials,
 ) (*NodeOpcacheStatus, error) {
-	var pullAgentURL = ""
-
 	var schema string
-
 	if secure {
-		schema += "https"
+		schema = "https"
 	} else {
-		schema += "http"
+		schema = "http"
 	}
 
-	pullAgentURL = fmt.Sprintf("%s://%s:%d%s?scripts=1", schema, host, port, path)
+	urlPatternReplacer := strings.NewReplacer("{schema}", schema, "{host}", host, "{port}", fmt.Sprint(port), "{path}", path)
+
+	pullAgentURL := urlPatternReplacer.Replace(urlPattern)
 
 	log.Printf(fmt.Sprintf("Observing %s", pullAgentURL))
 

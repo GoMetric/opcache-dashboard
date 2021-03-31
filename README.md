@@ -45,6 +45,7 @@ clusters: # cluster consists of node groups that share sabe codebase
   myproject1: # name of cluster
     groups: # group consists of nodes with same behavior
       common: # name of group
+        urlPattern: null # optional museful when custorm agent url used
         agent: "pull" # mode of agent. in pull mode data fetched from agent, in push mode data pushed by agent
         path: "/" # public path to agent script
         secure: false # connection type

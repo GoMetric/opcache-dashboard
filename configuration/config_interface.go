@@ -7,6 +7,8 @@ const DefaultStatsdPort = 8125
 
 const DefaultRefreshIntervalSeconds = 3600
 
+const DefaultPullAgentUrlPattern = ""
+
 // ApplicationConfig represents application configuration
 type ApplicationConfig struct {
 	PullIntervalSeconds int64
@@ -46,6 +48,7 @@ const (
 )
 
 type GroupConfig struct {
+	UrlPattern           string
 	Agent                AgentType
 	Path                 string
 	Secure               bool
