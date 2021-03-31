@@ -49,7 +49,7 @@ clusters: # cluster consists of node groups that share sabe codebase
         path: "/" # public path to agent script
         secure: false # connection type
         port: 9999 # port of php server
-        hosts: # comma separated list of php nodes
+        hosts: # list of php nodes
           - "127.0.0.1"
   myproject2:
     groups:
