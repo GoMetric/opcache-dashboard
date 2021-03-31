@@ -4,7 +4,7 @@ clusters:
   myproject1:
     groups:
       common:
-        urlPattern: "http://127.0.0.1:999/{host}/agent-pull.php"
+        urlPattern: "http://127.0.0.1:9999/{host}/agent-pull.php"
         basicAuth:
           user: someuser
           password: somepassword
@@ -24,7 +24,7 @@ ui:
 
 metrics:
   statsd:
-    enabled: false
+    enabled: true
     host: "127.0.0.1"
     port: 8125
     prefix: "some.metric.prefix"

@@ -134,6 +134,8 @@ func main() {
 
 		statsdClient.SetPrefix(applicationConfig.Metrics.Statsd.Prefix)
 
+		statsdClient.Open()
+
 		var statsdMetricSender = &metrics.StatsdMetricSender{
 			StatsdClient: statsdClient,
 		}
