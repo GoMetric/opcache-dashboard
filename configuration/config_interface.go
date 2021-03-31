@@ -7,7 +7,7 @@ const DefaultStatsdPort = 8125
 
 const DefaultRefreshIntervalSeconds = 3600
 
-const DefaultPullAgentUrlPattern = ""
+const DefaultPullAgentUrlPattern = "{schema}://{host}:{port}{path}?scripts=1"
 
 // ApplicationConfig represents application configuration
 type ApplicationConfig struct {

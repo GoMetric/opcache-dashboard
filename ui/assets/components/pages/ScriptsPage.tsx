@@ -52,10 +52,10 @@ const buildScriptAggregatedStatus = function(clusterOpcacheStatuses): Array<Obje
 
                     scriptAggregatedStatus[script].lastUsedTimestamp = Math.max(
                         scriptAggregatedStatus[script].lastUsedTimestamp, 
-                        scriptStatus.lastUsedTimestamp
+                        scriptStatus.LastUsedTimestamp
                     );
 
-                    scriptAggregatedStatus[script].hits += scriptStatus.hits;
+                    scriptAggregatedStatus[script].hits += scriptStatus.Hits;
                 }
             }
         }

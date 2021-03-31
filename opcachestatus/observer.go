@@ -179,7 +179,7 @@ func (o *Observer) fetchNodeOpcacheStatus(
 
 	urlPatternReplacer := strings.NewReplacer("{schema}", schema, "{host}", host, "{port}", fmt.Sprint(port), "{path}", path)
 
-	pullAgentURL := urlPatternReplacer.Replace(urlPattern)
+	pullAgentURL := urlPatternReplacer.Replace(urlPattern) + "?scripts=1"
 
 	log.Printf(fmt.Sprintf("Observing %s", pullAgentURL))
 
