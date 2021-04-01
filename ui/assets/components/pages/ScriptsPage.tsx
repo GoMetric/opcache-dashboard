@@ -1,18 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { DataGrid, ValueGetterParams } from '@material-ui/data-grid';
+import MaterialTable from 'material-table';
 import {DateTime} from 'luxon';
 import prettyBytes from 'pretty-bytes';
 import { Paper } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => ({
-    dataGridRoot: {
-        '& .MuiDataGrid-cell': {
-            fontSize: '0.9em',
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        dataGridRoot: {
+            border: '1px solid red',
+            background: 'red',
+            '& .MuiTableCell-body': {
+                padding: '6px 16px',
+                fontSize: '0.8em',
+                background: 'red',
+            },
         },
-    },
-}));
+    }),
+);
 
 const mapStateToProps = (state: Object) => {
     return {
@@ -69,75 +75,75 @@ const buildScriptAggregatedStatus = function(clusterOpcacheStatuses): Array<Obje
     return Object.values(scriptAggregatedStatus);
 }
 
-function ScriptsDataGrid(props) 
-{
+function ScriptsMaterialTable(props) {
     const columns = [
         {
             field: 'script',
-            headerName: 'Script',
+            title: 'Script',
             sortable: true,
-            flex: 1,
         },
         {
             field: 'hits',
-            headerName: 'Hits',
+            title: 'Hits',
             sortable: true,
-            width: 90,
-            hide: false,
-            type: 'number',
+            headerStyle: {
+                width: "90px",
+            },
+            hidden: false,
+            type: 'numeric',
         },
         {
             field: 'memoryHumanReadable',
-            headerName: 'Size',
+            title: 'Size',
             sortable: true,
-            width: 85,
-            valueGetter: (params: ValueGetterParams) => {
-                return prettyBytes(params.getValue('memory'));
+            headerStyle: {
+                width: "85px",
             },
-            hide: false,
-            type: 'number',
+            render: (row) => {
+                return prettyBytes(row.memory);
+            },
+            customSort: (a, b) => a.memory - b.memory,
+            hidden: false,
         },
         {
             field: 'lastUsedDate',
-            headerName: 'Last used',
+            title: 'Last used',
             sortable: true,
-            width: 170,
-            valueGetter: (params: ValueGetterParams) => {
-                return formatTime(params.getValue('lastUsedTimestamp'));
+            headerStyle: {
+                width: "170x"
             },
-            hide: false,
-            type: 'dateTime',
-        },
-        {
-            field: 'createDate',
-            headerName: 'Created',
-            sortable: true,
-            width: 170,
-            valueGetter: (params: ValueGetterParams) => {
-                return formatTime(params.getValue('createTimestamp'));
+            render: (row) => {
+                return formatTime(row.lastUsedTimestamp);
             },
-            type: 'dateTime',
-            hide: true,
-        },
+            customSort: (a, b) => a.lastUsedTimestamp - b.lastUsedTimestamp,
+            hidden: false,
+            type: 'datetime',
+        }
     ];
 
     return (
-        <DataGrid
-            rows={props.rows}
+        <MaterialTable
+            title=""
+            options={{
+                search: true,
+                sorting: true,
+                pageSize: 100,
+                pageSizeOptions: [20, 50, 100],
+                rowStyle: {
+                    fontSize: '0.8em',
+                },
+                padding: "dense",
+                tableLayout: "auto"
+            }}
             columns={columns}
-            autoHeight="true"
-            autoPageSize="true"
-            density="compact"
-            className={props.className}
-        ></DataGrid>
+            data={props.rows}
+        ></MaterialTable>
     );
 }
 
-function ScriptsMaterialTable(props) {
-
-}
-
 function ScriptsPageComponent(props: Object) {
+    const classes = useStyles();
+
     if (props.selectedClusterName === null) {
         return <div>Loading</div>
     }
@@ -146,12 +152,8 @@ function ScriptsPageComponent(props: Object) {
         return <div>No scripts found</div>
     }
 
-    const classes = useStyles();
-
     return <div style={{ minHeight: '400px', width: '100%' }}>
-        <Paper>
-            <ScriptsDataGrid rows={props.scriptAggregatedStatus} className={classes.dataGridRoot}></ScriptsDataGrid>
-        </Paper>
+        <ScriptsMaterialTable rows={props.scriptAggregatedStatus} className={classes.dataGridRoot}></ScriptsMaterialTable>
     </div>
 }
 

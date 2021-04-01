@@ -77,6 +77,10 @@ module.exports = {
                                 },
                             ],
                             '@babel/preset-react',
+                            [
+                                "@babel/preset-typescript",
+                                { isTSX: true, allExtensions: true }
+                            ]
                         ],
                         plugins: [
                             '@babel/plugin-syntax-dynamic-import',
