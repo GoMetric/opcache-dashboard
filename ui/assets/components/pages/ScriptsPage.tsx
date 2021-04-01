@@ -23,6 +23,11 @@ const mapStateToProps = (state: Object) => {
     };
 };
 
+const formatTime = function(timestamp: bigint): string {
+    let datetime = DateTime.fromSeconds(timestamp);
+    return datetime.toFormat('yyyy-LL-dd hh:mm:ss');
+};
+
 const buildScriptAggregatedStatus = function(clusterOpcacheStatuses): Array<Object> {
     let scriptAggregatedStatus = {};
 
@@ -64,20 +69,8 @@ const buildScriptAggregatedStatus = function(clusterOpcacheStatuses): Array<Obje
     return Object.values(scriptAggregatedStatus);
 }
 
-function ScriptsPageComponent(props: Object) {
-    if (props.selectedClusterName === null) {
-        return <div>Loading</div>
-    }
-
-    if (props.scriptAggregatedStatus.length === 0) {
-        return <div>No scripts found</div>
-    }
-
-    const formatTime = function(timestamp: bigint): string {
-        let datetime = DateTime.fromSeconds(timestamp);
-        return datetime.toFormat('yyyy-LL-dd hh:mm:ss');
-    };
-
+function ScriptsDataGrid(props) 
+{
     const columns = [
         {
             field: 'script',
@@ -127,21 +120,37 @@ function ScriptsPageComponent(props: Object) {
             hide: true,
         },
     ];
-    
-    let rows = props.scriptAggregatedStatus;
+
+    return (
+        <DataGrid
+            rows={props.rows}
+            columns={columns}
+            autoHeight="true"
+            autoPageSize="true"
+            density="compact"
+            className={props.className}
+        ></DataGrid>
+    );
+}
+
+function ScriptsMaterialTable(props) {
+
+}
+
+function ScriptsPageComponent(props: Object) {
+    if (props.selectedClusterName === null) {
+        return <div>Loading</div>
+    }
+
+    if (props.scriptAggregatedStatus.length === 0) {
+        return <div>No scripts found</div>
+    }
 
     const classes = useStyles();
 
     return <div style={{ minHeight: '400px', width: '100%' }}>
         <Paper>
-            <DataGrid
-                rows={rows}
-                columns={columns}
-                autoHeight="true"
-                autoPageSize="true"
-                density="compact"
-                className={classes.dataGridRoot}
-            ></DataGrid>
+            <ScriptsDataGrid rows={props.scriptAggregatedStatus} className={classes.dataGridRoot}></ScriptsDataGrid>
         </Paper>
     </div>
 }
