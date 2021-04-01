@@ -343,7 +343,7 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: theme.spacing(2),
             textAlign: 'center',
             color: theme.palette.text.secondary,
-            height: '510px'
+            height: '100%',
         },
         statusTableRoot: {
             '& .MuiTableCell-body': {
@@ -412,8 +412,8 @@ function StatusPageComponent(props: Object) {
                     <OpcacheStatusAlerts alerts={props.alerts[groupName][hostName]}></OpcacheStatusAlerts>
 
                     <Grid container spacing={1}>
-                        <Grid item xs={12} sm={6} md={4} key={hostName + "memory"}>
-                            <Paper className={classes.paper}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "memory"} height="100%">
+                            <Paper className={classes.paper} height="100%">
                                 <h2>Memory</h2>
                                 <Doughnut 
                                     data={props.charts[groupName][hostName].memory.chartData} 
@@ -422,8 +422,8 @@ function StatusPageComponent(props: Object) {
                                 <StatusTable rows={props.tables[groupName][hostName].memory}></StatusTable>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={4} key={hostName + "internedStrings"}>
-                            <Paper className={classes.paper}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "internedStrings"} height="100%">
+                            <Paper className={classes.paper} height="100%">
                                 <h2>Interned strings</h2>
                                 <Doughnut 
                                     data={props.charts[groupName][hostName].internedStrings.chartData}
@@ -432,8 +432,8 @@ function StatusPageComponent(props: Object) {
                                 <StatusTable rows={props.tables[groupName][hostName].internedStrings}></StatusTable>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={4} key={hostName + "keys"}>
-                            <Paper className={classes.paper}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "keys"} height="100%">
+                            <Paper className={classes.paper} height="100%">
                                 <h2>Keys</h2>
                                 <Doughnut 
                                     data={props.charts[groupName][hostName].keys.chartData}
@@ -441,8 +441,8 @@ function StatusPageComponent(props: Object) {
                                 <StatusTable rows={props.tables[groupName][hostName].keys}></StatusTable>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={4} key={hostName + "hits"}>
-                            <Paper className={classes.paper}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "hits"} height="100%">
+                            <Paper className={classes.paper} height="100%">
                                 <h2>Key Hits</h2>
                                 <Doughnut 
                                     data={props.charts[groupName][hostName].keyHits.chartData} 
@@ -450,8 +450,8 @@ function StatusPageComponent(props: Object) {
                                 <StatusTable rows={props.tables[groupName][hostName].keyHits}></StatusTable>
                             </Paper>
                         </Grid>
-                        <Grid item xs={12} sm={6} md={4} key={hostName + "restarts"}>
-                            <Paper className={classes.paper}>
+                        <Grid item xs={12} sm={6} md={4} key={hostName + "restarts"} height="100%">
+                            <Paper className={classes.paper} height="100%">
                                 <h2>Restarts</h2>
                                 <Doughnut 
                                     data={props.charts[groupName][hostName].restarts.chartData} 
