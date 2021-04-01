@@ -1,4 +1,4 @@
-import { Button, createStyles, makeStyles, Theme } from '@material-ui/core';
+import { Button, createStyles, makeStyles, Tab, Tabs, Theme } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
@@ -18,6 +18,9 @@ import resetNodeOpcache from '/actionCreators/resetNodeOpcache';
 const mapStateToProps = (state: Object) => {
     return {
         selectedClusterName: state.selectedClusterName,
+        selectedClusterGroupNames: state.selectedClusterName
+            ? Object.keys(state.opcacheStatuses[state.selectedClusterName])
+            : [],
         charts: state.selectedClusterName
             ? buildChartData(state.opcacheStatuses[state.selectedClusterName])
             : [],
@@ -379,7 +382,7 @@ function StatusTable(props: Object)
 function StatusPageComponent(props: Object) {
     const classes = useStyles();
 
-    let groupGridCollection = [];
+    const [currentGroupTabId, setCurrentGroupTabId] = React.useState(0);
 
     const onResetNodeOpcacheClick = function(e) {
         props.resetNodeOpcache(
@@ -389,12 +392,18 @@ function StatusPageComponent(props: Object) {
         );
     };
 
-    for (let groupName in props.charts) {
+    const handleGroupTabChange = (event: React.ChangeEvent<{}>, groupTabId: number) => {
+        setCurrentGroupTabId(groupTabId);
+    };
+
+    let groupGridCollection = [];
+
+    props.selectedClusterGroupNames.map((groupName, groupTabId) => {
         const hostGridCollection = [];
 
         for (let hostName in props.charts[groupName]) {
             hostGridCollection.push(
-                <div key={hostName + "hostGrid"}>
+                <div key={hostName}>
                     <h2>{hostName}</h2>
 
                     <Button 
@@ -465,14 +474,27 @@ function StatusPageComponent(props: Object) {
         }
 
         groupGridCollection.push(
-            <div key={groupName + "groupGrid"}>
-                <h1>{groupName}</h1>
+            <div hidden={currentGroupTabId !== groupTabId} key={groupName}>
                 {hostGridCollection}
             </div>
         );
-    }
+    });
 
-    return <div>{groupGridCollection}</div>;
+    return (
+        <div>
+            <Paper square>
+                <Tabs
+                    value={currentGroupTabId}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    onChange={handleGroupTabChange}
+                >
+                    {props.selectedClusterGroupNames.map(groupName => <Tab key={groupName} label={groupName} />)}
+                </Tabs>
+            </Paper>
+            {groupGridCollection}
+        </div>
+    );
 }
 
 const StatusPage = connect(mapStateToProps, mapDispatchToProps)(StatusPageComponent);
