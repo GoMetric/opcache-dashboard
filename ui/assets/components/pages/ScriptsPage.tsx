@@ -5,50 +5,65 @@ import {DateTime} from 'luxon';
 import prettyBytes from 'pretty-bytes';
 import { Paper } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { Tab, Tabs } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         dataGridRoot: {
-            border: '1px solid red',
-            background: 'red',
             '& .MuiTableCell-body': {
                 padding: '6px 16px',
                 fontSize: '0.8em',
                 background: 'red',
             },
         },
+        tabs: {
+            marginBottom: '20px',
+        }
     }),
 );
 
 const mapStateToProps = (state: Object) => {
+    let groupScriptAggregatedStatus = null;
+    let allScriptAggregatedStatus = null;
+
+    if (state.selectedClusterName) {
+        [allScriptAggregatedStatus, groupScriptAggregatedStatus] = buildScriptAggregatedStatus(
+            state.opcacheStatuses[state.selectedClusterName]
+        )
+    }
+
     return {
         selectedClusterName: state.selectedClusterName,
-        scriptAggregatedStatus: state.selectedClusterName
-            ? buildScriptAggregatedStatus(state.opcacheStatuses[state.selectedClusterName])
-            : []
+        selectedClusterGroupNames: state.selectedClusterName
+            ? Object.keys(state.opcacheStatuses[state.selectedClusterName])
+            : [],
+        allScriptAggregatedStatus: allScriptAggregatedStatus, 
+        groupScriptAggregatedStatus: groupScriptAggregatedStatus,
     };
 };
 
 const formatTime = function(timestamp: bigint): string {
-    let datetime = DateTime.fromSeconds(timestamp);
+    const datetime = DateTime.fromSeconds(timestamp);
     return datetime.toFormat('yyyy-LL-dd hh:mm:ss');
 };
 
 const buildScriptAggregatedStatus = function(clusterOpcacheStatuses): Array<Object> {
-    let scriptAggregatedStatus = {};
+    const groupScriptAggregatedStatus = {};
+    const allScriptAggregatedStatus = {};
 
-    for (let groupName in clusterOpcacheStatuses) {
-        for (let host in clusterOpcacheStatuses[groupName]) {
+    for (const groupName in clusterOpcacheStatuses) {
+        for (const host in clusterOpcacheStatuses[groupName]) {
             if (!clusterOpcacheStatuses[groupName][host]['Scripts'] || clusterOpcacheStatuses[groupName][host]['Scripts'].length === 0) {
                 continue;
             }
 
-            let rowId = 0;
-            for (let script in clusterOpcacheStatuses[groupName][host]['Scripts']) {
-                let scriptStatus = clusterOpcacheStatuses[groupName][host]['Scripts'][script];
-                if (!scriptAggregatedStatus.hasOwnProperty(script)) {
-                    scriptAggregatedStatus[script] = {
-                        id: rowId++,
+            groupScriptAggregatedStatus[groupName] = {};
+
+            for (const script in clusterOpcacheStatuses[groupName][host]['Scripts']) {
+                const scriptStatus = clusterOpcacheStatuses[groupName][host]['Scripts'][script];
+                
+                if (!(script in groupScriptAggregatedStatus[groupName])) {
+                    groupScriptAggregatedStatus[groupName][script] = {
                         script: script,
                         createTimestamp: scriptStatus.CreateTimestamp,
                         lastUsedTimestamp: scriptStatus.LastUsedTimestamp,
@@ -56,23 +71,45 @@ const buildScriptAggregatedStatus = function(clusterOpcacheStatuses): Array<Obje
                         memory: scriptStatus.Memory,
                     }
                 } else {
-                    scriptAggregatedStatus[script].createTimestamp = Math.min(
-                        scriptAggregatedStatus[script].createTimestamp, 
+                    groupScriptAggregatedStatus[groupName][script].createTimestamp = Math.min(
+                        groupScriptAggregatedStatus[script].createTimestamp, 
                         scriptStatus.CreateTimestamp
                     );
-
-                    scriptAggregatedStatus[script].lastUsedTimestamp = Math.max(
-                        scriptAggregatedStatus[script].lastUsedTimestamp, 
+    
+                    groupScriptAggregatedStatus[groupName][script].lastUsedTimestamp = Math.max(
+                        groupScriptAggregatedStatus[script].lastUsedTimestamp, 
                         scriptStatus.LastUsedTimestamp
                     );
+    
+                    groupScriptAggregatedStatus[groupName][script].hits += scriptStatus.Hits;
+                }
 
-                    scriptAggregatedStatus[script].hits += scriptStatus.Hits;
+                if (!(script in allScriptAggregatedStatus)) {
+                    allScriptAggregatedStatus[script] = {
+                        script: script,
+                        createTimestamp: scriptStatus.CreateTimestamp,
+                        lastUsedTimestamp: scriptStatus.LastUsedTimestamp,
+                        hits: scriptStatus.Hits,
+                        memory: scriptStatus.Memory,
+                    }
+                } else {
+                    allScriptAggregatedStatus[script].createTimestamp = Math.min(
+                        allScriptAggregatedStatus[script].createTimestamp, 
+                        scriptStatus.CreateTimestamp
+                    );
+    
+                    allScriptAggregatedStatus[script].lastUsedTimestamp = Math.max(
+                        allScriptAggregatedStatus[script].lastUsedTimestamp, 
+                        scriptStatus.LastUsedTimestamp
+                    );
+    
+                    allScriptAggregatedStatus[script].hits += scriptStatus.Hits;
                 }
             }
         }
     }
 
-    return Object.values(scriptAggregatedStatus);
+    return [allScriptAggregatedStatus, groupScriptAggregatedStatus];
 }
 
 function ScriptsMaterialTable(props) {
@@ -144,16 +181,38 @@ function ScriptsMaterialTable(props) {
 function ScriptsPageComponent(props: Object) {
     const classes = useStyles();
 
+    const [currentGroupTabId, setCurrentGroupTabId] = React.useState(0);
+
+    const handleGroupTabChange = (event: React.ChangeEvent<{}>, groupTabId: number) => {
+        setCurrentGroupTabId(groupTabId);
+    };
+
     if (props.selectedClusterName === null) {
         return <div>Loading</div>
     }
 
-    if (props.scriptAggregatedStatus.length === 0) {
+    if (props.allScriptAggregatedStatus.length === 0) {
         return <div>No scripts found</div>
     }
 
+    let groupScripts = (currentGroupTabId === 0)
+        ? props.allScriptAggregatedStatus
+        : props.groupScriptAggregatedStatus[props.selectedClusterGroupNames[currentGroupTabId - 1]]
+
     return <div style={{ minHeight: '400px', width: '100%' }}>
-        <ScriptsMaterialTable rows={props.scriptAggregatedStatus} className={classes.dataGridRoot}></ScriptsMaterialTable>
+        <Paper square>
+            <Tabs
+                value={currentGroupTabId}
+                indicatorColor="primary"
+                textColor="primary"
+                onChange={handleGroupTabChange}
+                className={classes.tabs}
+            >
+                <Tab key="All" label="All" />
+                {props.selectedClusterGroupNames.map(groupName => <Tab key={groupName} label={groupName} />)}
+            </Tabs>
+        </Paper>
+        <ScriptsMaterialTable rows={Object.values(groupScripts)} className={classes.dataGridRoot}></ScriptsMaterialTable>
     </div>
 }
 

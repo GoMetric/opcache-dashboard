@@ -26,6 +26,7 @@
     "chart.js": "^2.9.4",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.2",
+    "eslint-plugin-react-hooks": "^4.2.0",
     "file-loader": "^6.2.0",
     "lodash-es": "^4.17.20",
     "luxon": "^1.26.0",
@@ -45,12 +46,17 @@
     "typescript": "^4.2.3",
     "webpack": "^5.22",
     "webpack-cli": "^4.5.0",
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^3.11.2",
+    "@typescript-eslint/eslint-plugin": "^4.20.0",
+    "@typescript-eslint/parser": "^4.20.0",
+    "eslint": "^7.23.0",
+    "eslint-plugin-react": "^7.23.1"
   },
   "scripts": {
     "watch": "NODE_ENV=development ./node_modules/.bin/webpack -w",
     "build-dev": "NODE_ENV=development ./node_modules/.bin/webpack",
     "dev-serve": "NODE_ENV=development ./node_modules/.bin/webpack serve --hot --devtool source-map --liveReload --inline --content-base public --port 8050 --host 127.0.0.1 --config webpack.config.js",
+    "lint": "NODE_ENV=development ./node_modules/.bin/eslint .",
     "build-prod": "NODE_ENV=production ./node_modules/.bin/webpack --progress"
   }
 }

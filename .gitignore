@@ -1,5 +1,6 @@
 bin
 ui/assets.go
 ui/assets/node_modules
+ui/assets/yarn-error.log
 ui/assets/dist
 __debug_bin
