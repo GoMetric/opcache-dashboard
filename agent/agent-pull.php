@@ -89,6 +89,7 @@ function statusCommand(bool $pretty, bool $scripts): void
         [
             'configuration' => opcache_get_configuration(),
             'status' => opcache_get_status($scripts),
+            'apcu' => getApcuStatus(),
         ],
         $pretty
     );
@@ -109,4 +110,19 @@ function sendResponse(int $code, array $body, bool $pretty = false): void
         $body,
         $jsonEncodeFlags
     );
+}
+
+function getApcuStatus(): array
+{
+    if (!extension_loaded('apcu') || !apcu_enabled()) {
+        return [
+            'enabled' => false,
+        ];
+    }
+
+    return [
+        'enabled' => true,
+        'smaInfo' => apcu_sma_info(),
+        'settings' => ini_get_all('apcu'),
+    ];
 }

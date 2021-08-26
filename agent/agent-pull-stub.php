@@ -12,6 +12,7 @@ declare(strict_types=1);
 $phpFileContent = '<?php $a=md5("' . str_repeat('4', 200) . '");';
 
 for ($i = 0; $i < 200; $i++) {
+    // add opcache
     $postfix = ($i % 10 === 1) ? '-' . str_repeat('42', 50) . '-' : '';
 
     $path = sys_get_temp_dir() . '/opcache-dashboard-' . $i . $postfix . '.php';
@@ -21,6 +22,9 @@ for ($i = 0; $i < 200; $i++) {
     }
 
     require_once $path;
+
+    // add apcu
+    apcu_store((string) $i, $path);
 }
 
 require_once __DIR__ . '/agent-pull.php';
