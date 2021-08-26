@@ -22,10 +22,14 @@
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
+    "@typescript-eslint/eslint-plugin": "^4.20.0",
+    "@typescript-eslint/parser": "^4.20.0",
     "babel-loader": "^8.2.2",
     "chart.js": "^2.9.4",
     "copy-webpack-plugin": "^7.0.0",
     "css-loader": "^5.0.2",
+    "eslint": "^7.23.0",
+    "eslint-plugin-react": "^7.23.1",
     "eslint-plugin-react-hooks": "^4.2.0",
     "file-loader": "^6.2.0",
     "lodash-es": "^4.17.20",
@@ -46,11 +50,7 @@
     "typescript": "^4.2.3",
     "webpack": "^5.22",
     "webpack-cli": "^4.5.0",
-    "webpack-dev-server": "^3.11.2",
-    "@typescript-eslint/eslint-plugin": "^4.20.0",
-    "@typescript-eslint/parser": "^4.20.0",
-    "eslint": "^7.23.0",
-    "eslint-plugin-react": "^7.23.1"
+    "webpack-dev-server": "^3.11.2"
   },
   "scripts": {
     "watch": "NODE_ENV=development ./node_modules/.bin/webpack -w",
