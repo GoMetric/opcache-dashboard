@@ -7,6 +7,7 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -164,23 +165,37 @@ export default function Layout() {
                     <Divider />
                     <List>
                         <div>
-                            <ListItem button component={Link} to="/status">
+                            <ListSubheader>Opcache</ListSubheader>
+                            <ListItem button component={Link} to="/opcache/status">
                                 <ListItemIcon>
                                     <EqualizerIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Status" />
                             </ListItem>
-                            <ListItem button component={Link} to="/configuration">
+                            <ListItem button component={Link} to="/opcache/configuration">
                                 <ListItemIcon>
                                     <SettingsIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Configuration" />
                             </ListItem>
-                            <ListItem button component={Link} to="/scripts">
+                            <ListItem button component={Link} to="/opcache/scripts">
                                 <ListItemIcon>
                                     <ListIcon />
                                 </ListItemIcon>
                                 <ListItemText primary="Scripts" />
+                            </ListItem>
+                            <ListSubheader>APCu</ListSubheader>
+                            <ListItem button component={Link} to="/apcu/status">
+                                <ListItemIcon>
+                                    <EqualizerIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Status" />
+                            </ListItem>
+                            <ListItem button component={Link} to="/apcu/configuration">
+                                <ListItemIcon>
+                                    <SettingsIcon />
+                                </ListItemIcon>
+                                <ListItemText primary="Configuration" />
                             </ListItem>
                         </div>
                     </List>
@@ -190,15 +205,15 @@ export default function Layout() {
                     <Container maxWidth={false} className={classes.container}>
                         <Switch>
                             <Route exact path="/">
-                                <Redirect to="status" />
+                                <Redirect to="/opcache/status" />
                             </Route>
-                            <Route exact path="/status">
+                            <Route exact path="/opcache/status">
                                 <StatusPage />
                             </Route>
-                            <Route exact path="/configuration">
+                            <Route exact path="/opcache/configuration">
                                 <ConfigurationPage />
                             </Route>
-                            <Route exact path="/scripts">
+                            <Route exact path="/opcache/scripts">
                                 <ScriptsPage />
                             </Route>
                             <Route>
