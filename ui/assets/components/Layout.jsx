@@ -19,12 +19,15 @@ import ListItemText from '@material-ui/core/ListItemText';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ListIcon from '@material-ui/icons/List';
-import ScriptsPage from '/components/pages/ScriptsPage'
-import StatusPage from '/components/pages/StatusPage'
+import OpcacheScriptsPage from '/components/pages/opcache/OpcacheScriptsPage';
+import OpcacheStatusPage from '/components/pages/opcache/OpcacheStatusPage';
+import OpcacheConfigurationPage from '/components/pages/opcache/OpcacheConfigurationPage';
+import ApcuStatusPage from '/components/pages/apcu/ApcuStatusPage';
+import ApcuConfigurationPage from '/components/pages/apcu/ApcuConfigurationPage';
 import NotFoundPage from '/components/pages/NotFoundPage'
 import ClusterSelect from '/components/ClusterSelect';
 import OpcacheStatusRefreshButton from '/components/OpcacheStatusRefreshButton';
-import ConfigurationPage from './pages/ConfigurationPage';
+
 import {
     Switch,
     Route,
@@ -178,8 +181,8 @@ export default function Layout() {
                         <MenuItem to="/opcache/configuration" icon={(<SettingsIcon />)} primary="Configuration"></MenuItem>
                         <MenuItem to="/opcache/scripts" icon={(<ListIcon />)} primary="Scripts"></MenuItem>
                         <ListSubheader>APCu</ListSubheader>
-                        <MenuItem to="/acpu/status" icon={(<EqualizerIcon />)} primary="Status"></MenuItem>
-                        <MenuItem to="/acpu/configuration" icon={(<SettingsIcon />)} primary="Configuration"></MenuItem>
+                        <MenuItem to="/apcu/status" icon={(<EqualizerIcon />)} primary="Status"></MenuItem>
+                        <MenuItem to="/apcu/configuration" icon={(<SettingsIcon />)} primary="Configuration"></MenuItem>
                     </div>
                 </List>
             </Drawer>
@@ -191,13 +194,19 @@ export default function Layout() {
                             <Redirect to="/opcache/status" />
                         </Route>
                         <Route exact path="/opcache/status">
-                            <StatusPage />
+                            <OpcacheStatusPage />
                         </Route>
                         <Route exact path="/opcache/configuration">
-                            <ConfigurationPage />
+                            <OpcacheConfigurationPage />
                         </Route>
                         <Route exact path="/opcache/scripts">
-                            <ScriptsPage />
+                            <OpcacheScriptsPage />
+                        </Route>
+                        <Route exact path="/apcu/status">
+                            <ApcuStatusPage />
+                        </Route>
+                        <Route exact path="/apcu/configuration">
+                            <ApcuConfigurationPage />
                         </Route>
                         <Route>
                             <NotFoundPage />

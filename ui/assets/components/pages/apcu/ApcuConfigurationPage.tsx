@@ -160,6 +160,6 @@ class ConfigurationPageComponent extends React.Component
     }
 }
 
-const ConfigurationPage = connect(mapStateToProps)(ConfigurationPageComponent);
+const ApcuConfigurationPage = connect(mapStateToProps)(ConfigurationPageComponent);
 
-export default ConfigurationPage;
+export default ApcuConfigurationPage;

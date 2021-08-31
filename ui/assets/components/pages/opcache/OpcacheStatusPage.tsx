@@ -497,6 +497,6 @@ function StatusPageComponent(props: Object) {
     );
 }
 
-const StatusPage = connect(mapStateToProps, mapDispatchToProps)(StatusPageComponent);
+const OpcacheStatusPage = connect(mapStateToProps, mapDispatchToProps)(StatusPageComponent);
 
-export default StatusPage;
+export default OpcacheStatusPage;
