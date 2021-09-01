@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	statsd "github.com/GoMetric/go-statsd-client"
-	"github.com/GoMetric/opcache-dashboard/opcachestatus"
+	"github.com/GoMetric/opcache-dashboard/observer"
 )
 
 type StatsdMetricSender struct {
@@ -15,7 +15,7 @@ func (s *StatsdMetricSender) Send(
 	clusterName string,
 	groupName string,
 	hostName string,
-	nodeOpcacheStatus opcachestatus.NodeOpcacheStatus,
+	nodeOpcacheStatus observer.NodeOpcacheStatus,
 ) {
 	clusterName = strings.ReplaceAll(clusterName, ".", "-")
 	groupName = strings.ReplaceAll(groupName, ".", "-")

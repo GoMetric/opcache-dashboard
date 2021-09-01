@@ -1,4 +1,4 @@
-package opcachestatus
+package observer
 
 import (
 	"encoding/json"

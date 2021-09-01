@@ -1,4 +1,4 @@
-package opcachestatus
+package observer
 
 // ClustersOpcacheStatuses represents collection of node opcache statuses
 type ClustersOpcacheStatuses map[string]map[string]map[string]NodeOpcacheStatus

@@ -17,7 +17,7 @@ import (
 
 	"github.com/GoMetric/opcache-dashboard/configuration"
 	"github.com/GoMetric/opcache-dashboard/metrics"
-	"github.com/GoMetric/opcache-dashboard/opcachestatus"
+	"github.com/GoMetric/opcache-dashboard/observer"
 	"github.com/GoMetric/opcache-dashboard/ui"
 	"github.com/NYTimes/gziphandler"
 	"github.com/gorilla/mux"
@@ -121,7 +121,7 @@ func main() {
 	router := mux.NewRouter()
 
 	// Build observer
-	var o = opcachestatus.Observer{
+	var o = observer.Observer{
 		Clusters: applicationConfig.Clusters,
 	}
 
