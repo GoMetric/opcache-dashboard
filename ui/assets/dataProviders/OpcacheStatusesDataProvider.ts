@@ -1,6 +1,6 @@
 class OpcacheStatusesDataProvider {
     async fetch(): Promise<Object> {
-        return await fetch("/api/nodes/statistics").then(response => response.json());
+        return await fetch("/api/nodes/statistics/opcache").then(response => response.json());
     }
 }
 

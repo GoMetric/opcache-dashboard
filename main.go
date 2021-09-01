@@ -156,16 +156,16 @@ func main() {
 
 	// opcache stat common request handler
 	router.Handle(
-		"/api/nodes/statistics",
+		"/api/nodes/statistics/opcache",
 		gziphandler.GzipHandler(
 			http.HandlerFunc(
 				func(w http.ResponseWriter, r *http.Request) {
 					var jsonBody []byte
 
 					if r.URL.Query().Get("pretty") == "1" {
-						jsonBody, _ = json.MarshalIndent(o.GetStatuses(), "", "    ")
+						jsonBody, _ = json.MarshalIndent(o.GetOpcacheStatuses(), "", "    ")
 					} else {
-						jsonBody, _ = json.Marshal(o.GetStatuses())
+						jsonBody, _ = json.Marshal(o.GetOpcacheStatuses())
 					}
 
 					w.Write(jsonBody)

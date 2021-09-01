@@ -15,7 +15,7 @@ import (
 type Observer struct {
 	metricSenders   []MetricSenderInterface
 	agentPullTicker *time.Ticker
-	statuses        ClustersOpcacheStatuses
+	opcacheStatuses ClustersOpcacheStatuses
 	parser          AgentMessageParser
 	Clusters        map[string]configuration.ClusterConfig
 	LastStatusUpate time.Time
@@ -39,16 +39,16 @@ func (o *Observer) StartPulling(
 	refreshIntervalNanoSeconds int64,
 ) {
 	// init statuses structure
-	o.statuses = ClustersOpcacheStatuses{}
+	o.opcacheStatuses = ClustersOpcacheStatuses{}
 
 	for clusterName, clusterConfig := range o.Clusters {
-		o.statuses[clusterName] = map[string]map[string]NodeOpcacheStatus{}
+		o.opcacheStatuses[clusterName] = map[string]map[string]NodeOpcacheStatus{}
 
 		for groupName, groupConfig := range clusterConfig.Groups {
-			o.statuses[clusterName][groupName] = map[string]NodeOpcacheStatus{}
+			o.opcacheStatuses[clusterName][groupName] = map[string]NodeOpcacheStatus{}
 
 			for _, host := range groupConfig.Hosts {
-				o.statuses[clusterName][groupName][host] = NodeOpcacheStatus{}
+				o.opcacheStatuses[clusterName][groupName][host] = NodeOpcacheStatus{}
 			}
 		}
 	}
@@ -65,9 +65,9 @@ func (o *Observer) StopPulling() {
 	o.agentPullTicker.Stop()
 }
 
-// GetStatuses returns pulled statuses for all clusters
-func (o *Observer) GetStatuses() ClustersOpcacheStatuses {
-	return o.statuses
+// GetOpcacheStatuses returns pulled statuses for all clusters
+func (o *Observer) GetOpcacheStatuses() ClustersOpcacheStatuses {
+	return o.opcacheStatuses
 }
 
 func (o *Observer) ResetOpcache(clusterName string, groupName string, hostName string) error {
@@ -137,7 +137,7 @@ func (o *Observer) pullAgent(
 	}
 
 	// add fetched node status to collection
-	o.statuses[clusterName][groupName][host] = *observableNodeOpcacheStatus
+	o.opcacheStatuses[clusterName][groupName][host] = *observableNodeOpcacheStatus
 
 	// set last update time
 	o.LastStatusUpate = time.Now()
