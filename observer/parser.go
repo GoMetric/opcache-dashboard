@@ -49,6 +49,23 @@ type agentMessage struct {
 			Memory            int   `json:"memory_consumption"`
 		} `json:"scripts"`
 	} `json:"status"`
+	ApcuStatus struct {
+		Enabled bool `json:"enabled"`
+		SmaInfo *struct {
+			NumSeg     int `json:"num_seg"`
+			SegSize    int `json:"seg_size"`
+			AvailMem   int `json:"avail_mem"`
+			BlockLists [][]struct {
+				Size   int `json:"size"`
+				Offset int `json:"offset"`
+			} `json:"block_lists"`
+		}
+		Settings *map[string]struct {
+			GlobalValue string `json:"global_value"`
+			LocalValue  string `json:"local_value"`
+			Access      int    `json:"access"`
+		} `json:"settings"`
+	} `json:"apcu"`
 }
 
 // Parse agent response to struct
@@ -59,6 +76,25 @@ func (parser AgentMessageParser) Parse(body []byte) (*NodeStatistics, error) {
 		return nil, err
 	}
 
+	opcacheStatus, err := parser.buildNodeOpcacheStatus(agentMessage)
+	if err != nil {
+		return nil, err
+	}
+
+	apcuStatus, err := parser.buildNodeApcuStatus(agentMessage)
+	if err != nil {
+		return nil, err
+	}
+
+	nodeStatus := NodeStatistics{
+		OpcacheStatistics: *opcacheStatus,
+		ApcuStatistics:    *apcuStatus,
+	}
+
+	return &nodeStatus, nil
+}
+
+func (parser AgentMessageParser) buildNodeOpcacheStatus(agentMessage agentMessage) (*NodeOpcacheStatus, error) {
 	if len(agentMessage.Status.Scripts) == 0 {
 		return nil, errors.New("No scripts found in agent response")
 	}
@@ -123,13 +159,21 @@ func (parser AgentMessageParser) Parse(body []byte) (*NodeStatistics, error) {
 		}
 	}
 
-	// todo: implement passing apcu stat
-	apcuStatus := NodeApcuStatus{}
+	return &opcacheStatus, nil
+}
 
-	nodeStatus := NodeStatistics{
-		OpcacheStatistics: opcacheStatus,
-		ApcuStatistics: apcuStatus,
+func (parser AgentMessageParser) buildNodeApcuStatus(agentMessage agentMessage) (*NodeApcuStatus, error) {
+	apcuStatus := NodeApcuStatus{
+		Enabled: agentMessage.ApcuStatus.Enabled,
 	}
 
-	return &nodeStatus, nil
+	if (agentMessage.ApcuStatus.Enabled) {
+		apcuStatus.SmaInfo = &NodeApcuSmaInfo{
+			NumSeg: agentMessage.ApcuStatus.SmaInfo.NumSeg,
+			SegSize: agentMessage.ApcuStatus.SmaInfo.SegSize,
+			AvailMem: agentMessage.ApcuStatus.SmaInfo.NumSeg,
+		}
+	}
+
+	return &apcuStatus, nil
 }

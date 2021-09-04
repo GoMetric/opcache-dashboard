@@ -24,7 +24,7 @@ type Observer struct {
 
 type NodeStatistics struct {
 	OpcacheStatistics NodeOpcacheStatus
-	ApcuStatistics NodeApcuStatus
+	ApcuStatistics    NodeApcuStatus
 }
 
 func NewObserver(clusters map[string]configuration.ClusterConfig) *Observer {
