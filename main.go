@@ -154,7 +154,7 @@ func main() {
 		)
 	}
 
-	// opcache stat common request handler
+	// opcache statistics common request handler
 	router.Handle(
 		"/api/nodes/statistics/opcache",
 		gziphandler.GzipHandler(
@@ -163,9 +163,29 @@ func main() {
 					var jsonBody []byte
 
 					if r.URL.Query().Get("pretty") == "1" {
-						jsonBody, _ = json.MarshalIndent(o.GetOpcacheStatuses(), "", "    ")
+						jsonBody, _ = json.MarshalIndent(o.GetOpcacheStatistics(), "", "    ")
 					} else {
-						jsonBody, _ = json.Marshal(o.GetOpcacheStatuses())
+						jsonBody, _ = json.Marshal(o.GetOpcacheStatistics())
+					}
+
+					w.Write(jsonBody)
+				},
+			),
+		),
+	)
+
+	// APCu statistics request handler
+	router.Handle(
+		"/api/nodes/statistics/apcu",
+		gziphandler.GzipHandler(
+			http.HandlerFunc(
+				func(w http.ResponseWriter, r *http.Request) {
+					var jsonBody []byte
+
+					if r.URL.Query().Get("pretty") == "1" {
+						jsonBody, _ = json.MarshalIndent(o.GetApcuStatistics(), "", "    ")
+					} else {
+						jsonBody, _ = json.Marshal(o.GetApcuStatistics())
 					}
 
 					w.Write(jsonBody)
@@ -207,7 +227,7 @@ func main() {
 				"version":          Version,
 				"buildDate":        BuildDate,
 				"buildNumber":      BuildNumber,
-				"lastStatusUpdate": o.LastStatusUpate,
+				"lastStatusUpdate": o.LastStatusUpdate,
 			}
 
 			heartbeatJson, _ := json.Marshal(heartbeat)

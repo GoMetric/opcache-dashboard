@@ -5,6 +5,6 @@ type MetricSenderInterface interface {
 		clusterName string,
 		groupName string,
 		hostName string,
-		nodeOpcacheStatus NodeOpcacheStatus,
+		nodeStatistics NodeStatistics,
 	)
 }

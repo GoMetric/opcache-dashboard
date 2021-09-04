@@ -52,7 +52,7 @@ type agentMessage struct {
 }
 
 // Parse agent response to struct
-func (parser AgentMessageParser) Parse(body []byte) (*NodeOpcacheStatus, error) {
+func (parser AgentMessageParser) Parse(body []byte) (*NodeStatistics, error) {
 	var agentMessage = agentMessage{}
 	err := json.Unmarshal(body, &agentMessage)
 	if err != nil {
@@ -123,5 +123,13 @@ func (parser AgentMessageParser) Parse(body []byte) (*NodeOpcacheStatus, error) 
 		}
 	}
 
-	return &opcacheStatus, nil
+	// todo: implement passing apcu stat
+	apcuStatus := NodeApcuStatus{}
+
+	nodeStatus := NodeStatistics{
+		OpcacheStatistics: opcacheStatus,
+		ApcuStatistics: apcuStatus,
+	}
+
+	return &nodeStatus, nil
 }

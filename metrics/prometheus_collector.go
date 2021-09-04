@@ -47,8 +47,10 @@ func (s *PrometheusMetricSender) Send(
 	clusterName string,
 	groupName string,
 	hostName string,
-	nodeOpcacheStatus observer.NodeOpcacheStatus,
+	nodeStatistics observer.NodeStatistics,
 ) {
+	nodeOpcacheStatus := nodeStatistics.OpcacheStatistics
+
 	clusterName = strings.ReplaceAll(clusterName, ".", "-")
 	groupName = strings.ReplaceAll(groupName, ".", "-")
 	hostName = strings.ReplaceAll(hostName, ".", "-")

@@ -13,12 +13,18 @@ import (
 
 // Observer periodically reads status of observable nodes and aggregates received data
 type Observer struct {
-	metricSenders   []MetricSenderInterface
-	agentPullTicker *time.Ticker
-	opcacheStatuses ClustersOpcacheStatuses
-	parser          AgentMessageParser
-	Clusters        map[string]configuration.ClusterConfig
-	LastStatusUpate time.Time
+	metricSenders    []MetricSenderInterface
+	agentPullTicker  *time.Ticker
+	opcacheStatuses  ClustersOpcacheStatuses
+	apcuStatuses     ClustersApcuStatuses
+	parser           AgentMessageParser
+	Clusters         map[string]configuration.ClusterConfig
+	LastStatusUpdate time.Time
+}
+
+type NodeStatistics struct {
+	OpcacheStatistics NodeOpcacheStatus
+	ApcuStatistics NodeApcuStatus
 }
 
 func NewObserver(clusters map[string]configuration.ClusterConfig) *Observer {
@@ -40,15 +46,19 @@ func (o *Observer) StartPulling(
 ) {
 	// init statuses structure
 	o.opcacheStatuses = ClustersOpcacheStatuses{}
+	o.apcuStatuses = ClustersApcuStatuses{}
 
 	for clusterName, clusterConfig := range o.Clusters {
 		o.opcacheStatuses[clusterName] = map[string]map[string]NodeOpcacheStatus{}
+		o.apcuStatuses[clusterName] = map[string]map[string]NodeApcuStatus{}
 
 		for groupName, groupConfig := range clusterConfig.Groups {
 			o.opcacheStatuses[clusterName][groupName] = map[string]NodeOpcacheStatus{}
+			o.apcuStatuses[clusterName][groupName] = map[string]NodeApcuStatus{}
 
 			for _, host := range groupConfig.Hosts {
 				o.opcacheStatuses[clusterName][groupName][host] = NodeOpcacheStatus{}
+				o.apcuStatuses[clusterName][groupName][host] = NodeApcuStatus{}
 			}
 		}
 	}
@@ -65,9 +75,14 @@ func (o *Observer) StopPulling() {
 	o.agentPullTicker.Stop()
 }
 
-// GetOpcacheStatuses returns pulled statuses for all clusters
-func (o *Observer) GetOpcacheStatuses() ClustersOpcacheStatuses {
+// GetOpcacheStatistics returns pulled opcache statuses for all clusters
+func (o *Observer) GetOpcacheStatistics() ClustersOpcacheStatuses {
 	return o.opcacheStatuses
+}
+
+// GetApcuStatistics returns pulled APCu statuses for all clusters
+func (o *Observer) GetApcuStatistics() ClustersApcuStatuses {
+	return o.apcuStatuses
 }
 
 func (o *Observer) ResetOpcache(clusterName string, groupName string, hostName string) error {
@@ -125,7 +140,7 @@ func (o *Observer) pullAgent(
 	groupName string,
 	host string,
 ) {
-	var observableNodeOpcacheStatus, err = o.fetchNodeOpcacheStatus(
+	var observableNodeStatistics, err = o.fetchNodeStatistics(
 		groupConfig.UrlPattern,
 		host,
 		groupConfig.BasicAuthCredentials,
@@ -136,23 +151,26 @@ func (o *Observer) pullAgent(
 		return
 	}
 
-	// add fetched node status to collection
-	o.opcacheStatuses[clusterName][groupName][host] = *observableNodeOpcacheStatus
+	// add fetched node opcache status to collection
+	o.opcacheStatuses[clusterName][groupName][host] = observableNodeStatistics.OpcacheStatistics
+
+	// add fetched node APCu status to collection
+	o.apcuStatuses[clusterName][groupName][host] = observableNodeStatistics.ApcuStatistics
 
 	// set last update time
-	o.LastStatusUpate = time.Now()
+	o.LastStatusUpdate = time.Now()
 
 	// track metrics
 	for _, metricSender := range o.metricSenders {
-		metricSender.Send(clusterName, groupName, host, *observableNodeOpcacheStatus)
+		metricSender.Send(clusterName, groupName, host, *observableNodeStatistics)
 	}
 }
 
-func (o *Observer) fetchNodeOpcacheStatus(
+func (o *Observer) fetchNodeStatistics(
 	urlPattern string,
 	host string,
 	basicAuthCredentials *configuration.BasicAuthCredentials,
-) (*NodeOpcacheStatus, error) {
+) (*NodeStatistics, error) {
 	// build agent url
 	pullAgentURL := o.buildPullAgentUrl(urlPattern, host) + "?scripts=1"
 	log.Printf(fmt.Sprintf("Observing %s", pullAgentURL))
@@ -182,13 +200,13 @@ func (o *Observer) fetchNodeOpcacheStatus(
 		return nil, error
 	}
 
-	var observableNodeOpcacheStatus, err = o.parser.Parse(body)
+	var observableNodeStatistics, err = o.parser.Parse(body)
 
 	if err != nil {
 		return nil, fmt.Errorf("Can not parse response: %v", err)
 	}
 
-	return observableNodeOpcacheStatus, nil
+	return observableNodeStatistics, nil
 }
 
 func (o *Observer) buildPullAgentUrl(urlPattern string, host string) string {
