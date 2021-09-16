@@ -5,7 +5,7 @@ type ClustersApcuStatuses map[string]map[string]map[string]NodeApcuStatus
 type NodeApcuStatus struct{
 	Enabled bool
 	SmaInfo *NodeApcuSmaInfo
-	Settings *NodeApcuSettings
+	Settings *map[string]NodeApcuSetting
 }
 
 type NodeApcuSmaInfo struct {
@@ -17,7 +17,8 @@ type NodeApcuSmaInfo struct {
 	//	Offset int
 	//}
 }
-type NodeApcuSettings map[string]struct {
+
+type NodeApcuSetting struct {
 	GlobalValue string
 	LocalValue  string
 	Access      int

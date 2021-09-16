@@ -50,8 +50,8 @@ type agentMessage struct {
 		} `json:"scripts"`
 	} `json:"status"`
 	ApcuStatus struct {
-		Enabled bool `json:"enabled"`
-		SmaInfo *struct {
+		Enabled bool      `json:"enabled"`
+		SmaInfo *struct { // null when APCu disabled
 			NumSeg     int `json:"num_seg"`
 			SegSize    int `json:"seg_size"`
 			AvailMem   int `json:"avail_mem"`
@@ -60,7 +60,7 @@ type agentMessage struct {
 				Offset int `json:"offset"`
 			} `json:"block_lists"`
 		}
-		Settings *map[string]struct {
+		Settings *map[string]struct { // null when APCu disabled
 			GlobalValue string `json:"global_value"`
 			LocalValue  string `json:"local_value"`
 			Access      int    `json:"access"`
@@ -167,12 +167,25 @@ func (parser AgentMessageParser) buildNodeApcuStatus(agentMessage agentMessage) 
 		Enabled: agentMessage.ApcuStatus.Enabled,
 	}
 
-	if (agentMessage.ApcuStatus.Enabled) {
+	if agentMessage.ApcuStatus.Enabled {
+		// sma info
 		apcuStatus.SmaInfo = &NodeApcuSmaInfo{
-			NumSeg: agentMessage.ApcuStatus.SmaInfo.NumSeg,
-			SegSize: agentMessage.ApcuStatus.SmaInfo.SegSize,
+			NumSeg:   agentMessage.ApcuStatus.SmaInfo.NumSeg,
+			SegSize:  agentMessage.ApcuStatus.SmaInfo.SegSize,
 			AvailMem: agentMessage.ApcuStatus.SmaInfo.NumSeg,
 		}
+
+		// settings
+		apcuStatus.Settings = &map[string]NodeApcuSetting{}
+
+		for settingName, setting := range *agentMessage.ApcuStatus.Settings {
+			(*apcuStatus.Settings)[settingName] = NodeApcuSetting{
+				GlobalValue: setting.GlobalValue,
+				LocalValue:  setting.LocalValue,
+				Access:      setting.Access,
+			}
+		}
+
 	}
 
 	return &apcuStatus, nil
