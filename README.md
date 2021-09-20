@@ -90,6 +90,10 @@ Interval of observing specified in seconds in `pull-interval` cli option of by r
 
 Also this server serves UI and API for watching gathered statistic on `http-host` and `http-port` defined in cli agruments.
 
+# Localisation
+
+You may contribute to project localisation in https://www.transifex.com/gometric/opcache-dashboard
+
 # Other GUIs
 
 * [Opcache Control Panel](https://gist.github.com/ck-on/4959032)
