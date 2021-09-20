@@ -7,31 +7,36 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableRow from '@material-ui/core/TableRow';
 import prettyBytes from 'pretty-bytes';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Doughnut } from 'react-chartjs-2';
 import { connect } from 'react-redux';
-import {DateTime} from 'luxon';
-import resetNodeOpcache from '/actionCreators/resetNodeOpcache';
+import fetchApcuStatuses from '/actionCreators/fetchApcuStatuses';
 
 const mapStateToProps = (state: Object) => {
+    let selectedClusterGroupNames = (state.selectedClusterName && state.apcuStatuses)
+        ? Object.keys(state.apcuStatuses[state.selectedClusterName])
+        : [];
+
+    let charts = (state.selectedClusterName && state.apcuStatuses)
+        ? buildChartData(state.apcuStatuses[state.selectedClusterName])
+        : null;
+
+    let tables = (state.selectedClusterName && state.apcuStatuses)
+        ? buildTableData(state.apcuStatuses[state.selectedClusterName])
+        : null;
+
     return {
         selectedClusterName: state.selectedClusterName,
-        selectedClusterGroupNames: state.selectedClusterName
-            ? Object.keys(state.apcuStatuses[state.selectedClusterName])
-            : [],
-        charts: state.selectedClusterName
-            ? buildChartData(state.apcuStatuses[state.selectedClusterName])
-            : [],
-        tables: state.selectedClusterName
-            ? buildTableData(state.apcuStatuses[state.selectedClusterName])
-            : [],
+        selectedClusterGroupNames,
+        charts,
+        tables,
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        resetNodeOpcache: (clusterName: string, groupName: string, host: string) => {
-            dispatch(resetNodeOpcache(clusterName, groupName, host));
+        fetchApcuStatus: () => {
+            dispatch(fetchApcuStatuses());
         }
     }
 };
@@ -60,15 +65,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const buildTableData = function(clusterApcuStatuses) {
     const tables = {};
-
-    const formatTime = function(timestamp: bigint): string {
-        if (timestamp === 0) {
-            return '';
-        }
-
-        let datetime = DateTime.fromSeconds(timestamp);
-        return datetime.toFormat('yyyy-LL-dd hh:mm:ss');
-    };
 
     for (let groupName in clusterApcuStatuses) {
         tables[groupName] = {};
@@ -168,6 +164,14 @@ function StatusTable(props: Object)
 
 function StatusPageComponent(props: Object) {
     const classes = useStyles();
+
+    useEffect(
+        () => {
+            if (props.charts === null) {
+                props.fetchApcuStatus();
+            }
+        }
+    );
 
     const [currentGroupTabId, setCurrentGroupTabId] = React.useState(0);
 
