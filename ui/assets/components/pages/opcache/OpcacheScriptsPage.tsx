@@ -216,6 +216,6 @@ function ScriptsPageComponent(props: Object) {
     </div>
 }
 
-const ScriptsPage = connect(mapStateToProps)(ScriptsPageComponent);
+const OpcacheScriptsPage = connect(mapStateToProps)(ScriptsPageComponent);
 
-export default ScriptsPage;
+export default OpcacheScriptsPage;

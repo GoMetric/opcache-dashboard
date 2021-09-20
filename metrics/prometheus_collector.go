@@ -4,7 +4,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/GoMetric/opcache-dashboard/opcachestatus"
+	"github.com/GoMetric/opcache-dashboard/observer"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -47,8 +47,10 @@ func (s *PrometheusMetricSender) Send(
 	clusterName string,
 	groupName string,
 	hostName string,
-	nodeOpcacheStatus opcachestatus.NodeOpcacheStatus,
+	nodeStatistics observer.NodeStatistics,
 ) {
+	nodeOpcacheStatus := nodeStatistics.OpcacheStatistics
+
 	clusterName = strings.ReplaceAll(clusterName, ".", "-")
 	groupName = strings.ReplaceAll(groupName, ".", "-")
 	hostName = strings.ReplaceAll(hostName, ".", "-")

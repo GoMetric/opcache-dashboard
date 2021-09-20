@@ -9,6 +9,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import Theme from '/components/Theme.tsx';
 import reducer from '/reducers/reducer';
 import fetchOpcacheStatuses from '/actionCreators/fetchOpcacheStatuses'
+import {BrowserRouter as Router} from "react-router-dom";
 
 // store
 let store = createStore(
@@ -24,7 +25,9 @@ let store = createStore(
 ReactDOM.render(
     <ThemeProvider theme={Theme}>
         <Provider store={store}>
-            <Layout/>
+            <Router>
+                <Layout/>
+            </Router>
         </Provider>
     </ThemeProvider>,
     document.getElementById('app')

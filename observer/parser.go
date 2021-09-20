@@ -1,4 +1,4 @@
-package opcachestatus
+package observer
 
 import (
 	"encoding/json"
@@ -49,16 +49,52 @@ type agentMessage struct {
 			Memory            int   `json:"memory_consumption"`
 		} `json:"scripts"`
 	} `json:"status"`
+	ApcuStatus struct {
+		Enabled bool      `json:"enabled"`
+		SmaInfo *struct { // null when APCu disabled
+			NumSeg     int `json:"num_seg"`
+			SegSize    int `json:"seg_size"`
+			AvailMem   int `json:"avail_mem"`
+			BlockLists [][]struct {
+				Size   int `json:"size"`
+				Offset int `json:"offset"`
+			} `json:"block_lists"`
+		}
+		Settings *map[string]struct { // null when APCu disabled
+			GlobalValue string `json:"global_value"`
+			LocalValue  string `json:"local_value"`
+			Access      int    `json:"access"`
+		} `json:"settings"`
+	} `json:"apcu"`
 }
 
 // Parse agent response to struct
-func (parser AgentMessageParser) Parse(body []byte) (*NodeOpcacheStatus, error) {
+func (parser AgentMessageParser) Parse(body []byte) (*NodeStatistics, error) {
 	var agentMessage = agentMessage{}
 	err := json.Unmarshal(body, &agentMessage)
 	if err != nil {
 		return nil, err
 	}
 
+	opcacheStatus, err := parser.buildNodeOpcacheStatus(agentMessage)
+	if err != nil {
+		return nil, err
+	}
+
+	apcuStatus, err := parser.buildNodeApcuStatus(agentMessage)
+	if err != nil {
+		return nil, err
+	}
+
+	nodeStatus := NodeStatistics{
+		OpcacheStatistics: *opcacheStatus,
+		ApcuStatistics:    *apcuStatus,
+	}
+
+	return &nodeStatus, nil
+}
+
+func (parser AgentMessageParser) buildNodeOpcacheStatus(agentMessage agentMessage) (*NodeOpcacheStatus, error) {
 	if len(agentMessage.Status.Scripts) == 0 {
 		return nil, errors.New("No scripts found in agent response")
 	}
@@ -124,4 +160,33 @@ func (parser AgentMessageParser) Parse(body []byte) (*NodeOpcacheStatus, error) 
 	}
 
 	return &opcacheStatus, nil
+}
+
+func (parser AgentMessageParser) buildNodeApcuStatus(agentMessage agentMessage) (*NodeApcuStatus, error) {
+	apcuStatus := NodeApcuStatus{
+		Enabled: agentMessage.ApcuStatus.Enabled,
+	}
+
+	if agentMessage.ApcuStatus.Enabled {
+		// sma info
+		apcuStatus.SmaInfo = &NodeApcuSmaInfo{
+			NumSeg:   agentMessage.ApcuStatus.SmaInfo.NumSeg,
+			SegSize:  agentMessage.ApcuStatus.SmaInfo.SegSize,
+			AvailMem: agentMessage.ApcuStatus.SmaInfo.AvailMem,
+		}
+
+		// settings
+		apcuStatus.Settings = &map[string]NodeApcuSetting{}
+
+		for settingName, setting := range *agentMessage.ApcuStatus.Settings {
+			(*apcuStatus.Settings)[settingName] = NodeApcuSetting{
+				GlobalValue: setting.GlobalValue,
+				LocalValue:  setting.LocalValue,
+				Access:      setting.Access,
+			}
+		}
+
+	}
+
+	return &apcuStatus, nil
 }

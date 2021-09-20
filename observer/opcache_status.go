@@ -1,6 +1,7 @@
-package opcachestatus
+package observer
 
 // ClustersOpcacheStatuses represents collection of node opcache statuses
+// Struct: {clusterName}.{groupName}.{nodeName} => NodeOpcacheStatus
 type ClustersOpcacheStatuses map[string]map[string]map[string]NodeOpcacheStatus
 
 // https://github.com/php/php-src/blob/master/ext/opcache/zend_accelerator_hash.c
