@@ -2,7 +2,7 @@
 
 Gathers opcache stat from different PHP servers into one dashboard and tracks opcache status metrics to statsD and prometheus
 
-![Opcache dashboard](https://github.com/GoMetric/opcache-dashboard/blob/master/docs/screenshot.png?raw=true)
+![Opcache dashboard](https://github.com/GoMetric/opcache-dashboard/blob/master/docs/screenshot.png?raw=true&1)
 
 # Installation
 
