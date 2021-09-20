@@ -172,7 +172,7 @@ func (parser AgentMessageParser) buildNodeApcuStatus(agentMessage agentMessage) 
 		apcuStatus.SmaInfo = &NodeApcuSmaInfo{
 			NumSeg:   agentMessage.ApcuStatus.SmaInfo.NumSeg,
 			SegSize:  agentMessage.ApcuStatus.SmaInfo.SegSize,
-			AvailMem: agentMessage.ApcuStatus.SmaInfo.NumSeg,
+			AvailMem: agentMessage.ApcuStatus.SmaInfo.AvailMem,
 		}
 
 		// settings
