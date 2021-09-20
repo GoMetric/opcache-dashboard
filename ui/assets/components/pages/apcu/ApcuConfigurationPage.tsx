@@ -1,23 +1,26 @@
-import { createStyles, makeStyles, Zoom } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 import React from 'react';
 import { connect } from 'react-redux';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import Tooltip from '@material-ui/core/Tooltip';
 import TableRow from '@material-ui/core/TableRow';
 import TableHead from '@material-ui/core/TableHead';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import Table from '@material-ui/core/Table';
-import { opcacheConfigDescriptionMap } from '/dataProviders/OpcacheConfigDescription';
-import OptimizationPopover from '/components/OptimizationPopover';
+import fetchApcuStatuses from '/actionCreators/fetchApcuStatuses';
 
 const mapStateToProps = (state: Object) => {
-    const hostConfigurations = state.selectedClusterName
-        ? buildHostConfigurations(state.opcacheStatuses[state.selectedClusterName])
-        : {};
+    let hostConfigurations;
+    let groupNames;
 
-    const groupNames = Object.keys(hostConfigurations);
+    if (state.selectedClusterName && state.apcuStatuses) {
+        hostConfigurations = buildHostConfigurations(state.apcuStatuses[state.selectedClusterName]);
+        groupNames = Object.keys(hostConfigurations);
+    } else {
+        hostConfigurations = null;
+        groupNames = [];
+    }
 
     const props = {
         clusterGroupsHostsConfigurations: hostConfigurations,
@@ -28,6 +31,14 @@ const mapStateToProps = (state: Object) => {
     return props;
 };
 
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchApcuStatus: () => {
+            dispatch(fetchApcuStatuses());
+        }
+    }
+};
+
 const buildHostConfigurations = (groupsStatuses: Object) => {
     let hostConfigurations = {};
 
@@ -35,7 +46,7 @@ const buildHostConfigurations = (groupsStatuses: Object) => {
         hostConfigurations[groupName] = {};
 
         for (let host in groupsStatuses[groupName]) {
-            hostConfigurations[groupName][host] = groupsStatuses[groupName][host].Configuration;
+            hostConfigurations[groupName][host] = groupsStatuses[groupName][host].Settings;
         }
     }
 
@@ -69,28 +80,18 @@ function HostConfigurationTableComponent(props: Object) {
         // build table rows
         let tableRows = [];
         for (let configParam in props.groupHostsConfigurations[host]) {
-            let configValueCell;
-
-            if (configParam === "opcache.optimization_level") {
-                configValueCell = <OptimizationPopover level={props.groupHostsConfigurations[host][configParam]}></OptimizationPopover>
-            } else {
-                configValueCell = '' + props.groupHostsConfigurations[host][configParam];
-            }
+            let configGlobalValueCell = '' + props.groupHostsConfigurations[host][configParam].GlobalValue;
+            let configLocalValueCell = '' + props.groupHostsConfigurations[host][configParam].LocalValue;
+            let configAccessCell = '' + props.groupHostsConfigurations[host][configParam].Access;
 
             tableRows.push(
                 <TableRow key={host+configParam} hover={true}>
                     <TableCell>
-                        <Tooltip 
-                            title={opcacheConfigDescriptionMap[configParam] || ''} 
-                            interactive 
-                            arrow
-                            TransitionComponent={Zoom}
-                            placement="right-end"
-                        >
-                            <span>{configParam}</span>
-                        </Tooltip>
+                        <span>{configParam}</span>
                     </TableCell>
-                    <TableCell>{configValueCell}</TableCell>
+                    <TableCell>{configGlobalValueCell}</TableCell>
+                    <TableCell>{configLocalValueCell}</TableCell>
+                    <TableCell>{configAccessCell}</TableCell>
                 </TableRow>
             )
         }
@@ -105,7 +106,6 @@ function HostConfigurationTableComponent(props: Object) {
                 </Grid>
             )
         } else {
-            //@todo Add parameter description from https://www.php.net/manual/en/opcache.configuration.php
             hostConfigurationTable.push(
                 <Grid item xs={12} sm={12} md={6} key={host}>
                     <Paper className={classes.paper}>
@@ -114,7 +114,9 @@ function HostConfigurationTableComponent(props: Object) {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Parameter</TableCell>
-                                    <TableCell>Value</TableCell>
+                                    <TableCell>Global Value</TableCell>
+                                    <TableCell>Local Value</TableCell>
+                                    <TableCell>Access</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>{tableRows}</TableBody>
@@ -134,11 +136,16 @@ function HostConfigurationTableComponent(props: Object) {
 
 class ConfigurationPageComponent extends React.Component 
 {
+    componentDidMount() {
+        if (this.props.clusterGroupsHostsConfigurations === null) {
+            this.props.fetchApcuStatus();
+        }
+    }
+
     render() {
-        if (this.props.groupNames.length === 0) {
+        if (this.props.groupNames.length === 0 || !this.props.clusterGroupsHostsConfigurations) {
             return (<div>Loading</div>);
         }
-
 
         let groups = [];
 
@@ -160,6 +167,6 @@ class ConfigurationPageComponent extends React.Component
     }
 }
 
-const ApcuConfigurationPage = connect(mapStateToProps)(ConfigurationPageComponent);
+const ApcuConfigurationPage = connect(mapStateToProps, mapDispatchToProps)(ConfigurationPageComponent);
 
 export default ApcuConfigurationPage;
