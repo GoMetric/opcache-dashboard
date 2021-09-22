@@ -90,7 +90,13 @@ opcache-dashboard \
 Server periodically observes all of configured hosts. 
 Interval of observing specified in seconds in `pull-interval` cli option of by related configuration parameter.
 
-Also this server serves UI and API for watching gathered statistic on `http-host` and `http-port` defined in cli agruments.
+Also this server serves UI and API for watching gathered statistic on `http-host` and `http-port` defined in cli arguments.
+
+# Metrics
+
+## Prometheus
+
+Prometheus metrics available on API endpoint `/api/nodes/statistics/prometheus`.
 
 # Other GUIs
 
