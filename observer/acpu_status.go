@@ -10,8 +10,8 @@ type NodeApcuStatus struct{
 
 type NodeApcuSmaInfo struct {
 	NumSeg     int
-	SegSize    int
-	AvailMem   int
+	SegSize    int // Total memory
+	AvailMem   int // Free memory
 	//BlockLists [][]struct {
 	//	Size   int
 	//	Offset int
