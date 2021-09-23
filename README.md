@@ -1,6 +1,6 @@
 # Opcache Dashboard
 
-Gathers opcache stat from different PHP servers into one dashboard and tracks opcache status metrics to statsD and prometheus
+Gathers OPcache and APCu statistics from different PHP servers into one dashboard and tracks metrics to statsD and Prometheus.
 
 ![Opcache dashboard](https://github.com/GoMetric/opcache-dashboard/blob/master/docs/screenshot.png?raw=true&1)
 
@@ -97,10 +97,3 @@ Also this server serves UI and API for watching gathered statistic on `http-host
 ## Prometheus
 
 Prometheus metrics available on API endpoint `/api/nodes/statistics/prometheus`.
-
-# Other GUIs
-
-* [Opcache Control Panel](https://gist.github.com/ck-on/4959032)
-* [rlerdorf's opcache status](https://github.com/rlerdorf/opcache-status)
-* [PeeHaa's OpCacheGUI](https://github.com/PeeHaa/OpCacheGUI)
-* [opcache-gui](https://github.com/amnuts/opcache-gui)
