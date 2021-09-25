@@ -9,6 +9,10 @@
  */
 declare(strict_types=1);
 
+ini_set('display_errors', '1');
+
+$isApcuEnabled = extension_loaded('apcu') && apcu_enabled();
+
 $phpFileContent = '<?php $a=md5("' . str_repeat('4', 200) . '");';
 
 for ($i = 0; $i < 200; $i++) {
@@ -24,7 +28,9 @@ for ($i = 0; $i < 200; $i++) {
     require_once $path;
 
     // add apcu
-    apcu_store((string) $i, $path);
+    if ($isApcuEnabled) {
+        apcu_store((string) $i, $path);
+    }
 }
 
 require_once __DIR__ . '/agent-pull.php';

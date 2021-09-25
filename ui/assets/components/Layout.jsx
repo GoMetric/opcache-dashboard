@@ -7,6 +7,7 @@ import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -18,18 +19,21 @@ import ListItemText from '@material-ui/core/ListItemText';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ListIcon from '@material-ui/icons/List';
-import ScriptsPage from '/components/pages/ScriptsPage'
-import StatusPage from '/components/pages/StatusPage'
+import OpcacheScriptsPage from '/components/pages/opcache/OpcacheScriptsPage';
+import OpcacheStatusPage from '/components/pages/opcache/OpcacheStatusPage';
+import OpcacheConfigurationPage from '/components/pages/opcache/OpcacheConfigurationPage';
+import ApcuStatusPage from '/components/pages/apcu/ApcuStatusPage';
+import ApcuConfigurationPage from '/components/pages/apcu/ApcuConfigurationPage';
 import NotFoundPage from '/components/pages/NotFoundPage'
 import ClusterSelect from '/components/ClusterSelect';
 import OpcacheStatusRefreshButton from '/components/OpcacheStatusRefreshButton';
-import ConfigurationPage from './pages/ConfigurationPage';
+
 import {
-    BrowserRouter as Router,
     Switch,
     Route,
     Link,
-    Redirect
+    Redirect,
+    useLocation
 } from "react-router-dom";
 
 const drawerWidth = 240;
@@ -87,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        width: theme.spacing(7),
+        width: theme.spacing(8),
         [theme.breakpoints.up('sm')]: {
             width: theme.spacing(9),
         },
@@ -128,86 +132,88 @@ export default function Layout() {
         setOpenDrawer(false);
     };
 
+    const location = useLocation();
+
+    const MenuItem = ({to, primary, icon}) => (
+        <ListItem button component={Link} to={to} selected={to === location.pathname}>
+            <ListItemIcon>{icon}</ListItemIcon>
+            <ListItemText primary={primary} />
+        </ListItem>
+    );
+
     return (
-        <Router>
-            <div className={classes.root}>
-                <CssBaseline />
-                <AppBar position="absolute" className={clsx(classes.appBar, openDraver && classes.appBarShift)}>
-                    <Toolbar className={classes.toolbar}>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                            onClick={handleDrawerOpen}
-                            className={clsx(classes.menuButton, openDraver && classes.menuButtonHidden)}>
-                            <MenuIcon />
-                        </IconButton>
-                        <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-                            Dashboard
-                        </Typography>
-                        <OpcacheStatusRefreshButton />
-                        <ClusterSelect />
-                    </Toolbar>
-                </AppBar>
-                <Drawer
-                    variant="permanent"
-                    classes={{
-                        paper: clsx(classes.drawerPaper, !openDraver && classes.drawerPaperClose),
-                    }}
-                    open={openDraver}
-                >
-                    <div className={classes.toolbarIcon}>
-                        <IconButton onClick={handleDrawerClose}>
-                            <ChevronLeftIcon />
-                        </IconButton>
+        <div className={classes.root}>
+            <CssBaseline />
+            <AppBar position="absolute" className={clsx(classes.appBar, openDraver && classes.appBarShift)}>
+                <Toolbar className={classes.toolbar}>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="open drawer"
+                        onClick={handleDrawerOpen}
+                        className={clsx(classes.menuButton, openDraver && classes.menuButtonHidden)}>
+                        <MenuIcon />
+                    </IconButton>
+                    <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
+                        Dashboard
+                    </Typography>
+                    <OpcacheStatusRefreshButton />
+                    <ClusterSelect />
+                </Toolbar>
+            </AppBar>
+            <Drawer
+                variant="permanent"
+                classes={{
+                    paper: clsx(classes.drawerPaper, !openDraver && classes.drawerPaperClose),
+                }}
+                open={openDraver}
+            >
+                <div className={classes.toolbarIcon}>
+                    <IconButton onClick={handleDrawerClose}>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                </div>
+                <Divider />
+                <List>
+                    <div>
+                        <ListSubheader>Opcache</ListSubheader>
+                        <MenuItem to="/opcache/status" icon={(<EqualizerIcon />)} primary="Status"></MenuItem>
+                        <MenuItem to="/opcache/configuration" icon={(<SettingsIcon />)} primary="Configuration"></MenuItem>
+                        <MenuItem to="/opcache/scripts" icon={(<ListIcon />)} primary="Scripts"></MenuItem>
+                        <ListSubheader>APCu</ListSubheader>
+                        <MenuItem to="/apcu/status" icon={(<EqualizerIcon />)} primary="Status"></MenuItem>
+                        <MenuItem to="/apcu/configuration" icon={(<SettingsIcon />)} primary="Configuration"></MenuItem>
                     </div>
-                    <Divider />
-                    <List>
-                        <div>
-                            <ListItem button component={Link} to="/status">
-                                <ListItemIcon>
-                                    <EqualizerIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Status" />
-                            </ListItem>
-                            <ListItem button component={Link} to="/configuration">
-                                <ListItemIcon>
-                                    <SettingsIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Configuration" />
-                            </ListItem>
-                            <ListItem button component={Link} to="/scripts">
-                                <ListItemIcon>
-                                    <ListIcon />
-                                </ListItemIcon>
-                                <ListItemText primary="Scripts" />
-                            </ListItem>
-                        </div>
-                    </List>
-                </Drawer>
-                <main className={classes.content}>
-                    <div className={classes.appBarSpacer} />
-                    <Container maxWidth={false} className={classes.container}>
-                        <Switch>
-                            <Route exact path="/">
-                                <Redirect to="status" />
-                            </Route>
-                            <Route exact path="/status">
-                                <StatusPage />
-                            </Route>
-                            <Route exact path="/configuration">
-                                <ConfigurationPage />
-                            </Route>
-                            <Route exact path="/scripts">
-                                <ScriptsPage />
-                            </Route>
-                            <Route>
-                                <NotFoundPage />
-                            </Route>
-                        </Switch>
-                    </Container>
-                </main>
-            </div>
-        </Router>
+                </List>
+            </Drawer>
+            <main className={classes.content}>
+                <div className={classes.appBarSpacer} />
+                <Container maxWidth={false} className={classes.container}>
+                    <Switch>
+                        <Route exact path="/">
+                            <Redirect to="/opcache/status" />
+                        </Route>
+                        <Route exact path="/opcache/status">
+                            <OpcacheStatusPage />
+                        </Route>
+                        <Route exact path="/opcache/configuration">
+                            <OpcacheConfigurationPage />
+                        </Route>
+                        <Route exact path="/opcache/scripts">
+                            <OpcacheScriptsPage />
+                        </Route>
+                        <Route exact path="/apcu/status">
+                            <ApcuStatusPage />
+                        </Route>
+                        <Route exact path="/apcu/configuration">
+                            <ApcuConfigurationPage />
+                        </Route>
+                        <Route>
+                            <NotFoundPage />
+                        </Route>
+                    </Switch>
+                </Container>
+            </main>
+        </div>
     );
 }

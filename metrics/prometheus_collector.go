@@ -4,7 +4,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/GoMetric/opcache-dashboard/opcachestatus"
+	"github.com/GoMetric/opcache-dashboard/observer"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
@@ -26,6 +26,7 @@ func NewPrometheusMetricSender(registry *prometheus.Registry) *PrometheusMetricS
 		"opcache_keys_usedKeys",
 		"opcache_keys_usedScripts",
 		"opcache_keyHits_misses",
+		"apcu_memory_free_bytes",
 	}
 
 	for _, gaugeName := range gaugeNames {
@@ -47,8 +48,11 @@ func (s *PrometheusMetricSender) Send(
 	clusterName string,
 	groupName string,
 	hostName string,
-	nodeOpcacheStatus opcachestatus.NodeOpcacheStatus,
+	nodeStatistics observer.NodeStatistics,
 ) {
+	nodeOpcacheStatus := nodeStatistics.OpcacheStatistics
+	nodeApcuStatus := nodeStatistics.ApcuStatistics
+
 	clusterName = strings.ReplaceAll(clusterName, ".", "-")
 	groupName = strings.ReplaceAll(groupName, ".", "-")
 	hostName = strings.ReplaceAll(hostName, ".", "-")
@@ -62,6 +66,7 @@ func (s *PrometheusMetricSender) Send(
 		"opcache_keys_usedKeys":       nodeOpcacheStatus.Keys.UsedKeys,
 		"opcache_keys_usedScripts":    nodeOpcacheStatus.Keys.UsedScripts,
 		"opcache_keyHits_misses":      nodeOpcacheStatus.KeyHits.Misses,
+		"apcu_memory_free_bytes":      nodeApcuStatus.SmaInfo.AvailMem,
 	}
 
 	for gaugeName, gaugeValue := range gaugeNameValueMap {
