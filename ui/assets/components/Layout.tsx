@@ -27,6 +27,7 @@ import ApcuConfigurationPage from '/components/pages/apcu/ApcuConfigurationPage'
 import NotFoundPage from '/components/pages/NotFoundPage'
 import ClusterSelect from '/components/ClusterSelect';
 import OpcacheStatusRefreshButton from '/components/OpcacheStatusRefreshButton';
+import {FormattedMessage, useIntl, injectIntl} from 'react-intl'
 
 import {
     Switch,
@@ -177,7 +178,7 @@ export default function Layout() {
                 <List>
                     <div>
                         <ListSubheader>Opcache</ListSubheader>
-                        <MenuItem to="/opcache/status" icon={(<EqualizerIcon />)} primary="Status"></MenuItem>
+                        <MenuItem to="/opcache/status" icon={(<EqualizerIcon />)} primary={(<FormattedMessage defaultMessage="Status"/>)}></MenuItem>
                         <MenuItem to="/opcache/configuration" icon={(<SettingsIcon />)} primary="Configuration"></MenuItem>
                         <MenuItem to="/opcache/scripts" icon={(<ListIcon />)} primary="Scripts"></MenuItem>
                         <ListSubheader>APCu</ListSubheader>

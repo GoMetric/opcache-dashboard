@@ -4,12 +4,14 @@ import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension';
-import Layout from '/components/Layout.jsx';
+import Layout from '/components/Layout.tsx';
 import { ThemeProvider } from '@material-ui/core/styles';
 import Theme from '/components/Theme.tsx';
 import reducer from '/reducers/reducer';
 import fetchOpcacheStatuses from '/actionCreators/fetchOpcacheStatuses'
 import {BrowserRouter as Router} from "react-router-dom";
+import {IntlProvider} from 'react-intl';
+import {loadLocaleData, detectLocale} from '/tools/l10n';
 
 // store
 let store = createStore(
@@ -21,12 +23,18 @@ let store = createStore(
     )
 );
 
+// locale
+const locale = detectLocale()
+const messages = loadLocaleData(locale)
+
 // render layout
 ReactDOM.render(
     <ThemeProvider theme={Theme}>
         <Provider store={store}>
             <Router>
-                <Layout/>
+                <IntlProvider locale={locale} defaultLocale="en" messages={messages}>
+                    <Layout/>
+                </IntlProvider>
             </Router>
         </Provider>
     </ThemeProvider>,
