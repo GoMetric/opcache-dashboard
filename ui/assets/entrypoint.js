@@ -25,7 +25,7 @@ async function bootstrapApplication(mainDiv) {
     );
 
     // locale
-    const locale = detectLocale()
+    const locale = detectLocale();
     const messages = await loadLocaleData(locale)
 
     // render layout

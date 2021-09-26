@@ -6,6 +6,8 @@
   "author": "Dmytro Sokil <dmytro.sokil@gmail.com>",
   "license": "MIT",
   "private": false,
+  "lang": "land",
+  "supportedLocales": ["en", "uk"],
   "dependencies": {
     "@babel/core": "^7.12.16",
     "@babel/plugin-proposal-class-properties": "^7.12.13",
@@ -19,6 +21,8 @@
     "@babel/preset-env": "^7.12.16",
     "@babel/preset-react": "^7.12.13",
     "@babel/preset-typescript": "^7.13.0",
+    "@formatjs/intl-getcanonicallocales": "^1.7.3",
+    "@formatjs/intl-locale": "^2.4.37",
     "@material-ui/core": "^4.11.3",
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.57",
