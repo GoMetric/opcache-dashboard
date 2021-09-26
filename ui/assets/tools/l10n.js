@@ -1,5 +1,4 @@
-// localisation
-export function loadLocaleData(locale: string) {
+export async function loadLocaleData(locale: string) {
     return import('/lang/' + locale + '.json');
 }
 

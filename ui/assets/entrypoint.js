@@ -13,33 +13,42 @@ import {BrowserRouter as Router} from "react-router-dom";
 import {IntlProvider} from 'react-intl';
 import {loadLocaleData, detectLocale} from '/tools/l10n';
 
-// store
-let store = createStore(
-    reducer,
-    composeWithDevTools(
-        applyMiddleware(
-            thunkMiddleware
-        ),
-    )
-);
+async function bootstrapApplication(mainDiv) {
+    // store
+    let store = createStore(
+        reducer,
+        composeWithDevTools(
+            applyMiddleware(
+                thunkMiddleware
+            ),
+        )
+    );
 
-// locale
-const locale = detectLocale()
-const messages = loadLocaleData(locale)
+    // locale
+    const locale = detectLocale()
+    const messages = await loadLocaleData(locale)
 
-// render layout
-ReactDOM.render(
-    <ThemeProvider theme={Theme}>
-        <Provider store={store}>
-            <Router>
-                <IntlProvider locale={locale} defaultLocale="en" messages={messages}>
-                    <Layout/>
-                </IntlProvider>
-            </Router>
-        </Provider>
-    </ThemeProvider>,
+    // render layout
+    ReactDOM.render(
+        <ThemeProvider theme={Theme}>
+            <Provider store={store}>
+                <Router>
+                    <IntlProvider locale={locale} defaultLocale="en" messages={messages}>
+                        <Layout/>
+                    </IntlProvider>
+                </Router>
+            </Provider>
+        </ThemeProvider>,
+        mainDiv
+    );
+
+    // init data
+    store.dispatch(fetchOpcacheStatuses());
+}
+
+bootstrapApplication(
     document.getElementById('app')
 );
 
-// start app
-store.dispatch(fetchOpcacheStatuses());
+
+

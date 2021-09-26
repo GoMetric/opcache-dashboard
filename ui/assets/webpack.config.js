@@ -49,6 +49,7 @@ module.exports = {
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
+        publicPath: '/assets/',
         filename: './../dist/bundle.js'
     },
     // included externally but must be used in bundle
@@ -59,7 +60,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /.(js|jsx|ts|tsx)?$/,
+                test: /.(js|jsx|ts|tsx)$/,
                 include: [
                     path.resolve(__dirname, ".")
                 ],
@@ -79,7 +80,11 @@ module.exports = {
                             '@babel/preset-react',
                             [
                                 "@babel/preset-typescript",
-                                { isTSX: true, allExtensions: true }
+                                {
+                                    isTSX: true,
+                                    allExtensions: true,
+                                    resolveJsonModule: true,
+                                }
                             ]
                         ],
                         plugins: [
@@ -91,6 +96,13 @@ module.exports = {
                             '@babel/plugin-proposal-function-bind',
                             '@babel/plugin-proposal-optional-chaining',
                             '@babel/plugin-proposal-json-strings',
+                            [
+                                "formatjs",
+                                {
+                                    "idInterpolationPattern": "[sha512:contenthash:base64:6]",
+                                    "ast": true
+                                }
+                            ]
                         ]
                     }
                 },

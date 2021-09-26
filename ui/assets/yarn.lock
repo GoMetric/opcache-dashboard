@@ -1012,9 +1012,9 @@
     strip-json-comments "^3.1.1"
 
 "@formatjs/cli@^4.2.33":
-  version "4.2.33"
-  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-4.2.33.tgz#2a9cc070aadb42400e481fe0ce4509536bef7f1b"
-  integrity sha512-4Lg+KZ5QhXgF6+zjHyZlxMG8I0D3m3PZyrj3hRl97vdZ6rAWKVFWw8fkTO/iyhUCP2iC47Eh9r+ZTgGARX9Teg==
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/@formatjs/cli/-/cli-4.3.0.tgz#1c32876e05bffeb55e9e43360018edb7a232ddce"
+  integrity sha512-Ic5DQoMVB9jX7dtoEulaRJU1FBxVQRYvx3+CqIukySG6l7E02BphfdhxNue0Nh+ZPzsQ69Wi8AKnJdifPf3FaQ==
   dependencies:
     "@formatjs/icu-messageformat-parser" "2.0.11"
     "@formatjs/ts-transformer" "3.4.10"
@@ -1022,8 +1022,8 @@
     "@types/fs-extra" "^9.0.1"
     "@types/json-stable-stringify" "^1.0.32"
     "@types/node" "14"
-    "@vue/compiler-core" "^3.0.5"
-    "@vue/compiler-sfc" "^3.0.5"
+    "@vue/compiler-core" "^3.2.19"
+    "@vue/compiler-sfc" "^3.2.19"
     chalk "^4.0.0"
     commander "8"
     fast-glob "^3.2.7"
@@ -1103,7 +1103,7 @@
     intl-messageformat "9.9.1"
     tslib "^2.1.0"
 
-"@formatjs/ts-transformer@3.4.10":
+"@formatjs/ts-transformer@3.4.10", "@formatjs/ts-transformer@^3.4.10":
   version "3.4.10"
   resolved "https://registry.yarnpkg.com/@formatjs/ts-transformer/-/ts-transformer-3.4.10.tgz#f623c5db5eaea4f6da34124f620f043d5ea3970a"
   integrity sha512-5fu8x+8CtyrFe8zdwHvFsYLx9TEPjeJSODRS1ZJxkMVpTBHaNsPqsPkN1TuTk5x3+tSczxXmN1LGrAzUxNN3nQ==
@@ -1289,7 +1289,7 @@
     "@types/eslint" "*"
     "@types/estree" "*"
 
-"@types/eslint@*":
+"@types/eslint@*", "@types/eslint@^7.2.0":
   version "7.28.0"
   resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.28.0.tgz#7e41f2481d301c68e14f483fe10b017753ce8d5a"
   integrity sha512-07XlgzX0YJUn4iG1ocY4IX9DzKSmMGUs6ESKlxWhZRaa0fatIWaHWUVapcuGa8r5HFnTqzj+4OCjd5f7EZ/i/A==
@@ -1377,7 +1377,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@17":
+"@types/react@*", "@types/react@16 || 17":
   version "17.0.24"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.24.tgz#7e1b3f78d0fc53782543f9bce6d949959a5880bd"
   integrity sha512-eIpyco99gTH+FTI3J7Oi/OH8MZoFMJuztNRimDOJwH4iGIsKV2qkGnk4M9VzlaVWeEEWLWSQRy0FEA0Kz218cg==
@@ -1446,7 +1446,7 @@
   resolved "https://registry.yarnpkg.com/@typescript-eslint/types/-/types-4.31.2.tgz#2aea7177d6d744521a168ed4668eddbd912dfadf"
   integrity sha512-kWiTTBCTKEdBGrZKwFvOlGNcAsKGJSBc8xLvSjSppFO88AqGxGNYtF36EuEYG6XZ9vT0xX8RNiHbQUKglbSi1w==
 
-"@typescript-eslint/typescript-estree@4.31.2":
+"@typescript-eslint/typescript-estree@4.31.2", "@typescript-eslint/typescript-estree@^4.11.0":
   version "4.31.2"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/typescript-estree/-/typescript-estree-4.31.2.tgz#abfd50594d8056b37e7428df3b2d185ef2d0060c"
   integrity sha512-ieBq8U9at6PvaC7/Z6oe8D3czeW5d//Fo1xkF/s9394VR0bg/UaMYPdARiWyKX+lLEjY3w/FNZJxitMsiWv+wA==
@@ -1467,7 +1467,7 @@
     "@typescript-eslint/types" "4.31.2"
     eslint-visitor-keys "^2.0.0"
 
-"@vue/compiler-core@3.2.19", "@vue/compiler-core@^3.0.5":
+"@vue/compiler-core@3.2.19", "@vue/compiler-core@^3.2.19":
   version "3.2.19"
   resolved "https://registry.yarnpkg.com/@vue/compiler-core/-/compiler-core-3.2.19.tgz#b537dd377ce51fdb64e9b30ebfbff7cd70a64cb9"
   integrity sha512-8dOPX0YOtaXol0Zf2cfLQ4NU/yHYl2H7DCKsLEZ7gdvPK6ZSEwGLJ7IdghhY2YEshEpC5RB9QKdC5I07z8Dtjg==
@@ -1485,7 +1485,7 @@
     "@vue/compiler-core" "3.2.19"
     "@vue/shared" "3.2.19"
 
-"@vue/compiler-sfc@^3.0.5":
+"@vue/compiler-sfc@^3.2.19":
   version "3.2.19"
   resolved "https://registry.yarnpkg.com/@vue/compiler-sfc/-/compiler-sfc-3.2.19.tgz#d412195a98ebd49b84602f171719294a1d9549be"
   integrity sha512-pLlbgkO1UHTO02MSpa/sFOXUwIDxSMiKZ1ozE5n71CY4DM+YmI+G3gT/ZHZ46WBId7f3VTF/D8pGwMygcQbrQA==
@@ -2688,6 +2688,11 @@ emoji-regex@^8.0.0:
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-8.0.0.tgz#e818fd69ce5ccfcb404594f842963bf53164cc37"
   integrity sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==
 
+emoji-regex@^9.2.0:
+  version "9.2.2"
+  resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-9.2.2.tgz#840c8803b0d8047f4ff0cf963176b32d4ef3ed72"
+  integrity sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==
+
 emojis-list@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-3.0.0.tgz#5570662046ad29e2e916e71aae260abdff4f6a78"
@@ -2789,6 +2794,19 @@ escape-string-regexp@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz#14ba83a5d373e3d311e5afca29cf5bfad965bf34"
   integrity sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==
+
+eslint-plugin-formatjs@^2.17.7:
+  version "2.17.7"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-formatjs/-/eslint-plugin-formatjs-2.17.7.tgz#9e8b14a7d539101292d51e16fe72c44e008d89f2"
+  integrity sha512-JGUVLqKUWxTq5QWGJK1hovZKeaW16IRGukI4DAkFzrZLWWNSgQCsHTGiADbHLp2PlxdXJrRGvD0M0cPI15UnOg==
+  dependencies:
+    "@formatjs/icu-messageformat-parser" "2.0.11"
+    "@formatjs/ts-transformer" "3.4.10"
+    "@types/eslint" "^7.2.0"
+    "@typescript-eslint/typescript-estree" "^4.11.0"
+    emoji-regex "^9.2.0"
+    tslib "^2.1.0"
+    typescript "4"
 
 eslint-plugin-react-hooks@^4.2.0:
   version "4.2.0"
@@ -3986,6 +4004,11 @@ jsesc@~0.5.0:
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-0.5.0.tgz#e7dee66e35d6fc16f710fe91d5cf69f70f08911d"
   integrity sha1-597mbjXW/Bb3EP6R1c9p9w8IkR0=
 
+json-loader@^0.5.7:
+  version "0.5.7"
+  resolved "https://registry.yarnpkg.com/json-loader/-/json-loader-0.5.7.tgz#dca14a70235ff82f0ac9a3abeb60d337a365185d"
+  integrity sha512-QLPs8Dj7lnf3e3QYS1zkCo+4ZwqOiF9d/nZnYozTISxXWCfNs9yuky5rJw4/W34s7POaNlbZmQGaB5NiXCbP4w==
+
 json-parse-better-errors@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
@@ -4523,14 +4546,14 @@ nanocolors@^0.1.0, nanocolors@^0.1.5:
   integrity sha512-2nMHqg1x5PU+unxX7PGY7AuYxl2qDx7PSrTRjizr8sxdd3l/3hBuWWaki62qmtYm2U5i4Z5E7GbjlyDFhs9/EQ==
 
 nanocolors@^0.2.2:
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/nanocolors/-/nanocolors-0.2.6.tgz#2e7815d25c04aaa43e54b9f0d6d21060172e5831"
-  integrity sha512-lP8hjPSXTQ7qpYl5hFPVTBXGdd7+Rn3oi8GqIPNZP63L09tewRzWYFxAy26B1BYOOYaPWgmVF/BFIhDAHihwUQ==
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/nanocolors/-/nanocolors-0.2.9.tgz#319c5e7a73571abd60e4d273150c2cb95017ac5b"
+  integrity sha512-aymgS4Xe0LMqHOHl7jSUEkFh/6O/pcF0j61dBtreQZ1nmbyYdYjSYSJzz0iPLbKPkMtSmdRgyBGywNZGjKOEfw==
 
 nanoid@^3.1.25:
-  version "3.1.25"
-  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.25.tgz#09ca32747c0e543f0e1814b7d3793477f9c8e152"
-  integrity sha512-rdwtIXaXCLFAQbnfqDRnI6jaRHp9fTcYBjtFKE8eezcZ7LuLjhUaQGNeMXf1HmRoCH32CLz6XwX0TtxEOS/A3Q==
+  version "3.1.28"
+  resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.28.tgz#3c01bac14cb6c5680569014cc65a2f26424c6bd4"
+  integrity sha512-gSu9VZ2HtmoKYe/lmyPFES5nknFrHa+/DT9muUFWFMi6Jh9E1I7bkvlQ8xxf1Kos9pi9o8lBnIOkatMhKX/YUw==
 
 nanomatch@^1.2.9:
   version "1.2.13"
@@ -5151,9 +5174,9 @@ react-double-scrollbar@0.0.15:
   integrity sha1-6RWrjLO5WYdwdfSUNt6/2wQoj+Q=
 
 react-intl@^5.20.10:
-  version "5.20.10"
-  resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-5.20.10.tgz#8b0f18a5b76e9f8f5a3ccc993deb0c4cef9dcde0"
-  integrity sha512-zy0ZQhpjkGsKcK1BFo2HbGM/q8GBVovzoXZGQ76DowR0yr6UzQuPLkrlIrObL2zxIYiDaxaz+hUJaoa2a1xqOQ==
+  version "5.20.11"
+  resolved "https://registry.yarnpkg.com/react-intl/-/react-intl-5.20.11.tgz#a5ec2d987f26eee6b737015666f5d7ce01441565"
+  integrity sha512-GdvCgVfvDKPnjrkVhbrmoZ6pJB8fpU+F3N2084WiBjghEw1TwXuXzWztxXAWeCPZ4lzc1l5FPiGueVyTVLNytg==
   dependencies:
     "@formatjs/ecma402-abstract" "1.9.8"
     "@formatjs/icu-messageformat-parser" "2.0.11"
@@ -5161,7 +5184,7 @@ react-intl@^5.20.10:
     "@formatjs/intl-displaynames" "5.2.3"
     "@formatjs/intl-listformat" "6.3.3"
     "@types/hoist-non-react-statics" "^3.3.1"
-    "@types/react" "17"
+    "@types/react" "16 || 17"
     hoist-non-react-statics "^3.3.2"
     intl-messageformat "9.9.1"
     tslib "^2.1.0"
