@@ -50,7 +50,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         publicPath: '/assets/',
-        filename: './../dist/bundle.js'
+        filename: 'bundle.js'
     },
     // included externally but must be used in bundle
     externals: {},
