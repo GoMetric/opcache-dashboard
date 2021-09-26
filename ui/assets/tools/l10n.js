@@ -1,5 +1,5 @@
 export async function loadLocaleData(locale: string) {
-    return import('/lang/' + locale + '.json');
+    return import('/dist/lang/' + locale + '.json');
 }
 
 export function detectLocale() {
