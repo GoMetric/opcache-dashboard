@@ -27,7 +27,7 @@ import ApcuConfigurationPage from '/components/pages/apcu/ApcuConfigurationPage'
 import NotFoundPage from '/components/pages/NotFoundPage'
 import ClusterSelect from '/components/ClusterSelect';
 import OpcacheStatusRefreshButton from '/components/OpcacheStatusRefreshButton';
-import {FormattedMessage, useIntl, injectIntl} from 'react-intl'
+import {FormattedMessage} from 'react-intl'
 
 import {
     Switch,
@@ -179,11 +179,11 @@ export default function Layout() {
                     <div>
                         <ListSubheader>Opcache</ListSubheader>
                         <MenuItem to="/opcache/status" icon={(<EqualizerIcon />)} primary={(<FormattedMessage defaultMessage="Status"/>)}></MenuItem>
-                        <MenuItem to="/opcache/configuration" icon={(<SettingsIcon />)} primary="Configuration"></MenuItem>
-                        <MenuItem to="/opcache/scripts" icon={(<ListIcon />)} primary="Scripts"></MenuItem>
+                        <MenuItem to="/opcache/configuration" icon={(<SettingsIcon />)} primary={(<FormattedMessage defaultMessage="Configuration"/>)}></MenuItem>
+                        <MenuItem to="/opcache/scripts" icon={(<ListIcon />)} primary={(<FormattedMessage defaultMessage="Scripts"/>)}></MenuItem>
                         <ListSubheader>APCu</ListSubheader>
-                        <MenuItem to="/apcu/status" icon={(<EqualizerIcon />)} primary="Status"></MenuItem>
-                        <MenuItem to="/apcu/configuration" icon={(<SettingsIcon />)} primary="Configuration"></MenuItem>
+                        <MenuItem to="/apcu/status" icon={(<EqualizerIcon />)} primary={(<FormattedMessage defaultMessage="Status"/>)}></MenuItem>
+                        <MenuItem to="/apcu/configuration" icon={(<SettingsIcon />)} primary={(<FormattedMessage defaultMessage="Configuration"/>)}></MenuItem>
                     </div>
                 </List>
             </Drawer>

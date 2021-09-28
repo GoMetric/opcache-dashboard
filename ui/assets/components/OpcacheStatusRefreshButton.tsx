@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from '@material-ui/core';
 import { connect } from 'react-redux';
 import refreshOpcacheStatuses from '/actionCreators/refreshOpcacheStatuses';
+import {FormattedMessage} from 'react-intl';
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -19,7 +20,7 @@ function OpcacheStatusRefreshButtonComponent(props) {
     return (
         <Button color="inherit" onClick={handleButtonClick}>
             <span>
-                Refresh
+                <FormattedMessage defaultMessage="Refresh"/>
             </span>
         </Button>
     );

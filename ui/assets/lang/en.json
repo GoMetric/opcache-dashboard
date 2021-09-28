@@ -1,4 +1,16 @@
 {
+  "7OW8BT": {
+    "defaultMessage": "Configuration"
+  },
+  "HCfIc7": {
+    "defaultMessage": "Scripts"
+  },
+  "N1iczq": {
+    "defaultMessage": "Cache is full, increase \"opcache.memory_consumption\" or decrease \"opcache.max_wasted_percentage\"."
+  },
+  "rELDbB": {
+    "defaultMessage": "Refresh"
+  },
   "tzMNF3": {
     "defaultMessage": "Status"
   }

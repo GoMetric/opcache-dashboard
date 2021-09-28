@@ -1,8 +1,11 @@
 import React from 'react';
 import { Typography } from "@material-ui/core";
+import {FormattedMessage} from "react-intl";
 
 export default function StatusPage() {
     return (
-        <Typography>Page not found</Typography>
+        <Typography>
+            <FormattedMessage defaultMessage='Page not found'/>
+        </Typography>
     );
 }
