@@ -1,17 +1,20 @@
 {
   "7OW8BT": {
-    "defaultMessage": "Configuration"
+    "string": "Configuration"
   },
   "HCfIc7": {
-    "defaultMessage": "Scripts"
+    "string": "Scripts"
   },
   "N1iczq": {
-    "defaultMessage": "Cache is full, increase \"opcache.memory_consumption\" or decrease \"opcache.max_wasted_percentage\"."
+    "string": "Cache is full, increase \"opcache.memory_consumption\" or decrease \"opcache.max_wasted_percentage\"."
+  },
+  "QRccCM": {
+    "string": "Page not found"
   },
   "rELDbB": {
-    "defaultMessage": "Refresh"
+    "string": "Refresh"
   },
   "tzMNF3": {
-    "defaultMessage": "Status"
+    "string": "Status"
   }
 }

@@ -1,17 +1,20 @@
 {
   "7OW8BT": {
-    "defaultMessage": "Configuration"
+    "string": "Конфігурація"
   },
   "HCfIc7": {
-    "defaultMessage": "Scripts"
+    "string": "Скрипти"
   },
   "N1iczq": {
-    "defaultMessage": "Cache is full, increase \"opcache.memory_consumption\" or decrease \"opcache.max_wasted_percentage\"."
+    "string": "Кеш заповнений, збільште \"opcache.memory_consumption\" або зменшіть \"opcache.max_wasted_percentage\"."
+  },
+  "QRccCM": {
+    "string": "Сторінку не знайдено"
   },
   "rELDbB": {
-    "defaultMessage": "Refresh"
+    "string": "Оновити"
   },
   "tzMNF3": {
-    "defaultMessage": "Status"
+    "string": "Статус"
   }
 }
