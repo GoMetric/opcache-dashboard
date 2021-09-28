@@ -1,0 +1,10 @@
+[main]
+host = https://www.transifex.com
+
+[opcache-dashboard.en-json]
+file_filter = lang/<lang>.json
+minimum_perc = 0
+source_file = lang/en.json
+source_lang = en
+type = STRUCTURED_JSON
+

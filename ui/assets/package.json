@@ -66,7 +66,9 @@
     "lint": "NODE_ENV=development ./node_modules/.bin/eslint .",
     "build-prod": "NODE_ENV=production ./node_modules/.bin/webpack --progress",
     "intl-extract": "formatjs extract 'components/**/*.tsx' --out-file lang/en.json",
-    "intl-compile": "formatjs compile-folder --ast lang dist/lang"
+    "intl-compile": "formatjs compile-folder --ast lang dist/lang",
+    "transifex-push": "tx push --source",
+    "transifex-pull": "tx pull --all"
   },
   "devDependencies": {
     "@formatjs/cli": "^4.2.33",
