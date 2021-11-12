@@ -66,7 +66,11 @@ func (s *PrometheusMetricSender) Send(
 		"opcache_keys_usedKeys":       nodeOpcacheStatus.Keys.UsedKeys,
 		"opcache_keys_usedScripts":    nodeOpcacheStatus.Keys.UsedScripts,
 		"opcache_keyHits_misses":      nodeOpcacheStatus.KeyHits.Misses,
-		"apcu_memory_free_bytes":      nodeApcuStatus.SmaInfo.AvailMem,
+	}
+
+	// if APCU enabled, add statistics
+	if nodeApcuStatus.Enabled {
+		gaugeNameValueMap["apcu_memory_free_bytes"] = nodeApcuStatus.SmaInfo.AvailMem
 	}
 
 	for gaugeName, gaugeValue := range gaugeNameValueMap {
