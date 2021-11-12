@@ -70,6 +70,11 @@ const buildTableData = function(clusterApcuStatuses) {
         tables[groupName] = {};
 
         for (let hostName in clusterApcuStatuses[groupName]) {
+            if (!clusterApcuStatuses[groupName][hostName].Enabled) {
+                tables[groupName][hostName] = null;
+                continue;
+            }
+
             tables[groupName][hostName] = {
                 memory: [
                     {
@@ -101,6 +106,11 @@ const buildChartData = function(clusterApcuStatuses) {
         charts[groupName] = {};
 
         for (let hostName in clusterApcuStatuses[groupName]) {
+            if (!clusterApcuStatuses[groupName][hostName].Enabled) {
+                charts[groupName][hostName] = null;
+                continue;
+            }
+
             charts[groupName][hostName] = {
                 memory: {
                     chartData: {
@@ -183,22 +193,34 @@ function StatusPageComponent(props: Object) {
 
     props.selectedClusterGroupNames.map((groupName, groupTabId) => {
         const hostGridCollection = [];
-
         for (let hostName in props.charts[groupName]) {
+            const hostChart = props.charts[groupName][hostName];
+
+            let gridContent;
+            if (hostChart !== null) {
+                gridContent = (
+                    <Paper className={classes.paper} height="100%">
+                        <h2>Memory</h2>
+                        <Doughnut
+                            data={props.charts[groupName][hostName].memory.chartData}
+                            options={props.charts[groupName][hostName].memory.chartOptions}
+                        />
+                        <StatusTable rows={props.tables[groupName][hostName].memory}></StatusTable>
+                    </Paper>
+                );
+            } else {
+                gridContent = (
+                    <Paper className={classes.paper} height="100%">APCu disabled</Paper>
+                )
+            }
+
             hostGridCollection.push(
                 <div key={hostName}>
                     <h2>{hostName}</h2>
 
                     <Grid container spacing={1}>
                         <Grid item xs={12} sm={6} md={4} key={hostName + "memory"} height="100%">
-                            <Paper className={classes.paper} height="100%">
-                                <h2>Memory</h2>
-                                <Doughnut 
-                                    data={props.charts[groupName][hostName].memory.chartData} 
-                                    options={props.charts[groupName][hostName].memory.chartOptions} 
-                                />
-                                <StatusTable rows={props.tables[groupName][hostName].memory}></StatusTable>
-                            </Paper>
+                            {gridContent}
                         </Grid>
                     </Grid>
                 </div>

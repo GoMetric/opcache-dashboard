@@ -101,7 +101,7 @@ function HostConfigurationTableComponent(props: Object) {
                 <Grid item xs={6} key={host}>
                     <Paper className={classes.paper}>
                         <h2>{host}</h2>
-                        Node status was not fetched
+                        APCu disabled
                     </Paper>
                 </Grid>
             )
