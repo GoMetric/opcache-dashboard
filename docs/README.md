@@ -34,6 +34,8 @@ docker run \
   --config="/config.yaml"
 ```
 
+See [Dockerfile](https://github.com/GoMetric/opcache-dashboard-docker) for details.
+
 # Configuration
 
 ## YAML
