@@ -1,0 +1,20 @@
+{
+  "7OW8BT": {
+    "string": "Configuration"
+  },
+  "HCfIc7": {
+    "string": "Scripts"
+  },
+  "N1iczq": {
+    "string": "Cache is full, increase \"opcache.memory_consumption\" or decrease \"opcache.max_wasted_percentage\"."
+  },
+  "QRccCM": {
+    "string": "Page not found"
+  },
+  "rELDbB": {
+    "string": "Refresh"
+  },
+  "tzMNF3": {
+    "string": "Status"
+  }
+}

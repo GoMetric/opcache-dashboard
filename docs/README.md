@@ -99,3 +99,7 @@ Also this server serves UI and API for watching gathered statistic on `http-host
 ## Prometheus
 
 Prometheus metrics available on API endpoint `/api/nodes/statistics/prometheus`.
+
+# Localisation
+
+You may contribute to project localisation at https://www.transifex.com/gometric/opcache-dashboard

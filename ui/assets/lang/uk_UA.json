@@ -1,0 +1,20 @@
+{
+  "7OW8BT": {
+    "string": "Конфігурація"
+  },
+  "HCfIc7": {
+    "string": "Скрипти"
+  },
+  "N1iczq": {
+    "string": "Кеш заповнений, збільште \"opcache.memory_consumption\" або зменшіть \"opcache.max_wasted_percentage\"."
+  },
+  "QRccCM": {
+    "string": "Сторінку не знайдено"
+  },
+  "rELDbB": {
+    "string": "Оновити"
+  },
+  "tzMNF3": {
+    "string": "Статус"
+  }
+}

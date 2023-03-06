@@ -44,7 +44,7 @@ ui:
 
 metrics:
   statsd:
-    enabled: true
+    enabled: false
     host: "127.0.0.1"
     port: 8125
     prefix: "some.metric.prefix"
