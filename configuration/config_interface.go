@@ -36,6 +36,7 @@ type StatsdMetricsConfig struct {
 }
 
 type PrometheusMetricsConfig struct {
+	Prefix string
 }
 
 type GroupConfig struct {

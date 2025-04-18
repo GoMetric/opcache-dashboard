@@ -71,9 +71,10 @@ metrics: # tool may send metrics to different backends
     enabled: false
     host: 127.0.0.1 # statsd host
     port: 8125 # statsd port
-    prefix: some.metric.prefix # prefix addet to all metrics
+    prefix: some.metric.prefix # prefix added to all metrics
   prometheus: # tool collects metrics, prometheus goest to metric url and scrapps data
     enabled: true
+    prefix: "some_metric_prefix" # prefix added to all metrics
 ```
 
 # Usage

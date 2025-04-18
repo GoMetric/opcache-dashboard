@@ -49,7 +49,8 @@ type yamlStatsdMetricsConfig struct {
 }
 
 type yamlPrometheusMetricsConfig struct {
-	Enabled bool `yaml:"enabled"`
+	Enabled bool    `yaml:"enabled"`
+	Prefix  *string `yaml:"prefix"`
 }
 
 // YAMLConfigReader reads configuration in YAML format
@@ -58,7 +59,7 @@ type YAMLConfigReader struct {
 
 // ReadConfig reads yaml configuration file and produces application configuration
 func (reader *YAMLConfigReader) ReadConfig(path string) ApplicationConfig {
-	// check file existance
+	// check file existence
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
 		log.Fatalln(fmt.Sprintf("Config file '%s' not found", path))
@@ -155,7 +156,13 @@ func (reader *YAMLConfigReader) ReadConfig(path string) ApplicationConfig {
 		}
 
 		if yamlConfig.Metrics.Prometheus != nil && yamlConfig.Metrics.Prometheus.Enabled {
-			config.Metrics.Prometheus = &PrometheusMetricsConfig{}
+			config.Metrics.Prometheus = &PrometheusMetricsConfig{
+				Prefix: "",
+			}
+
+			if yamlConfig.Metrics.Prometheus.Prefix != nil {
+				config.Metrics.Prometheus.Prefix = *yamlConfig.Metrics.Prometheus.Prefix
+			}
 		}
 	}
 

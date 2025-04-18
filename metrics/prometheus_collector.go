@@ -10,12 +10,18 @@ import (
 
 type PrometheusMetricSender struct {
 	gauges map[string]prometheus.GaugeVec
+	Prefix string
 }
 
-func NewPrometheusMetricSender(registry *prometheus.Registry) *PrometheusMetricSender {
+func NewPrometheusMetricSender(
+	registry *prometheus.Registry,
+	prefix string,
+) *PrometheusMetricSender {
 	sender := PrometheusMetricSender{
 		gauges: map[string]prometheus.GaugeVec{},
 	}
+
+	sender.Prefix = prefix
 
 	gaugeNames := []string{
 		"opcache_scripts_count",
@@ -30,15 +36,17 @@ func NewPrometheusMetricSender(registry *prometheus.Registry) *PrometheusMetricS
 	}
 
 	for _, gaugeName := range gaugeNames {
-		sender.gauges[gaugeName] = *prometheus.NewGaugeVec(
+		fullGaugeName := sender.buildFullMetricName(gaugeName)
+
+		sender.gauges[fullGaugeName] = *prometheus.NewGaugeVec(
 			prometheus.GaugeOpts{
-				Name: gaugeName,
+				Name: fullGaugeName,
 				Help: gaugeName,
 			},
 			[]string{"clusterName", "groupName", "hostName"},
 		)
 
-		registry.MustRegister(sender.gauges[gaugeName])
+		registry.MustRegister(sender.gauges[fullGaugeName])
 	}
 
 	return &sender
@@ -74,7 +82,9 @@ func (s *PrometheusMetricSender) Send(
 	}
 
 	for gaugeName, gaugeValue := range gaugeNameValueMap {
-		if gauge, ok := s.gauges[gaugeName]; ok {
+		fullGaugeName := s.buildFullMetricName(gaugeName)
+
+		if gauge, ok := s.gauges[fullGaugeName]; ok {
 			gauge.With(
 				prometheus.Labels{
 					"clusterName": clusterName,
@@ -86,4 +96,13 @@ func (s *PrometheusMetricSender) Send(
 			log.Printf("Gauge %s not declared but used", gaugeName)
 		}
 	}
+}
+
+func (c *PrometheusMetricSender) buildFullMetricName(name string) string {
+	fullGaugeName := name
+	if c.Prefix != "" {
+		fullGaugeName = c.Prefix + "_" + fullGaugeName
+	}
+
+	return fullGaugeName
 }

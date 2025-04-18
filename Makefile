@@ -43,7 +43,7 @@ assets-embed-debug-proxy: assets-build-debug
 	$(GOPATH)/bin/go-bindata -fs -o ui/assets.go -pkg ui -prefix "ui/assets/dist" -debug ui/assets/dist/...
 
 # Embed development assets to binary
-assets-embed-debug-link: assets-build-debug 
+assets-embed-debug-link: assets-build-debug
 	$(GOPATH)/bin/go-bindata -fs -o ui/assets.go -pkg ui -prefix "ui/assets/dist" ui/assets/dist/...
 
 # Run debug server with current Go code and rebuilded ui assets loaded from disc instead of embedding
