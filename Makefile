@@ -25,15 +25,15 @@ deps:
 
 # Build frontend for production
 assets-build-prod:
-	cd ui/assets &&	yarn install --mode=production && yarn run build-prod
+	cd ui/assets &&	npm install --only=prod && npm run build-prod
 
 # Build frontend for development
 assets-build-debug:
-	cd ui/assets &&	yarn install && yarn run build-dev
+	cd ui/assets &&	npm install && npm run build-dev
 
 # Watch frontend file changes for development
 assets-watch: assets-build-debug
-	cd ui/assets &&	yarn run watch
+	cd ui/assets &&	npm run watch
 
 # Embed the assets to binary
 assets-embed-prod: assets-build-prod
