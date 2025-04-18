@@ -36,7 +36,7 @@ assets-watch: assets-build-debug
 	cd ui/assets &&	npm run watch
 
 # Embed the assets to binary
-assets-embed-prod: assets-build-prod
+assets-embed-prod:
 	$(GOPATH)/bin/go-bindata -fs -o ui/assets.go -pkg ui -prefix "ui/assets/dist" ui/assets/dist/...
 
 # Do not embed the assets, but provide the embedding API. Contents will still be loaded from disk
@@ -66,13 +66,12 @@ run-profiler-web:
 	go tool pprof -http=localhost:6061 http://localhost:6060/debug/pprof/profile
 
 # Build server for production (go only, ui must be pre-compiled with assets-embed-prod separately)
-build-prod-go: deps
+build-prod-go: deps assets-embed-prod
 	CGO_ENABLED=0 go build -v -x -a $(LDFLAGS) -o $(CURDIR)/bin/$(BINARY_NAME)
 	chmod +x $(CURDIR)/bin/$(BINARY_NAME)
 	$(CURDIR)/bin/$(BINARY_NAME) -version
 
-# Build server for production and build ui
-build-prod-full: build-prod-go assets-embed-prod
+build-prod-full: assets-build-prod build-prod-go
 
 # Build server for development
 build-dev: deps assets-embed-debug-link
