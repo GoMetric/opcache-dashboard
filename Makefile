@@ -19,7 +19,7 @@ default: build-prod
 
 # Install dependencies
 deps:
-	go get -u github.com/go-bindata/go-bindata/...
+	go install github.com/go-bindata/go-bindata/...@latest
 	touch ui/assets.go
 	go get -v -t -d ./...
 
