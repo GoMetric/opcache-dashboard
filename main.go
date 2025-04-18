@@ -146,7 +146,10 @@ func main() {
 	// // Add prometheus sender if configured
 	if applicationConfig.Metrics.Prometheus != nil {
 		prometheusRegistry := prometheus.NewRegistry()
-		o.AddMetricSender(metrics.NewPrometheusMetricSender(prometheusRegistry))
+		o.AddMetricSender(metrics.NewPrometheusMetricSender(
+			prometheusRegistry,
+			applicationConfig.Metrics.Prometheus.Prefix,
+		))
 
 		router.Handle(
 			"/api/nodes/statistics/prometheus",

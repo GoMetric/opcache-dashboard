@@ -50,4 +50,5 @@ metrics:
     prefix: "some.metric.prefix"
   prometheus:
     enabled: true
+    prefix: "some_metric_prefix"
     
