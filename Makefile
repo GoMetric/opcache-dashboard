@@ -19,8 +19,9 @@ default: build-prod
 
 # Install dependencies
 deps:
-	go get -v -t -d ./...
 	go get -u github.com/go-bindata/go-bindata/...
+	touch ui/assets.go
+	go get -v -t -d ./...
 
 # Build frontend for production
 assets-build-prod:
