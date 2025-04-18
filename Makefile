@@ -65,11 +65,14 @@ start-stub-php-server:
 run-profiler-web:
 	go tool pprof -http=localhost:6061 http://localhost:6060/debug/pprof/profile
 
-# Build server for production
-build-prod: deps assets-embed-prod
+# Build server for production (go only, ui must be pre-compiled with assets-embed-prod separately)
+build-prod-go: deps
 	CGO_ENABLED=0 go build -v -x -a $(LDFLAGS) -o $(CURDIR)/bin/$(BINARY_NAME)
 	chmod +x $(CURDIR)/bin/$(BINARY_NAME)
 	$(CURDIR)/bin/$(BINARY_NAME) -version
+
+# Build server for production and build ui
+build-prod-full: build-prod-go assets-embed-prod
 
 # Build server for development
 build-dev: deps assets-embed-debug-link
