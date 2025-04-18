@@ -25,7 +25,7 @@ deps:
 
 # Build frontend for production
 assets-build-prod:
-	cd ui/assets &&	npm install --only=prod && npm run build-prod
+	cd ui/assets &&	npm install && npm run build-prod
 
 # Build frontend for development
 assets-build-debug:
@@ -66,12 +66,12 @@ run-profiler-web:
 	go tool pprof -http=localhost:6061 http://localhost:6060/debug/pprof/profile
 
 # Build server for production (go only, ui must be pre-compiled with assets-embed-prod separately)
-build-prod-go: deps assets-embed-prod
+binary: deps assets-embed-prod
 	CGO_ENABLED=0 go build -v -x -a $(LDFLAGS) -o $(CURDIR)/bin/$(BINARY_NAME)
 	chmod +x $(CURDIR)/bin/$(BINARY_NAME)
 	$(CURDIR)/bin/$(BINARY_NAME) -version
 
-build-prod-full: assets-build-prod build-prod-go
+build-prod: assets-build-prod binary
 
 # Build server for development
 build-dev: deps assets-embed-debug-link
