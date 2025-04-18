@@ -36,7 +36,7 @@ func NewPrometheusMetricSender(
 	}
 
 	for _, gaugeName := range gaugeNames {
-		fullGaugeName := sender.Prefix + "_" + gaugeName
+		fullGaugeName := sender.buildFullMetricName(gaugeName)
 
 		sender.gauges[fullGaugeName] = *prometheus.NewGaugeVec(
 			prometheus.GaugeOpts{
@@ -82,7 +82,7 @@ func (s *PrometheusMetricSender) Send(
 	}
 
 	for gaugeName, gaugeValue := range gaugeNameValueMap {
-		fullGaugeName := s.Prefix + "_" + gaugeName
+		fullGaugeName := s.buildFullMetricName(gaugeName)
 
 		if gauge, ok := s.gauges[fullGaugeName]; ok {
 			gauge.With(
@@ -96,4 +96,13 @@ func (s *PrometheusMetricSender) Send(
 			log.Printf("Gauge %s not declared but used", gaugeName)
 		}
 	}
+}
+
+func (c *PrometheusMetricSender) buildFullMetricName(name string) string {
+	fullGaugeName := name
+	if c.Prefix != "" {
+		fullGaugeName = c.Prefix + "_" + fullGaugeName
+	}
+
+	return fullGaugeName
 }
